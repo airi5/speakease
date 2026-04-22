@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakEase — 完全無料版</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f4f8; --white:#fff; --ink:#1a2236; --ink2:#4a5568; --ink3:#8898aa;
+  --blue:#2563eb; --blue-l:#eff6ff; --blue-d:#1d4ed8; --blue-t:#bfdbfe;
+  --green:#059669; --green-l:#ecfdf5; --green-t:#a7f3d0;
+  --amber:#d97706; --amber-l:#fffbeb; --amber-t:#fde68a;
+  --rose:#e11d48; --rose-l:#fff1f2;
+  --purple:#7c3aed; --purple-l:#f5f3ff;
+  --border:#e2e8f0; --border2:#cbd5e1;
+  --r:14px; --rs:8px; --t:.16s ease;
+  --drawer-h:340px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);
+  font-family:'Nunito','Noto Sans JP',sans-serif;font-size:14px;overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:52px 1fr auto}
+
+/* ── トップバー ── */
+.topbar{display:flex;align-items:center;gap:12px;padding:0 18px;
+  background:var(--white);border-bottom:1px solid var(--border);z-index:20;flex-shrink:0}
+.logo{font-size:16px;font-weight:900;color:var(--blue);letter-spacing:-.3px}
+.logo span{color:var(--purple)}
+.tsep{flex:1}
+.room-pill{display:flex;align-items:center;gap:6px;padding:4px 12px;
+  border-radius:99px;background:var(--bg);border:1px solid var(--border);
+  font-size:12px;color:var(--ink3)}
+.room-pill b{color:var(--blue);font-weight:800}
+.rec-pill{display:flex;align-items:center;gap:5px;padding:4px 11px;
+  border-radius:99px;font-size:11px;font-weight:700;transition:all .3s}
+.rec-pill.on{background:var(--rose-l);border:1px solid rgba(225,29,72,.2);color:var(--rose)}
+.rec-pill.off{background:var(--bg);border:1px solid var(--border);color:var(--ink3)}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.rec-pill.on .rec-dot{animation:rdot 1.2s ease-in-out infinite}
+@keyframes rdot{0%,100%{opacity:1}50%{opacity:.2}}
+.timer-disp{font-size:12px;font-weight:700;color:var(--ink3);
+  font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+.dash-btn{padding:5px 12px;border-radius:var(--rs);border:1px solid var(--border);
+  background:transparent;color:var(--ink3);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all var(--t);font-family:'Nunito',sans-serif}
+.dash-btn:hover{background:var(--bg);color:var(--ink2)}
+
+/* ── 参加画面 ── */
+.join-wrap{display:flex;align-items:center;justify-content:center;
+  height:100%;background:var(--bg)}
+.join-card{background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:28px 30px;width:340px}
+.join-title{font-size:18px;font-weight:900;color:var(--ink);margin-bottom:3px}
+.join-sub{font-size:13px;color:var(--ink3);margin-bottom:20px;
+  font-family:'Noto Sans JP',sans-serif;line-height:1.65}
+.f{margin-bottom:14px}
+.f label{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.f input,.f select{width:100%;padding:9px 12px;border:1.5px solid var(--border2);
+  border-radius:var(--rs);font-size:14px;font-family:'Nunito',sans-serif;
+  color:var(--ink);background:var(--white);outline:none;transition:border-color var(--t)}
+.f input:focus,.f select:focus{border-color:var(--blue)}
+.join-btn{width:100%;padding:11px;border-radius:var(--rs);border:none;
+  background:var(--blue);color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all var(--t);font-family:'Nunito',sans-serif}
+.join-btn:hover{background:var(--blue-d)}
+.join-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:10px;
+  font-family:'Noto Sans JP',sans-serif;line-height:1.6}
+
+/* ── メイン（参加後） ── */
+.meeting{display:grid;grid-template-columns:1fr 240px;overflow:hidden;height:100%}
+
+/* ── ログパネル ── */
+.log-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--white);
+  border-right:1px solid var(--border)}
+.log-header{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-bottom:1px solid var(--border);flex-shrink:0}
+.log-header-title{font-size:13px;font-weight:700;color:var(--ink);flex:1}
+.count-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+.count-badge.me{background:var(--blue-l);color:var(--blue-d)}
+.count-badge.other{background:var(--green-l);color:var(--green)}
+.log-area{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.log-empty{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;color:var(--ink3);text-align:center;padding:30px}
+.log-empty-icon{width:52px;height:52px;border-radius:50%;background:var(--bg);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+.log-empty-icon svg{width:22px;height:22px}
+.log-empty-text{font-size:13px;font-family:'Noto Sans JP',sans-serif;line-height:1.7}
+
+/* 吹き出し */
+.entry{display:flex;flex-direction:column;gap:3px;animation:eIn .2s ease-out}
+@keyframes eIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.entry.me{align-items:flex-end}
+.entry.other{align-items:flex-start}
+.e-meta{display:flex;align-items:center;gap:5px;padding:0 3px}
+.e-name{font-size:11px;font-weight:700}
+.entry.me .e-name{color:var(--blue-d)}
+.entry.other .e-name{color:var(--green)}
+.e-time{font-size:10px;color:var(--ink3)}
+.bubble{padding:10px 14px;border-radius:var(--r);max-width:80%;position:relative}
+.entry.me .bubble{background:var(--blue-l);border-radius:var(--r) var(--r) 3px var(--r)}
+.entry.other .bubble{background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r) var(--r) var(--r) 3px}
+.b-en{font-size:15px;font-weight:600;line-height:1.5;color:var(--ink)}
+.entry.me .b-en{color:#1e3a8a}
+.b-trans{font-size:12px;color:var(--ink2);font-family:'Noto Sans JP',sans-serif;
+  line-height:1.65;margin-top:6px;padding-top:6px;border-top:1px dashed var(--border2);
+  display:none}
+.b-trans.show{display:block}
+.b-trans.loading{color:var(--ink3);font-style:italic}
+.b-actions{display:flex;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap}
+.trans-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;
+  border-radius:6px;border:1px solid var(--border2);background:transparent;
+  font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;
+  transition:all var(--t);font-family:'Nunito',sans-serif}
+.trans-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+
+/* ── コントロール ── */
+.controls{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;
+  background:var(--white);display:flex;align-items:center;gap:10px}
+.mic-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;
+  border-radius:var(--r);border:none;cursor:pointer;
+  font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;transition:all var(--t)}
+.mic-btn.idle{background:var(--blue-l);color:var(--blue-d);border:1.5px solid var(--blue-t)}
+.mic-btn.idle:hover{background:var(--blue);color:#fff}
+.mic-btn.rec{background:var(--rose);color:#fff;
+  animation:mp 1.2s ease-in-out infinite}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(225,29,72,.3)}
+  50%{box-shadow:0 0 0 8px rgba(225,29,72,0)}}
+.mic-btn svg{width:15px;height:15px}
+.wf{display:flex;align-items:center;gap:2px;height:14px}
+.wf.h{display:none}
+.wfb{width:2px;border-radius:1px;background:#fff;animation:wfv .75s ease-in-out infinite}
+.wfb:nth-child(1){height:3px}.wfb:nth-child(2){height:8px;animation-delay:.1s}
+.wfb:nth-child(3){height:12px;animation-delay:.2s}.wfb:nth-child(4){height:8px;animation-delay:.1s}
+.wfb:nth-child(5){height:3px}
+@keyframes wfv{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.ctrl-hint{font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif;flex:1}
+.end-btn{padding:7px 14px;border-radius:var(--rs);border:1px solid var(--border2);
+  background:transparent;color:var(--ink3);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all var(--t);font-family:'Nunito',sans-serif}
+.end-btn:hover{background:var(--rose-l);border-color:rgba(225,29,72,.3);color:var(--rose)}
+
+/* ── サイドバー ── */
+.sidebar{background:var(--white);display:flex;flex-direction:column;overflow:hidden}
+.side-sec{padding:12px 13px;border-bottom:1px solid var(--border)}
+.side-lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:8px}
+.p-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.av.me{background:var(--blue-t);color:var(--blue-d)}
+.av.other{background:var(--green-t);color:var(--green)}
+.p-name{font-size:12px;font-weight:600;color:var(--ink);flex:1}
+.p-cnt{font-size:12px;font-weight:700;color:var(--ink3)}
+.lang-row{display:flex;align-items:center;gap:6px}
+.lang-row label{font-size:11px;color:var(--ink2);flex:1;
+  font-family:'Noto Sans JP',sans-serif}
+.lang-row select{padding:4px 7px;border:1px solid var(--border2);border-radius:var(--rs);
+  font-size:11px;font-family:'Nunito',sans-serif;color:var(--ink);
+  background:var(--white);outline:none}
+.side-timer{font-size:26px;font-weight:900;color:var(--ink);
+  font-variant-numeric:tabular-nums;padding:12px 13px}
+
+/* ── WordBridge ドロワー ── */
+.wb-trigger{padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;
+  background:var(--white)}
+.wb-open-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:9px;border-radius:var(--r);border:1.5px dashed var(--border2);
+  background:transparent;color:var(--ink3);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all var(--t);font-family:'Nunito',sans-serif}
+.wb-open-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-l)}
+.wb-open-btn.active{border-color:var(--purple);background:var(--purple-l);color:var(--purple)}
+.wb-open-btn svg{width:15px;height:15px;transition:transform var(--t)}
+.wb-open-btn.active svg{transform:rotate(180deg)}
+
+/* ドロワー本体 */
+.wb-drawer{
+  overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);
+  max-height:0;background:var(--white);border-top:0px solid var(--border);
+  flex-shrink:0;
+}
+.wb-drawer.open{max-height:var(--drawer-h);border-top-width:1px}
+.wb-inner{padding:14px;height:var(--drawer-h);overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px}
+.wb-context{font-size:11px;color:var(--ink3);padding:7px 10px;
+  background:var(--bg);border-radius:var(--rs);border:1px solid var(--border);
+  font-family:'Noto Sans JP',sans-serif;line-height:1.6}
+.wb-context b{color:var(--purple);font-style:normal}
+.wb-lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3)}
+.words-grid{display:flex;flex-wrap:wrap;gap:6px}
+.word-chip{padding:6px 12px;border-radius:99px;border:1.5px solid var(--border2);
+  background:var(--white);font-size:13px;font-weight:700;color:var(--ink2);
+  cursor:pointer;transition:all var(--t);user-select:none}
+.word-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-l)}
+.word-chip.picked{background:var(--purple);border-color:var(--purple);color:#fff}
+.word-chip .jp{font-size:10px;font-weight:500;color:var(--ink3);margin-left:4px;
+  font-family:'Noto Sans JP',sans-serif}
+.word-chip.picked .jp{color:rgba(255,255,255,.7)}
+.wb-compose{display:flex;flex-direction:column;gap:6px}
+.compose-box{min-height:36px;padding:7px 10px;background:var(--bg);
+  border:1.5px solid var(--border2);border-radius:var(--rs);
+  font-size:13px;color:var(--ink);display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.compose-token{padding:2px 8px;background:var(--purple);color:#fff;
+  border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;transition:all var(--t)}
+.compose-token:hover{background:#6d28d9}
+.compose-hint{font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif}
+.compose-actions{display:flex;gap:6px}
+.compose-clear{padding:5px 12px;border-radius:var(--rs);border:1px solid var(--border2);
+  background:transparent;color:var(--ink3);font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Nunito',sans-serif;transition:all var(--t)}
+.compose-clear:hover{background:var(--bg)}
+.compose-copy{padding:5px 14px;border-radius:var(--rs);border:none;
+  background:var(--purple);color:#fff;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Nunito',sans-serif;transition:all var(--t)}
+.compose-copy:hover{background:#6d28d9}
+
+/* ── ダッシュボード ── */
+.dash-overlay{position:absolute;inset:0;background:var(--bg);overflow-y:auto;
+  z-index:30;padding:20px;display:none}
+.dash-overlay.show{display:block}
+.dash-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.dash-title{font-size:20px;font-weight:900;color:var(--ink);flex:1}
+.dash-close{padding:7px 14px;border-radius:var(--rs);border:1px solid var(--border2);
+  background:var(--white);color:var(--ink3);font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Nunito',sans-serif;transition:all var(--t)}
+.dash-close:hover{background:var(--bg)}
+.dl-btns{display:flex;gap:8px;margin-bottom:18px}
+.dl-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;
+  border-radius:var(--rs);border:1px solid var(--border2);background:var(--white);
+  color:var(--ink2);font-size:12px;font-weight:700;cursor:pointer;
+  transition:all var(--t);font-family:'Nunito',sans-serif}
+.dl-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px}
+.stat-v{font-size:26px;font-weight:900;color:var(--ink)}
+.stat-l{font-size:11px;color:var(--ink3);margin-top:3px;font-family:'Noto Sans JP',sans-serif}
+.stat.blue .stat-v{color:var(--blue-d)}.stat.green .stat-v{color:var(--green)}
+.dash-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.d-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.d-card-t{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bar-nm{font-size:12px;font-weight:700;width:65px;flex-shrink:0}
+.bar-nm.blue{color:var(--blue-d)}.bar-nm.green{color:var(--green)}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bar-fill.blue{background:var(--blue)}.bar-fill.green{background:var(--green)}
+.bar-v{font-size:11px;color:var(--ink3);width:28px;text-align:right}
+.wchips{display:flex;flex-wrap:wrap;gap:4px}
+.wc{padding:3px 9px;background:var(--bg);border:1px solid var(--border);
+  border-radius:4px;font-size:12px;color:var(--ink2)}
+.log-tbl{width:100%;background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;border-collapse:collapse}
+.log-tbl th{padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink3);background:var(--bg);
+  border-bottom:1px solid var(--border);text-align:left}
+.log-tbl td{padding:8px 12px;font-size:12px;color:var(--ink2);
+  border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.log-tbl tr:last-child td{border-bottom:none}
+.log-tbl tr:hover td{background:var(--bg)}
+.s-me{color:var(--blue-d);font-weight:700}.s-other{color:var(--green);font-weight:700}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sp{display:inline-block;width:12px;height:12px;border:2px solid var(--border2);
+  border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── スマホ対応 ── */
+@media (max-width:640px){
+  .topbar{padding:0 10px;gap:6px}
+  .logo{font-size:14px}
+  .room-pill,.rec-pill{font-size:10px;padding:3px 7px}
+  .timer-disp{font-size:10px;min-width:28px}
+  .dash-btn{padding:4px 8px;font-size:10px}
+  .join-card{width:92vw;padding:20px 16px}
+  .meeting{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .sidebar{border-left:none;border-top:1px solid var(--border);
+    flex-direction:row;overflow-x:auto;overflow-y:hidden;
+    min-height:56px;max-height:56px;flex-shrink:0}
+  .side-sec{padding:6px 10px;border-bottom:none;
+    border-right:1px solid var(--border);flex-shrink:0;min-width:fit-content}
+  .side-lbl{font-size:9px;margin-bottom:3px}
+  .side-timer{font-size:16px;padding:6px 10px;white-space:nowrap}
+  .p-row{gap:4px}
+  .av{width:20px;height:20px;font-size:9px}
+  .p-name{font-size:10px}
+  .p-cnt{font-size:10px}
+  .lang-row label{font-size:10px}
+  .lang-row select{font-size:10px;padding:2px 4px}
+  .wb-trigger{padding:5px 8px}
+  .wb-open-btn{font-size:11px;padding:6px 8px}
+  .log-header{padding:7px 10px}
+  .log-header-title{font-size:11px}
+  .log-area{padding:8px 10px;gap:7px}
+  .bubble{max-width:90%;padding:7px 10px}
+  .b-en{font-size:13px}
+  .trans-btn{font-size:10px;padding:2px 7px}
+  .controls{padding:8px 10px;gap:6px}
+  .mic-btn{padding:11px 16px;font-size:13px;border-radius:var(--r)}
+  .ctrl-hint{font-size:10px}
+  .end-btn{padding:7px 9px;font-size:11px}
+  --drawer-h:240px;
+  .wb-inner{padding:8px;gap:7px}
+  .word-chip{font-size:12px;padding:5px 9px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .dash-row{grid-template-columns:1fr}
+  .log-tbl th,.log-tbl td{padding:5px 7px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- トップバー -->
+  <div class="topbar">
+    <div class="logo">Speak<span>Ease</span></div>
+    <div style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ecfdf5;border:1px solid #a7f3d0;color:#059669;letter-spacing:.05em">完全無料</div>
+    <div class="room-pill">ルーム：<b id="roomDisp">---</b></div>
+    <div class="rec-pill off" id="recPill">
+      <div class="rec-dot"></div><span id="recTxt">待機中</span>
+    </div>
+    <div class="timer-disp" id="timerDisp">00:00</div>
+    <div class="tsep"></div>
+    <button class="dash-btn" onclick="toggleDash()">分析</button>
+  </div>
+
+  <!-- 参加画面 -->
+  <div class="join-wrap" id="joinWrap">
+    <div class="join-card">
+      <div class="join-title">SpeakEase</div>
+      <div class="join-sub">名前と母国語を設定して参加してください。<br>「訳を見る」を押したとき、あなたの言語で表示されます。</div>
+      <div class="f">
+        <label>あなたの名前</label>
+        <input type="text" id="nameIn" placeholder="例：田中" value="田中">
+      </div>
+      <div class="f">
+        <label>母国語（訳を見るときの言語）</label>
+        <select id="langIn">
+          <option value="ja">日本語</option>
+          <option value="ko">한국어（韓国語）</option>
+          <option value="es">Español（スペイン語）</option>
+          <option value="zh">中文（中国語）</option>
+          <option value="fr">Français（フランス語）</option>
+          <option value="pt">Português（ポルトガル語）</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>ルームコード（空白で新規作成）</label>
+        <input type="text" id="roomIn" placeholder="例：ABC-123">
+      </div>
+      <button class="join-btn" onclick="join()">参加する</button>
+      <div class="join-note">※ 別々のPCやスマホから同じルームコードを入力すると<br>リアルタイムで繋がります</div>
+    </div>
+  </div>
+
+  <!-- 会議画面（参加後） -->
+  <div class="meeting" id="meetingWrap" style="display:none">
+
+    <!-- ログパネル -->
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="log-header-title">リアルタイム議事録</div>
+        <div class="count-badge me" id="cntMe">あなた 0回</div>
+        <div class="count-badge other" id="cntOther">相手 0回</div>
+      </div>
+      <div class="log-area" id="logArea">
+        <div class="log-empty" id="logEmpty">
+          <div class="log-empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="log-empty-text">話し始めると<br>ここに表示されます</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="mic-btn idle" id="micBtn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+          <div class="wf h" id="wf">
+            <div class="wfb"></div><div class="wfb"></div><div class="wfb"></div>
+            <div class="wfb"></div><div class="wfb"></div>
+          </div>
+          <span id="micLbl">話す</span>
+        </button>
+        <div class="ctrl-hint" id="ctrlHint">ボタンを押している間、あなたの声を認識します（Spaceキーでも）</div>
+        <button class="end-btn" onclick="endSession()">終了</button>
+      </div>
+    </div>
+
+    <!-- サイドバー -->
+    <div class="sidebar">
+      <div class="side-sec">
+        <div class="side-lbl">参加者</div>
+        <div id="pList"></div>
+      </div>
+      <div class="side-sec">
+        <div class="side-lbl">訳の言語</div>
+        <div class="lang-row">
+          <label>「訳を見る」の言語</label>
+          <select id="langSw" onchange="myLang=this.value">
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="es">Español</option>
+            <option value="zh">中文</option>
+            <option value="fr">Français</option>
+            <option value="pt">Português</option>
+          </select>
+        </div>
+      </div>
+      <div class="side-timer" id="sideTimer">00:00</div>
+
+      <!-- WordBridgeトリガー -->
+      <div class="wb-trigger">
+        <button class="wb-open-btn" id="wbBtn" onclick="toggleDrawer()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          単語を探す（WordBridge）
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px">
+            <polyline points="18 15 12 9 6 15"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- WordBridgeドロワー -->
+      <div class="wb-drawer" id="wbDrawer">
+        <div class="wb-inner">
+          <div class="wb-context" id="wbContext">
+            話したいとき、このパネルを使って<b>単語の素材</b>を探せます。<br>
+            単語をタップして組み合わせ、自分の言葉で話しましょう。
+          </div>
+          <div class="wb-lbl">単語・表現の候補</div>
+          <div class="words-grid" id="wordsGrid">
+            <div style="font-size:12px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif">
+              相手の発言が認識されると、関連する単語が出てきます
+            </div>
+          </div>
+          <div class="wb-lbl">組み立てメモ</div>
+          <div class="wb-compose">
+            <div class="compose-box" id="composeBox">
+              <span class="compose-hint">単語をタップしてここに追加</span>
+            </div>
+            <div class="compose-actions">
+              <button class="compose-clear" onclick="clearCompose()">クリア</button>
+              <button class="compose-copy" id="cpyBtn" onclick="copyCompose()">コピー</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ダッシュボードオーバーレイ -->
+  <div class="dash-overlay" id="dashOverlay">
+    <div class="dash-head">
+      <div class="dash-title">会話分析レポート</div>
+      <button class="dash-close" onclick="toggleDash()">閉じる</button>
+    </div>
+    <div id="dashContent"></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  Supabase 設定（REST API直接呼び出し・CDN不要）
+// ══════════════════════════════════════════════
+const SB_URL = 'https://afetbwtnyheysfezrgns.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmZXRid3RueWhleXNmZXpyZ25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTExNTUsImV4cCI6MjA5MjMyNzE1NX0.yGary4tOciBQl4AGWVNKVKaBt4rQI7BH7ZZrwDlZHIo';
+const SB_HEADERS = {
+  'Content-Type':  'application/json',
+  'apikey':        SB_KEY,
+  'Authorization': `Bearer ${SB_KEY}`,
+};
+
+// 発言を保存
+async function sbInsert(entry) {
+  await fetch(`${SB_URL}/rest/v1/messages`, {
+    method:  'POST',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      room_code: roomCode,
+      name:      entry.name,
+      lang:      entry.lang,
+      text:      entry.text,
+      speaker:   'me',
+    }),
+  });
+}
+
+// 既存の発言を取得
+async function sbSelect() {
+  const res = await fetch(
+    `${SB_URL}/rest/v1/messages?room_code=eq.${encodeURIComponent(roomCode)}&order=created_at.asc`,
+    { headers: SB_HEADERS }
+  );
+  return await res.json();
+}
+
+// リアルタイム受信（Supabase Realtime WebSocket）
+let realtimeWs = null;
+function sbSubscribe() {
+  const wsUrl = `wss://${SB_URL.replace('https://', '')}/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`;
+  realtimeWs = new WebSocket(wsUrl);
+
+  realtimeWs.onopen = () => {
+    // Supabase Realtime v2 形式でチャンネル参加
+    realtimeWs.send(JSON.stringify({
+      topic:   'realtime:public:messages',
+      event:   'phx_join',
+      payload: {
+        config: {
+          broadcast:  { self: false },
+          presence:   { key: '' },
+          postgres_changes: [{
+            event:  'INSERT',
+            schema: 'public',
+            table:  'messages',
+            filter: `room_code=eq.${roomCode}`,
+          }]
+        }
+      },
+      ref: '1',
+    }));
+  };
+
+  realtimeWs.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+
+      // postgres_changes イベントを処理
+      const record = msg.payload?.data?.record || msg.payload?.record;
+      if (!record) return;
+      if (record.name === myName) return; // 自分の発言は無視
+      if (record.room_code !== roomCode) return; // 別ルームは無視
+
+      const entry = {
+        ...record,
+        time: new Date(record.created_at).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' }),
+      };
+
+      // 複数人対応：話者ごとにカウント管理
+      addOtherEntry(entry);
+
+    } catch(err) { console.error('ws msg error:', err); }
+  };
+
+  realtimeWs.onerror = (e) => console.error('ws error:', e);
+  realtimeWs.onclose = () => {
+    // 切断時に3秒後に再接続
+    setTimeout(() => { if (roomCode) sbSubscribe(); }, 3000);
+  };
+
+  // ハートビート（30秒ごと）
+  setInterval(() => {
+    if (realtimeWs && realtimeWs.readyState === WebSocket.OPEN) {
+      realtimeWs.send(JSON.stringify({ topic: 'phoenix', event: 'heartbeat', payload: {}, ref: '0' }));
+    }
+  }, 30000);
+}
+
+// 複数人対応：参加者ごとのカウント管理
+const otherCounts = {}; // { name: count }
+
+function addOtherEntry(entry) {
+  // 参加者カウント更新
+  if (!otherCounts[entry.name]) otherCounts[entry.name] = 0;
+  otherCounts[entry.name]++;
+
+  // ログに追加・表示
+  sessionLog.push({ ...entry, speaker: 'other' });
+  renderEntry(entry, 'other');
+  updateParticipantList();
+  updateWordBridge(entry.text);
+}
+
+function updateParticipantList() {
+  // サイドバーの参加者リストを更新
+  const pList = document.getElementById('pList');
+  const totalOther = Object.values(otherCounts).reduce((a, b) => a + b, 0);
+  cntOther = totalOther;
+  document.getElementById('cntOther').textContent = `相手 ${totalOther}回`;
+
+  // 参加者リスト再描画
+  const othersHtml = Object.entries(otherCounts).map(([name, cnt]) => `
+    <div class="p-row">
+      <div class="av other">${name.slice(0,1)}</div>
+      <div class="p-name">${name}</div>
+      <div class="p-cnt">${cnt}回</div>
+    </div>`).join('');
+
+  pList.innerHTML = `
+    <div class="p-row">
+      <div class="av me">${myName.slice(0,1)}</div>
+      <div class="p-name">${myName}（あなた）</div>
+      <div class="p-cnt" id="myCnt">${cntMe}回</div>
+    </div>
+    ${othersHtml || `<div class="p-row">
+      <div class="av other">?</div>
+      <div class="p-name" id="otherNm">参加待ち</div>
+      <div class="p-cnt" id="otherCnt">0回</div>
+    </div>`}`;
+}
+
+// ══════════════════════════════════════════════
+//  状態
+// ══════════════════════════════════════════════
+let myName='', myLang='ja', roomCode='';
+let recognition=null, isRec=false;
+let sessionLog=[], cntMe=0, cntOther=0;
+let sessionStart=null, timerInt=null;
+let composeTokens=[];
+let drawerOpen=false;
+
+// MyMemory の言語コード対応表
+
+// ══════════════════════════════════════════════
+//  参加
+// ══════════════════════════════════════════════
+function join(){
+  const name=document.getElementById('nameIn').value.trim();
+  const lang=document.getElementById('langIn').value;
+  const room=document.getElementById('roomIn').value.trim();
+  if(!name){alert('名前を入力してください');return;}
+  myName=name; myLang=lang;
+  roomCode=room||genCode();
+  sessionStart=Date.now();
+  document.getElementById('roomDisp').textContent=roomCode;
+  document.getElementById('langSw').value=myLang;
+  document.getElementById('joinWrap').style.display='none';
+  document.getElementById('meetingWrap').style.display='grid';
+  updatePList();
+  startTimer();
+
+  // マイク許可を一度だけ取得してから音声認識を初期化
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      stream.getTracks().forEach(t => t.stop()); // 許可取得後すぐ解放
+      initSR();
+    })
+    .catch(() => {
+      // 許可されなくてもアプリは起動する
+      initSR();
+    });
+
+  loadExisting();
+  sbSubscribe();
+}
+
+function genCode(){
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ', N='0123456789';
+  return [0,1,2].map(()=>A[Math.random()*26|0]).join('')+'-'+[0,1,2].map(()=>N[Math.random()*10|0]).join('');
+}
+
+// ══════════════════════════════════════════════
+//  タイマー
+// ══════════════════════════════════════════════
+function startTimer(){
+  timerInt=setInterval(()=>{
+    const s=Math.floor((Date.now()-sessionStart)/1000);
+    const t=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    document.getElementById('timerDisp').textContent=t;
+    document.getElementById('sideTimer').textContent=t;
+  },1000);
+}
+
+// ══════════════════════════════════════════════
+//  参加者UI
+// ══════════════════════════════════════════════
+function updatePList(){
+  document.getElementById('pList').innerHTML=`
+    <div class="p-row">
+      <div class="av me">${myName.slice(0,1)}</div>
+      <div class="p-name">${myName}（あなた）</div>
+      <div class="p-cnt" id="myCnt">0回</div>
+    </div>
+    <div class="p-row">
+      <div class="av other" id="otherAv">?</div>
+      <div class="p-name" id="otherNm">相手（参加待ち）</div>
+      <div class="p-cnt" id="otherCnt">0回</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  発言追加・Supabase保存
+// ══════════════════════════════════════════════
+async function publish(entry) {
+  await sbInsert(entry);
+}
+
+async function loadExisting() {
+  try {
+    const rows = await sbSelect();
+    (rows || []).forEach(row => {
+      if (row.name !== myName) {
+        const entry = {
+          ...row,
+          time: new Date(row.created_at).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' }),
+        };
+        renderEntry(entry, 'other');
+        cntOther++;
+      }
+    });
+    if (cntOther > 0) {
+      document.getElementById('cntOther').textContent = `相手 ${cntOther}回`;
+      document.getElementById('otherCnt').textContent = `${cntOther}回`;
+    }
+  } catch(e) { console.error('loadExisting:', e); }
+}
+
+// ══════════════════════════════════════════════
+//  音声認識
+// ══════════════════════════════════════════════
+function initSR(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    document.getElementById('ctrlHint').textContent='Chrome/Edgeをご利用ください';
+    document.getElementById('micBtn').disabled=true;
+    document.getElementById('micBtn').style.opacity='.4';
+    return;
+  }
+  recognition=new SR();
+  recognition.lang='en-US';
+  recognition.continuous=false;
+  recognition.interimResults=true;
+  recognition.onresult=e=>{
+    let final='',interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t; else interim+=t;
+    }
+    if(interim)document.getElementById('ctrlHint').textContent=`「${interim}」`;
+    if(final.trim()){addMyEntry(final.trim());stopMic();}
+  };
+  recognition.onerror=()=>stopMic();
+  recognition.onend=()=>{if(isRec)stopMic();};
+}
+
+function toggleMic(){isRec?stopMic():startMic();}
+
+function startMic(){
+  if(!recognition)return;
+  isRec=true;
+  recognition.start();
+  document.getElementById('micBtn').className='mic-btn rec';
+  document.getElementById('micLbl').textContent='認識中...';
+  document.getElementById('wf').classList.remove('h');
+  setRec(true);
+  document.getElementById('ctrlHint').textContent='話してください...';
+}
+
+function stopMic(){
+  if(!recognition)return;
+  isRec=false;
+  try{recognition.stop();}catch(e){}
+  document.getElementById('micBtn').className='mic-btn idle';
+  document.getElementById('micLbl').textContent='話す';
+  document.getElementById('wf').classList.add('h');
+  setRec(false);
+  document.getElementById('ctrlHint').textContent='ボタンを押している間、あなたの声を認識します（Spaceキーでも）';
+}
+
+function setRec(on){
+  const p=document.getElementById('recPill');
+  p.className='rec-pill'+(on?' on':' off');
+  document.getElementById('recTxt').textContent=on?'記録中':'待機中';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&e.target===document.body){e.preventDefault();if(!isRec)startMic();}
+});
+document.addEventListener('keyup',e=>{
+  if(e.code==='Space'&&isRec)stopMic();
+});
+
+// ══════════════════════════════════════════════
+//  発言追加・表示
+// ══════════════════════════════════════════════
+function addMyEntry(text){
+  const entry={id:Date.now(),name:myName,lang:myLang,text,
+    time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    timestamp:Date.now()};
+  sessionLog.push({...entry,speaker:'me'});
+  cntMe++;
+  document.getElementById('cntMe').textContent=`あなた ${cntMe}回`;
+  document.getElementById('myCnt').textContent=`${cntMe}回`;
+  renderEntry(entry,'me');
+  publish(entry);
+}
+
+function renderEntry(entry,speaker){
+  const empty=document.getElementById('logEmpty');
+  if(empty)empty.remove();
+  const area=document.getElementById('logArea');
+  const div=document.createElement('div');
+  div.className=`entry ${speaker}`;
+  div.innerHTML=`
+    <div class="e-meta">
+      <span class="e-name">${entry.name}</span>
+      <span class="e-time">${entry.time||''}</span>
+    </div>
+    <div class="bubble">
+      <div class="b-en">${entry.text}</div>
+      <div class="b-trans" id="tr-${entry.id}"></div>
+      <div class="b-actions">
+        <button class="trans-btn" onclick="toggleTrans(${entry.id},'${entry.text.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+          訳を見る
+        </button>
+      </div>
+    </div>`;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+}
+
+// ══════════════════════════════════════════════
+//  翻訳（MyMemory API — 完全無料）
+//  月500万文字まで無料、APIキー不要
+// ══════════════════════════════════════════════
+
+// MyMemory の言語コード対応表
+const MYMEMORY_LANG = {
+  ja:'ja-JP', ko:'ko-KR', es:'es-ES', zh:'zh-CN', fr:'fr-FR', pt:'pt-BR', ar:'ar-SA'
+};
+
+async function toggleTrans(id, text){
+  const el  = document.getElementById(`tr-${id}`);
+  const btn = el.parentElement.querySelector('.trans-btn');
+
+  // 表示中なら閉じる
+  if(el.classList.contains('show')){
+    el.classList.remove('show');
+    btn.textContent = '訳を見る';
+    return;
+  }
+  // 翻訳済みならそのまま開く
+  if(el.dataset.done){ el.classList.add('show'); btn.textContent = '閉じる'; return; }
+
+  el.innerHTML = '<span class="sp"></span>翻訳中...';
+  el.classList.add('show', 'loading');
+  btn.textContent = '閉じる';
+
+  try {
+    const targetLang = MYMEMORY_LANG[myLang] || 'ja-JP';
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en-US|${targetLang}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    const translated = data?.responseData?.translatedText || '翻訳できませんでした';
+    el.textContent = translated;
+    el.dataset.done = '1';
+    el.classList.remove('loading');
+  } catch(e) {
+    el.textContent = '翻訳に失敗しました（ネットワークを確認してください）';
+    el.classList.remove('loading');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  WordBridge ドロワー
+// ══════════════════════════════════════════════
+function toggleDrawer(){
+  drawerOpen=!drawerOpen;
+  document.getElementById('wbDrawer').className='wb-drawer'+(drawerOpen?' open':'');
+  document.getElementById('wbBtn').className='wb-open-btn'+(drawerOpen?' active':'');
+}
+
+// ══════════════════════════════════════════════
+//  単語データベース（ローカル・完全無料）
+//  トピックごとに単語と日本語訳を収録
+// ══════════════════════════════════════════════
+const WORD_DB = {
+  // ── 汎用（常に含める） ──────────────────────
+  default: [
+    {w:'really',jp:'本当に'},{w:'maybe',jp:'たぶん'},{w:'I think',jp:'〜だと思う'},
+    {w:'me too',jp:'私も'},{w:'interesting',jp:'面白い'},{w:'great',jp:'いいですね'},
+    {w:'how about you?',jp:'あなたは？'},{w:'that sounds fun',jp:'楽しそう'},
+    {w:'I see',jp:'なるほど'},{w:'tell me more',jp:'もっと教えて'},
+    {w:'same here',jp:'私も同じ'},{w:'I agree',jp:'同感です'},
+  ],
+  // ── 趣味・アート ──────────────────────────
+  hobby: [
+    {w:'drawing',jp:'絵を描く'},{w:'painting',jp:'絵画'},{w:'sketching',jp:'スケッチ'},
+    {w:'soccer',jp:'サッカー'},{w:'basketball',jp:'バスケ'},{w:'tennis',jp:'テニス'},
+    {w:'music',jp:'音楽'},{w:'guitar',jp:'ギター'},{w:'piano',jp:'ピアノ'},
+    {w:'reading',jp:'読書'},{w:'novel',jp:'小説'},{w:'manga',jp:'漫画'},
+    {w:'cooking',jp:'料理'},{w:'gaming',jp:'ゲーム'},{w:'traveling',jp:'旅行'},
+    {w:'photography',jp:'写真'},{w:'hiking',jp:'ハイキング'},{w:'cycling',jp:'サイクリング'},
+    {w:'dancing',jp:'ダンス'},{w:'singing',jp:'歌う'},{w:'crafting',jp:'工作'},
+    {w:'since childhood',jp:'子どもの頃から'},{w:'recently started',jp:'最近始めた'},
+    {w:'passionate about',jp:'〜に情熱を持っている'},{w:'really into',jp:'はまっている'},
+  ],
+  // ── 食べ物・料理 ──────────────────────────
+  food: [
+    {w:'delicious',jp:'美味しい'},{w:'spicy',jp:'辛い'},{w:'sweet',jp:'甘い'},
+    {w:'salty',jp:'しょっぱい'},{w:'sour',jp:'酸っぱい'},{w:'bitter',jp:'苦い'},
+    {w:'sushi',jp:'寿司'},{w:'ramen',jp:'ラーメン'},{w:'tempura',jp:'天ぷら'},
+    {w:'curry',jp:'カレー'},{w:'pizza',jp:'ピザ'},{w:'pasta',jp:'パスタ'},
+    {w:'favorite dish',jp:'好きな料理'},{w:'try cooking',jp:'料理してみる'},
+    {w:'restaurant',jp:'レストラン'},{w:'recipe',jp:'レシピ'},
+    {w:'ingredient',jp:'食材'},{w:'flavor',jp:'風味'},{w:'portion',jp:'量'},
+    {w:'local food',jp:'郷土料理'},{w:'street food',jp:'屋台料理'},
+  ],
+  // ── 学校・勉強 ──────────────────────────
+  school: [
+    {w:'study',jp:'勉強する'},{w:'class',jp:'授業'},{w:'teacher',jp:'先生'},
+    {w:'exam',jp:'試験'},{w:'homework',jp:'宿題'},{w:'friend',jp:'友達'},
+    {w:'club',jp:'部活'},{w:'subject',jp:'科目'},{w:'major',jp:'専攻'},
+    {w:'university',jp:'大学'},{w:'campus',jp:'キャンパス'},{w:'lecture',jp:'講義'},
+    {w:'assignment',jp:'課題'},{w:'grade',jp:'成績'},{w:'scholarship',jp:'奨学金'},
+    {w:'graduation',jp:'卒業'},{w:'research',jp:'研究'},{w:'thesis',jp:'卒業論文'},
+    {w:'difficult',jp:'難しい'},{w:'fascinating',jp:'魅力的な'},
+  ],
+  // ── 天気・季節 ──────────────────────────
+  weather: [
+    {w:'sunny',jp:'晴れ'},{w:'rainy',jp:'雨'},{w:'cloudy',jp:'曇り'},
+    {w:'hot',jp:'暑い'},{w:'cold',jp:'寒い'},{w:'humid',jp:'蒸し暑い'},
+    {w:'season',jp:'季節'},{w:'forecast',jp:'予報'},{w:'umbrella',jp:'傘'},
+    {w:'typhoon',jp:'台風'},{w:'snow',jp:'雪'},{w:'spring',jp:'春'},
+    {w:'summer',jp:'夏'},{w:'autumn',jp:'秋'},{w:'winter',jp:'冬'},
+    {w:'cherry blossom',jp:'桜'},{w:'fireworks',jp:'花火'},
+    {w:'temperature',jp:'気温'},{w:'unpredictable',jp:'予測できない'},
+  ],
+  // ── 家族・出身 ──────────────────────────
+  family: [
+    {w:'parents',jp:'両親'},{w:'sibling',jp:'兄弟姉妹'},{w:'brother',jp:'兄・弟'},
+    {w:'sister',jp:'姉・妹'},{w:'grandparents',jp:'祖父母'},
+    {w:'live with',jp:'〜と住む'},{w:'close',jp:'仲がいい'},
+    {w:'tradition',jp:'伝統'},{w:'hometown',jp:'故郷'},{w:'grow up',jp:'育つ'},
+    {w:'move to',jp:'〜に引っ越す'},{w:'neighborhood',jp:'近所'},
+  ],
+  // ── 旅行・場所 ──────────────────────────
+  travel: [
+    {w:'visit',jp:'訪れる'},{w:'trip',jp:'旅行'},{w:'flight',jp:'フライト'},
+    {w:'hotel',jp:'ホテル'},{w:'sightseeing',jp:'観光'},{w:'souvenir',jp:'お土産'},
+    {w:'local',jp:'地元の'},{w:'recommend',jp:'おすすめ'},{w:'bucket list',jp:'やりたいことリスト'},
+    {w:'culture',jp:'文化'},{w:'temple',jp:'お寺'},{w:'shrine',jp:'神社'},
+    {w:'nature',jp:'自然'},{w:'beach',jp:'ビーチ'},{w:'mountain',jp:'山'},
+    {w:'someday',jp:'いつか'},{w:'dream trip',jp:'夢の旅'},
+  ],
+  // ── 仕事・将来 ──────────────────────────
+  work: [
+    {w:'job',jp:'仕事'},{w:'career',jp:'キャリア'},{w:'dream',jp:'夢'},
+    {w:'goal',jp:'目標'},{w:'future',jp:'将来'},{w:'company',jp:'会社'},
+    {w:'part-time',jp:'アルバイト'},{w:'internship',jp:'インターンシップ'},
+    {w:'remote work',jp:'リモートワーク'},{w:'passion',jp:'情熱'},
+    {w:'challenge',jp:'挑戦'},{w:'achieve',jp:'達成する'},
+  ],
+  // ── エンタメ・文化 ──────────────────────
+  entertainment: [
+    {w:'movie',jp:'映画'},{w:'anime',jp:'アニメ'},{w:'drama',jp:'ドラマ'},
+    {w:'concert',jp:'コンサート'},{w:'festival',jp:'フェスティバル'},
+    {w:'recommend',jp:'おすすめ'},{w:'favorite',jp:'お気に入り'},
+    {w:'recently watched',jp:'最近見た'},{w:'sequel',jp:'続編'},
+    {w:'character',jp:'キャラクター'},{w:'plot',jp:'ストーリー'},
+    {w:'K-pop',jp:'K-POP'},{w:'J-pop',jp:'J-POP'},
+  ],
+  // ── スポーツ ──────────────────────────
+  sports: [
+    {w:'team',jp:'チーム'},{w:'match',jp:'試合'},{w:'score',jp:'スコア'},
+    {w:'win',jp:'勝つ'},{w:'lose',jp:'負ける'},{w:'practice',jp:'練習'},
+    {w:'coach',jp:'コーチ'},{w:'tournament',jp:'大会'},{w:'stadium',jp:'スタジアム'},
+    {w:'support',jp:'応援する'},{w:'player',jp:'選手'},{w:'championship',jp:'優勝'},
+  ],
+  // ── ペット・動物 ──────────────────────
+  pets: [
+    {w:'dog',jp:'犬'},{w:'cat',jp:'猫'},{w:'pet',jp:'ペット'},
+    {w:'cute',jp:'かわいい'},{w:'fluffy',jp:'ふわふわ'},{w:'playful',jp:'遊び好きな'},
+    {w:'adopted',jp:'引き取った'},{w:'breed',jp:'犬種・猫種'},
+    {w:'veterinarian',jp:'獣医'},{w:'animal shelter',jp:'動物シェルター'},
+  ],
+  // ── テクノロジー ──────────────────────
+  tech: [
+    {w:'app',jp:'アプリ'},{w:'smartphone',jp:'スマートフォン'},
+    {w:'social media',jp:'SNS'},{w:'internet',jp:'インターネット'},
+    {w:'AI',jp:'AI・人工知能'},{w:'programming',jp:'プログラミング'},
+    {w:'update',jp:'アップデート'},{w:'useful',jp:'便利な'},
+    {w:'game console',jp:'ゲーム機'},{w:'streaming',jp:'ストリーミング'},
+  ],
+};
+
+// ── トピック判定マップ ──────────────────────────
+const TOPIC_MAP = [
+  { topic:'hobby',      regex:/draw|paint|sketch|art|picture|sport|play|music|guitar|piano|read|cook|game|photo|hike|danc|sing|craft|hobby|like|enjoy|interest|passionate|into/ },
+  { topic:'food',       regex:/food|eat|cook|dish|meal|restaurant|delicious|spicy|sweet|sour|sushi|ramen|curry|pizza|pasta|recipe|ingredient|flavor|taste|hungry/ },
+  { topic:'school',     regex:/school|study|class|teacher|exam|homework|university|college|campus|major|grade|research|thesis|lecture|assignment|subject|graduate/ },
+  { topic:'weather',    regex:/weather|rain|sunny|cloud|hot|cold|humid|season|typhoon|snow|spring|summer|autumn|fall|winter|temperature|forecast/ },
+  { topic:'family',     regex:/family|parent|mother|father|brother|sister|sibling|grandp|relative|hometown|grow up|live with|childhood/ },
+  { topic:'travel',     regex:/travel|trip|visit|flight|hotel|vacation|holiday|sightseeing|country|abroad|culture|temple|shrine|beach|mountain|tourist/ },
+  { topic:'work',       regex:/work|job|career|office|company|business|dream|goal|future|internship|part.time|remote|profession/ },
+  { topic:'entertainment', regex:/movie|film|anime|drama|series|concert|festival|music|song|artist|band|watch|listen|recommend|favorite/ },
+  { topic:'sports',     regex:/soccer|football|basketball|tennis|baseball|volleyball|swimming|running|marathon|team|match|score|win|lose|practice|tournament/ },
+  { topic:'pets',       regex:/dog|cat|pet|animal|puppy|kitten|rabbit|hamster|bird|cute|fluffy/ },
+  { topic:'tech',       regex:/phone|smartphone|computer|app|internet|social media|ai|programming|code|software|game|streaming|youtube|tiktok/ },
+];
+
+// テキストからトピックを推定して単語候補を返す
+function getWords(text) {
+  const t = text.toLowerCase();
+  const matched = new Set();
+
+  TOPIC_MAP.forEach(({ topic, regex }) => {
+    if (regex.test(t)) matched.add(topic);
+  });
+
+  // マッチしたトピックの単語 + デフォルト
+  let words = [...WORD_DB.default];
+  matched.forEach(topic => {
+    if (WORD_DB[topic]) words = [...WORD_DB[topic], ...words];
+  });
+
+  // マッチなしでもデフォルト12語を返す
+  const seen = new Set();
+  return words.filter(w => {
+    if (seen.has(w.w)) return false;
+    seen.add(w.w);
+    return true;
+  }).slice(0, 14);
+}
+
+function updateWordBridge(lastText){
+  const words=getWords(lastText);
+  const grid=document.getElementById('wordsGrid');
+  grid.innerHTML='';
+  words.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='word-chip';
+    btn.innerHTML=`${item.w}<span class="jp">${item.jp}</span>`;
+    btn.onclick=()=>toggleWord(btn,item.w);
+    grid.appendChild(btn);
+  });
+  // コンテキスト更新
+  document.getElementById('wbContext').innerHTML=
+    `相手の発言から関連する単語を表示しています。<br>タップして<b>自分の言葉で組み立てて</b>みましょう。`;
+}
+
+// ── 組み立てメモ ──
+function toggleWord(btn,word){
+  if(btn.classList.contains('picked')){
+    btn.classList.remove('picked');
+    composeTokens=composeTokens.filter(t=>t!==word);
+  }else{
+    btn.classList.add('picked');
+    composeTokens.push(word);
+  }
+  renderCompose();
+}
+
+function renderCompose(){
+  const box=document.getElementById('composeBox');
+  box.innerHTML=composeTokens.length
+    ?composeTokens.map((t,i)=>
+        `<span class="compose-token" onclick="removeToken(${i})">${t}</span>`
+      ).join('')
+    :'<span class="compose-hint">単語をタップしてここに追加</span>';
+}
+
+function removeToken(i){
+  const word=composeTokens[i];
+  composeTokens.splice(i,1);
+  // チップの選択状態も解除
+  document.querySelectorAll('.word-chip.picked').forEach(btn=>{
+    if(btn.textContent.startsWith(word))btn.classList.remove('picked');
+  });
+  renderCompose();
+}
+
+function clearCompose(){
+  composeTokens=[];
+  document.querySelectorAll('.word-chip.picked').forEach(b=>b.classList.remove('picked'));
+  renderCompose();
+}
+
+function copyCompose(){
+  if(!composeTokens.length)return;
+  navigator.clipboard.writeText(composeTokens.join(' ')).then(()=>{
+    const b=document.getElementById('cpyBtn');
+    b.textContent='コピーした！';
+    setTimeout(()=>b.textContent='コピー',1500);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  会話終了
+// ══════════════════════════════════════════════
+function endSession(){
+  if(!confirm('会話を終了して分析を見ますか？'))return;
+  clearInterval(timerInt);
+  stopMic();
+  buildDash();
+  toggleDash();
+}
+
+// ══════════════════════════════════════════════
+//  ダッシュボード
+// ══════════════════════════════════════════════
+function toggleDash(){
+  const el=document.getElementById('dashOverlay');
+  el.classList.toggle('show');
+  if(el.classList.contains('show'))buildDash();
+}
+
+function buildDash(){
+  const dur=sessionStart?Math.floor((Date.now()-sessionStart)/1000):0;
+  const durStr=`${Math.floor(dur/60)}分${dur%60}秒`;
+  const myEntries=sessionLog.filter(e=>e.speaker==='me');
+  const otEntries=sessionLog.filter(e=>e.speaker==='other');
+  const myWords=myEntries.flatMap(e=>e.text.toLowerCase().split(/\s+/).filter(w=>w.length>3));
+  const freq={};myWords.forEach(w=>{freq[w]=(freq[w]||0)+1;});
+  const topW=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(e=>e[0]);
+  const tot=myEntries.length+otEntries.length;
+  const myPct=tot?Math.round(myEntries.length/tot*100):50;
+  const otPct=100-myPct;
+  const otherName=sessionLog.find(e=>e.speaker==='other')?.name||'相手';
+
+  document.getElementById('dashContent').innerHTML=`
+    <div class="dl-btns">
+      <button class="dl-btn" onclick="dlCSV()">CSVダウンロード</button>
+    </div>
+    <div class="stats">
+      <div class="stat blue"><div class="stat-v">${myEntries.length}</div><div class="stat-l">${myName}の発言回数</div></div>
+      <div class="stat green"><div class="stat-v">${otEntries.length}</div><div class="stat-l">${otherName}の発言回数</div></div>
+      <div class="stat"><div class="stat-v">${myWords.length}</div><div class="stat-l">${myName}の総単語数</div></div>
+      <div class="stat"><div class="stat-v">${durStr}</div><div class="stat-l">会話時間</div></div>
+    </div>
+    <div class="dash-row">
+      <div class="d-card">
+        <div class="d-card-t">発言量の比較</div>
+        <div class="bar-row">
+          <div class="bar-nm blue">${myName}</div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:${myPct}%"></div></div>
+          <div class="bar-v">${myEntries.length}回</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-nm green">${otherName}</div>
+          <div class="bar-track"><div class="bar-fill green" style="width:${otPct}%"></div></div>
+          <div class="bar-v">${otEntries.length}回</div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="d-card-t">${myName}がよく使った単語</div>
+        <div class="wchips">${topW.length
+          ?topW.map(w=>`<span class="wc">${w}</span>`).join('')
+          :'<span style="font-size:12px;color:var(--ink3)">データなし</span>'}</div>
+      </div>
+    </div>
+    <table class="log-tbl">
+      <thead><tr><th>時刻</th><th>話者</th><th>発言（英語）</th></tr></thead>
+      <tbody>${sessionLog.map(e=>`
+        <tr>
+          <td>${e.time||'--'}</td>
+          <td class="${e.speaker==='me'?'s-me':'s-other'}">${e.name}</td>
+          <td>${e.text}</td>
+        </tr>`).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--ink3)">記録なし</td></tr>'}
+      </tbody>
+    </table>`;
+}
+
+function dlCSV(){
+  if(!sessionLog.length){alert('記録がありません');return;}
+  const rows=sessionLog.map(e=>`"${e.time||''}","${e.name}","${e.text.replace(/"/g,'""')}"`);
+  const csv='\uFEFF時刻,話者,発言（英語）\n'+rows.join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`speakease_${roomCode}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── 初期化 ────────────────────────────────────
+</script>
+</body>
+</html>
