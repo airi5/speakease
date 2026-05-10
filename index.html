@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakEase — 完全無料版</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- トップバー -->
+  <div class="topbar">
+    <div class="logo">Speak<span>Ease</span></div>
+    <div style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ecfdf5;border:1px solid #a7f3d0;color:#059669;letter-spacing:.05em">完全無料</div>
+    <div class="room-pill">ルーム：<b id="roomDisp">---</b></div>
+    <div class="rec-pill off" id="recPill">
+      <div class="rec-dot"></div><span id="recTxt">待機中</span>
+    </div>
+    <div class="timer-disp" id="timerDisp">00:00</div>
+    <div class="tsep"></div>
+    <button class="dash-btn" onclick="toggleDash()">分析</button>
+  </div>
+
+  <!-- 参加画面 -->
+  <div class="join-wrap" id="joinWrap">
+    <div class="join-card">
+      <div class="join-title">SpeakEase</div>
+      <div class="join-sub">名前と母国語を設定して参加してください。<br>「訳を見る」を押したとき、あなたの言語で表示されます。</div>
+      <div class="f">
+        <label>あなたの名前</label>
+        <input type="text" id="nameIn" placeholder="例：田中" value="田中">
+      </div>
+      <div class="f">
+        <label>母国語（訳を見るときの言語）</label>
+        <select id="langIn">
+          <optgroup label="アジア">
+            <option value="ja">日本語</option>
+            <option value="ko">한국어（韓国語）</option>
+            <option value="zh">中文（中国語）</option>
+            <option value="ar">العربية（アラビア語）</option>
+            <option value="hi">हिन्दी（ヒンディー語）</option>
+            <option value="th">ภาษาไทย（タイ語）</option>
+            <option value="vi">Tiếng Việt（ベトナム語）</option>
+            <option value="id">Bahasa Indonesia（インドネシア語）</option>
+            <option value="ms">Bahasa Melayu（マレー語）</option>
+          </optgroup>
+          <optgroup label="ヨーロッパ">
+            <option value="es">Español（スペイン語）</option>
+            <option value="pt">Português（ポルトガル語）</option>
+            <option value="fr">Français（フランス語）</option>
+            <option value="de">Deutsch（ドイツ語）</option>
+            <option value="it">Italiano（イタリア語）</option>
+            <option value="nl">Nederlands（オランダ語）</option>
+            <option value="ru">Русский（ロシア語）</option>
+            <option value="uk">Українська（ウクライナ語）</option>
+            <option value="pl">Polski（ポーランド語）</option>
+            <option value="tr">Türkçe（トルコ語）</option>
+            <option value="el">Ελληνικά（ギリシャ語）</option>
+            <option value="sv">Svenska（スウェーデン語）</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="f">
+        <label>ルームコード（空白で新規作成、フルコードで既存セッションに参加）</label>
+        <input type="text" id="roomIn" placeholder="例：ABC-123--K7M9（空白で新規）">
+      </div>
+      <button class="join-btn" onclick="join()">参加する</button>
+      <div class="join-note">※ 参加後に表示されるフルコード（例：ABC-123--K7M9）を相手に共有すると<br>同じセッションにリアルタイムで繋がります</div>
+    </div>
+  </div>
+
+  <!-- 会議画面（参加後） -->
+  <div class="meeting" id="meetingWrap" style="display:none">
+
+    <!-- ログパネル -->
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="log-header-title">リアルタイム議事録</div>
+        <div class="count-badge me" id="cntMe">あなた 0回</div>
+        <div class="count-badge other" id="cntOther">他の参加者 0回</div>
+      </div>
+      <div class="log-area" id="logArea">
+        <div class="log-empty" id="logEmpty">
+          <div class="log-empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="log-empty-text">話し始めると<br>ここに表示されます</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="mic-btn idle" id="micBtn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+          <div class="wf h" id="wf">
+            <div class="wfb"></div><div class="wfb"></div><div class="wfb"></div>
+            <div class="wfb"></div><div class="wfb"></div>
+          </div>
+          <span id="micLbl">話す</span>
+        </button>
+        <div class="ctrl-hint" id="ctrlHint">ボタンを押している間、あなたの声を認識します（Spaceキーでも）</div>
+        <button class="end-btn" onclick="endSession()">終了</button>
+      </div>
+    </div>
+
+    <!-- サイドバー -->
+    <div class="sidebar">
+      <div class="side-sec">
+        <div class="side-lbl">参加者</div>
+        <div id="pList"></div>
+      </div>
+      <div class="side-sec">
+        <div class="side-lbl">訳の言語</div>
+        <div class="lang-row">
+          <label>「訳を見る」の言語</label>
+          <select id="langSw" onchange="myLang=this.value">
+            <optgroup label="アジア">
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="zh">中文</option>
+              <option value="ar">العربية</option>
+              <option value="hi">हिन्दी</option>
+              <option value="th">ภาษาไทย</option>
+              <option value="vi">Tiếng Việt</option>
+              <option value="id">Bahasa Indonesia</option>
+              <option value="ms">Bahasa Melayu</option>
+            </optgroup>
+            <optgroup label="ヨーロッパ">
+              <option value="es">Español</option>
+              <option value="pt">Português</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="it">Italiano</option>
+              <option value="nl">Nederlands</option>
+              <option value="ru">Русский</option>
+              <option value="uk">Українська</option>
+              <option value="pl">Polski</option>
+              <option value="tr">Türkçe</option>
+              <option value="el">Ελληνικά</option>
+              <option value="sv">Svenska</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="side-timer" id="sideTimer">00:00</div>
+
+      <!-- WordBridgeトリガー -->
+      <div class="wb-trigger">
+        <button class="wb-open-btn" id="wbBtn" onclick="toggleDrawer()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          単語を探す（WordBridge）
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px">
+            <polyline points="18 15 12 9 6 15"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- WordBridgeドロワー -->
+      <div class="wb-drawer" id="wbDrawer">
+        <div class="wb-inner">
+          <div class="wb-lbl">単語・表現の候補</div>
+          <div class="words-grid" id="wordsGrid">
+            <div class="wb-empty">発言が認識されると関連する単語が出てきます</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ダッシュボードオーバーレイ -->
+  <div class="dash-overlay" id="dashOverlay">
+    <div class="dash-head">
+      <div class="dash-title">会話分析レポート</div>
+      <button class="dash-close" onclick="toggleDash()">閉じる</button>
+    </div>
+    <div id="dashContent"></div>
+  </div>
+
+</div>
+
+<!-- JS読み込み順: config → state → db → speech → wordbridge → ui → dashboard → app -->
+<script src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/db.js"></script>
+<script src="js/speech.js"></script>
+<script src="js/wordbridge.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
