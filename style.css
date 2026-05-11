@@ -288,3 +288,12 @@ html,body{height:100%;background:var(--bg);color:var(--ink);
   .dash-row{grid-template-columns:1fr}
   .log-tbl th,.log-tbl td{padding:5px 7px;font-size:11px}
 }
+
+/* ── 認証タブ ── */
+.auth-tab{
+  flex:1;padding:8px;border:none;background:transparent;
+  font-size:14px;font-weight:700;color:var(--ink3);cursor:pointer;
+  font-family:'Nunito',sans-serif;border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+}
+.auth-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
