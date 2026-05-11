@@ -9,11 +9,12 @@ async function signUp(email, password, nickname, schoolType, schoolName, lang) {
     body: JSON.stringify({ email, password })
   });
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || data.msg || 'Registration failed');
+  console.log('signup response:', JSON.stringify(data));
+  if (data.error) throw new Error(data.error.message || data.msg || JSON.stringify(data));
 
   const userId = data.user?.id;
   const token  = data.access_token;
-  if (!userId || !token) throw new Error('Registration failed');
+  if (!userId || !token) throw new Error(JSON.stringify(data));
 
   await fetch(`${SB_URL}/rest/v1/profiles`, {
     method: 'POST',
@@ -31,6 +32,7 @@ async function signIn(email, password) {
     body: JSON.stringify({ email, password })
   });
   const data = await res.json();
+  console.log('signin response:', JSON.stringify(data));
   if (data.error) throw new Error(data.error.message || data.msg || 'Login failed');
 
   const userId = data.user?.id;
