@@ -23,91 +23,8 @@
     <button class="dash-btn" onclick="toggleDash()">分析</button>
   </div>
 
-  <!-- 認証画面 -->
-  <div class="join-wrap" id="authWrap">
-    <div class="join-card" style="width:380px">
-      <div class="join-title">SpeakEase</div>
-      <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--border)">
-        <button class="auth-tab active" id="tabLogin" onclick="showTab('login')">Sign In</button>
-        <button class="auth-tab" id="tabSignup" onclick="showTab('signup')">Sign Up</button>
-      </div>
-
-      <!-- ログイン -->
-      <div id="loginTab">
-        <div class="f">
-          <label>Email</label>
-          <input type="email" id="loginEmail" placeholder="your@email.com">
-        </div>
-        <div class="f">
-          <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="Password">
-        </div>
-        <div style="font-size:12px;color:var(--rose);margin-bottom:10px" id="loginErr"></div>
-        <button class="join-btn" id="loginBtn" onclick="handleLogin()">Sign In</button>
-      </div>
-
-      <!-- 新規登録 -->
-      <div id="signupTab" style="display:none">
-        <div class="f">
-          <label>Nickname</label>
-          <input type="text" id="regNickname" placeholder="e.g. Airi">
-        </div>
-        <div class="f">
-          <label>School Type</label>
-          <select id="regSchoolType">
-            <option value="University">University</option>
-            <option value="High School">High School</option>
-            <option value="Junior High School">Junior High School</option>
-            <option value="Elementary School">Elementary School</option>
-            <option value="Others">Others</option>
-          </select>
-        </div>
-        <div class="f">
-          <label>School Name</label>
-          <input type="text" id="regSchool" placeholder="e.g. Chuo">
-        </div>
-        <div class="f">
-          <label>Language</label>
-          <select id="regLang">
-            <option value="en">English</option>
-            <optgroup label="Asia">
-              <option value="ja">Japanese</option>
-              <option value="ko">Korean</option>
-              <option value="zh">Chinese</option>
-              <option value="hi">Hindi</option>
-              <option value="th">Thai</option>
-              <option value="vi">Vietnamese</option>
-              <option value="id">Indonesian</option>
-            </optgroup>
-            <optgroup label="Europe">
-              <option value="es">Spanish</option>
-              <option value="pt">Portuguese</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="ru">Russian</option>
-              <option value="tr">Turkish</option>
-              <option value="sv">Swedish</option>
-            </optgroup>
-          </select>
-        </div>
-        <div class="f">
-          <label>Email</label>
-          <input type="email" id="regEmail" placeholder="your@email.com">
-        </div>
-        <div class="f">
-          <label>Password (min 6 characters)</label>
-          <input type="password" id="regPassword" placeholder="Password">
-        </div>
-        <div style="font-size:12px;color:var(--rose);margin-bottom:10px" id="regErr"></div>
-        <button class="join-btn" id="regBtn" onclick="handleSignUp()">Create Account</button>
-      </div>
-
-    </div>
-  </div>
-
   <!-- 参加画面 -->
-  <div class="join-wrap" id="joinWrap" style="display:none">
+  <div class="join-wrap" id="joinWrap">
     <div class="join-card">
       <div class="join-title">SpeakEase</div>
       <div class="join-sub">名前と母国語を設定して参加してください。<br>「訳を見る」を押したとき、あなたの言語で表示されます。</div>
@@ -118,6 +35,7 @@
       <div class="f">
         <label>母国語（訳を見るときの言語）</label>
         <select id="langIn">
+          <option value="en">English</option>
           <optgroup label="アジア">
             <option value="ja">日本語</option>
             <option value="ko">한국어（韓国語）</option>
@@ -188,7 +106,7 @@
           </div>
           <span id="micLbl">話す</span>
         </button>
-        <div class="ctrl-hint" id="ctrlHint">ボタンを押している間、あなたの声を認識します（Spaceキーでも）</div>
+        <div class="ctrl-hint" id="ctrlHint">認識中... 話してください</div>
         <button class="end-btn" onclick="endSession()">終了</button>
       </div>
     </div>
@@ -204,6 +122,7 @@
         <div class="lang-row">
           <label>「訳を見る」の言語</label>
           <select id="langSw" onchange="myLang=this.value">
+            <option value="en">English</option>
             <optgroup label="アジア">
               <option value="ja">日本語</option>
               <option value="ko">한국어</option>
@@ -270,11 +189,10 @@
 
 </div>
 
-<!-- JS読み込み順: config → state → db → auth → speech → wordbridge → ui → dashboard → app -->
+<!-- JS読み込み順: config → state → db → speech → wordbridge → ui → dashboard → app -->
 <script src="config.js"></script>
 <script src="state.js"></script>
 <script src="db.js"></script>
-<script src="auth.js"></script>
 <script src="speech.js"></script>
 <script src="wordbridge.js"></script>
 <script src="ui.js"></script>
