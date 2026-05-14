@@ -1,6 +1,4 @@
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-let silenceTimer = null;
-const SILENCE_THRESHOLD = 1500;
 
 function initSR(){
   if(!SR){
@@ -9,19 +7,17 @@ function initSR(){
     document.getElementById('micBtn').style.opacity='.4';
     return;
   }
-  // 参加したら自動でマイクON
-  startMic();
+  // デフォルトはOFF
+  document.getElementById('ctrlHint').textContent='ボタンを押している間、声を認識します（Spaceキーでも）';
 }
 
 function createRecognition(){
   if(!SR) return null;
   const rec = new SR();
   rec.lang='en-US';
-  rec.continuous=true;
+  rec.continuous=false;
   rec.interimResults=true;
   rec.maxAlternatives=1;
-
-  let lastInterim='';
 
   rec.onresult=e=>{
     let final='', interim='';
@@ -35,62 +31,26 @@ function createRecognition(){
         interim+=t;
       }
     }
-
     if(interim){
-      lastInterim=interim;
       document.getElementById('ctrlHint').textContent=`「${interim}」`;
-      clearTimeout(silenceTimer);
-      silenceTimer=setTimeout(()=>{
-        if(lastInterim.trim()&&isRec){
-          addMyEntry(lastInterim.trim());
-          lastInterim='';
-          // 止めずにそのまま次の認識を続ける
-          document.getElementById('ctrlHint').textContent='認識中... 話してください';
-        }
-      }, SILENCE_THRESHOLD);
     }
-
     if(final.trim()){
-      clearTimeout(silenceTimer);
-      lastInterim='';
       addMyEntry(final.trim());
-      // 止めずにそのまま次の認識を続ける
-      document.getElementById('ctrlHint').textContent='認識中... 話してください';
+      stopMic();
     }
   };
 
   rec.onerror=e=>{
     console.error('SR error:',e.error);
-    if(e.error==='no-speech'){
-      // 無音エラーは無視してそのまま継続
-      return;
-    }
-    if(e.error==='aborted') return;
-    // その他のエラーは3秒後に再スタート
-    setTimeout(()=>{ if(isRec) restartMic(); }, 3000);
+    if(e.error==='no-speech'||e.error==='aborted') return;
+    stopMic();
   };
 
   rec.onend=()=>{
-    // まだ録音中なら自動で再スタート
-    if(isRec){
-      setTimeout(()=>{
-        try{ recognition.start(); }catch(e){}
-      }, 300);
-    }
+    if(isRec) stopMic();
   };
 
   return rec;
-}
-
-// 認識を再スタート（発言確定後・エラー後に使用）
-function restartMic(){
-  if(!recognition||!isRec) return;
-  try{ recognition.stop(); }catch(e){}
-  setTimeout(()=>{
-    if(!isRec) return;
-    recognition=createRecognition();
-    try{ recognition.start(); }catch(e){}
-  }, 300);
 }
 
 function toggleMic(){isRec?stopMic():startMic();}
@@ -106,32 +66,34 @@ function startMic(){
   isRec=true;
   recognition.start();
   document.getElementById('micBtn').className='mic-btn rec';
-  document.getElementById('micLbl').textContent='ON';
+  document.getElementById('micLbl').textContent='認識中...';
   document.getElementById('wf').classList.remove('h');
   setRec(true);
-  document.getElementById('ctrlHint').textContent='認識中... 話してください';
+  document.getElementById('ctrlHint').textContent='話してください...';
 }
 
 function stopMic(){
-  clearTimeout(silenceTimer);
   isRec=false;
   if(recognition){
     try{recognition.stop();}catch(e){}
     recognition=null;
   }
   document.getElementById('micBtn').className='mic-btn idle';
-  document.getElementById('micLbl').textContent='OFF';
+  document.getElementById('micLbl').textContent='話す';
   document.getElementById('wf').classList.add('h');
   setRec(false);
-  document.getElementById('ctrlHint').textContent='マイクがOFFです。ボタンを押してONにしてください';
+  document.getElementById('ctrlHint').textContent='ボタンを押している間、声を認識します（Spaceキーでも）';
 }
 
 function setRec(on){
   const p=document.getElementById('recPill');
   p.className='rec-pill'+(on?' on':' off');
-  document.getElementById('recTxt').textContent=on?'認識中':'停止中';
+  document.getElementById('recTxt').textContent=on?'認識中':'待機中';
 }
 
 document.addEventListener('keydown',e=>{
   if(e.code==='Space'&&e.target===document.body){e.preventDefault();if(!isRec)startMic();}
+});
+document.addEventListener('keyup',e=>{
+  if(e.code==='Space'&&isRec)stopMic();
 });
