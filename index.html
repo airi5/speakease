@@ -23,7 +23,7 @@
     <button class="dash-btn" onclick="toggleDash()">分析</button>
   </div>
 
-  <!-- 参加画面 -->
+ <!-- 参加画面 -->
   <div class="join-wrap" id="joinWrap">
     <div class="join-card">
       <div class="join-title">SpeakEase</div>
@@ -31,6 +31,10 @@
       <div class="f">
         <label>あなたの名前</label>
         <input type="text" id="nameIn" placeholder="例：田中">
+      </div>
+      <div class="f">
+        <label>個人ID（事前に送付されたIDを入力してください）</label>
+        <input type="text" id="personIdIn" placeholder="例：P001">
       </div>
       <div class="f">
         <label>母国語（訳を見るときの言語）</label>
@@ -64,11 +68,11 @@
         </select>
       </div>
       <div class="f">
-        <label>ルームコード（空白で新規作成、フルコードで既存セッションに参加）</label>
-        <input type="text" id="roomIn" placeholder="例：ABC-123--K7M9（空白で新規）">
+        <label>ルームコード（研究者から送付されたコードを入力）</label>
+        <input type="text" id="roomIn" placeholder="例：AX-G01-R1">
       </div>
       <button class="join-btn" onclick="join()">参加する</button>
-      <div class="join-note">※ 参加後に表示されるフルコード（例：ABC-123--K7M9）を相手に共有すると<br>同じセッションにリアルタイムで繋がります</div>
+      <div class="join-note">※ 個人IDとルームコードは事前に研究者から送付されます</div>
     </div>
   </div>
 
