@@ -89,8 +89,6 @@ function addMyEntry(text){
     timestamp:Date.now()};
   sessionLog.push({...entry,speaker:'me'});
   cntMe++;
-  document.getElementById('cntMe').textContent=`あなた ${cntMe}回`;
-  document.getElementById('myCnt').textContent=`${cntMe}回`;
   renderEntry(entry,'me');
   publish(entry);
   if(drawerOpen) updateWordBridge(text);
