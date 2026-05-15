@@ -109,7 +109,7 @@ function startMic(){
   document.getElementById('micLbl').textContent='ON';
   document.getElementById('wf').classList.remove('h');
   setRec(true);
-  document.getElementById('ctrlHint').textContent='認識中... 話してください';
+  document.getElementById('ctrlHint').textContent=t('listening');
 }
 
 function stopMic(){
@@ -123,7 +123,7 @@ function stopMic(){
   document.getElementById('micLbl').textContent='OFF';
   document.getElementById('wf').classList.add('h');
   setRec(false);
-  document.getElementById('ctrlHint').textContent='マイクがOFFです。ボタンを押してONにしてください';
+  document.getElementById('ctrlHint').textContent=t('speakHint');
 }
 
 function setRec(on){
