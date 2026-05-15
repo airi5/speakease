@@ -1,13 +1,17 @@
 // ── 参加 ──────────────────────────────────────
 async function join(){
   const name=document.getElementById('nameIn').value.trim();
+  const personId=document.getElementById('personIdIn').value.trim();
   const lang=document.getElementById('langIn').value;
   const room=document.getElementById('roomIn').value.trim();
   if(!name){alert('Please enter your name.');return;}
+  if(!personId){alert('Please enter your personal ID.');return;}
   if(!room){alert('Please enter a room code.');return;}
 
+  myName=name;
+  myPersonId=personId;
+  myLang=lang;
   roomCode=room;
-  myName=name; myLang=lang;
   sessionStart=Date.now();
   document.getElementById('roomDisp').textContent=roomCode;
   document.getElementById('langSw').value=myLang;
