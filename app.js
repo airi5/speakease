@@ -25,6 +25,9 @@ async function join(){
 
   // UI言語を選択した言語に更新
   updateUILang();
+
+  // WordBridgeをデフォルトで開く
+  toggleDrawer();
 }
 
 // ── タイマー ──────────────────────────────────
