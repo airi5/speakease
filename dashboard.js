@@ -181,11 +181,29 @@ function dlCSV(){
     `"${e.time||''}","${e.name}","${e.speaker}","${e.text.replace(/"/g,'""')}"`
   );
   const logCSV='\uFEFF時刻,話者名,役割,発言（英語）\n'+logRows.join('\n');
-  const silRows=silenceLogs.map((s,i)=>`${i+1},${s.duration_sec},${s.after_speaker}`);
-  const silCSV='\n\n沈黙ログ\n#,沈黙時間（秒）,直前の話者\n'+silRows.join('\n');
+  // グループ全体の沈黙時間を計算
+  // 全発言を時系列に並べてタイムスタンプの差分を計算
+  const allEntries=[...sessionLog].sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+  const groupSilences=[];
+  for(let i=1;i<allEntries.length;i++){
+    const gap=Math.round(((allEntries[i].timestamp||0)-(allEntries[i-1].timestamp||0))/1000);
+    if(gap>=3){
+      groupSilences.push({
+        duration_sec: gap,
+        after_speaker: allEntries[i-1].name,
+        before_speaker: allEntries[i].name,
+      });
+    }
+  }
+  const avgGroupSil=groupSilences.length
+    ?Math.round(groupSilences.reduce((a,s)=>a+s.duration_sec,0)/groupSilences.length):0;
+
+  const silRows=groupSilences.map((s,i)=>
+    `${i+1},${s.duration_sec},${s.after_speaker},${s.before_speaker}`
+  );
+  const silCSV='\n\nグループ沈黙ログ\n#,沈黙時間（秒）,直前の話者,直後の話者\n'+silRows.join('\n');
   const dur=sessionStart?Math.round((Date.now()-sessionStart)/1000):0;
-  const avgSil=silenceLogs.length
-    ?Math.round(silenceLogs.reduce((a,s)=>a+s.duration_sec,0)/silenceLogs.length):0;
+  const avgSil=avgGroupSil;
   const summaryCSV=`\n\nサマリー\n項目,値\n`+
     `個人ID,${myPersonId}\nニックネーム,${myName}\nルームコード,${roomCode}\n`+
     `学校ペア,${schoolPair}\nグループ,${groupId}\n実施回,${round}\nツール使用,${toolUsed}\n`+
