@@ -127,26 +127,16 @@ window.addEventListener('beforeunload',()=>{
 
 // ── UI言語更新 ────────────────────────────────
 function updateUILang(){
-  // 議事録タイトル
-  const logTitle=document.getElementById('logHeaderTitle');
-  if(logTitle) logTitle.textContent=t('logTitle');
-  // カウントバッジ
-  document.getElementById('cntMe').textContent=`${t('you').replace(/[（()）]/g,'')} ${cntMe}${t('times')}`;
-  document.getElementById('cntOther').textContent=`${t('otherCount')} 0${t('times')}`;
-  // コントロールヒント
-  document.getElementById('ctrlHint').textContent=t('speakHint');
-  // 終了ボタン
-  const endBtn=document.getElementById('endBtn');
-  if(endBtn) endBtn.textContent=t('endBtn');
-  // WordBridgeボタン
-  const wbBtn=document.getElementById('wbBtnLabel');
-  if(wbBtn) wbBtn.textContent=t('wordBridge');
-  // WordBridgeヒント
-  const wbEmpty=document.getElementById('wbEmpty');
-  if(wbEmpty) wbEmpty.textContent=t('wordHint');
-  // 訳の言語ラベル
-  const langLabel=document.getElementById('langLabel');
-  if(langLabel) langLabel.textContent=t('langLabel');
-  // 待機中ステータス
-  document.getElementById('recTxt').textContent=t('waiting');
+  document.getElementById('logHeaderTitle').textContent = t('logTitle');
+  document.getElementById('cntMe').textContent = `${t('you').replace(/[（()）]/g,'')} 0${t('times')}`;
+  document.getElementById('cntOther').textContent = `${t('otherCount')} 0${t('times')}`;
+  document.getElementById('ctrlHint').textContent = t('speakHint');
+  document.getElementById('endBtn').textContent = t('endBtn');
+  document.getElementById('wbBtnLabel').textContent = t('wordBridge');
+  document.getElementById('wbEmpty').textContent = t('wordHint');
+  document.getElementById('langLabel').textContent = t('langLabel');
+  document.getElementById('participantsLabel').textContent = t('participants');
+  document.getElementById('wbLbl').textContent = t('wordBridge');
+  document.getElementById('recTxt').textContent = t('waiting');
+  document.getElementById('dashBtn').textContent = 'Analysis';
 }
