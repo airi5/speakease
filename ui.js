@@ -69,7 +69,6 @@ function updateParticipantList(){
   const pList=document.getElementById('pList');
   const totalOther=Object.values(otherCounts).reduce((a,b)=>a+b,0);
   cntOther=totalOther;
-  document.getElementById('cntOther').textContent=`${t('otherCount')} ${totalOther}${t('times')}`;
 
   pList.innerHTML='';
 
