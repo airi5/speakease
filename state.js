@@ -1,5 +1,5 @@
 // 参加者情報
-let myName = '', myLang = 'en', roomCode = '';
+let myName = '', myLang = 'en', roomCode = '', myPersonId = '';
 // 音声認識
 let recognition = null, isRec = false;
 // セッションログ・カウント
