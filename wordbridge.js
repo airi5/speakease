@@ -227,6 +227,36 @@ const WORD_DB = {
   ],
 };
 
+// 話題提案カードのトピック一覧
+const TOPIC_CARDS = [
+  { en:'Hobbies & Interests', icon:'🎨' },
+  { en:'Food & Cooking',      icon:'🍜' },
+  { en:'School & Study',      icon:'📚' },
+  { en:'Sports',              icon:'⚽' },
+  { en:'Music & Movies',      icon:'🎵' },
+  { en:'Travel & Places',     icon:'✈️' },
+  { en:'Family & Home',       icon:'🏠' },
+  { en:'Future & Dreams',     icon:'🌟' },
+  { en:'Technology',          icon:'💻' },
+  { en:'Pets & Animals',      icon:'🐾' },
+  { en:'Culture & Society',   icon:'🌍' },
+  { en:'Health & Lifestyle',  icon:'💪' },
+  { en:'Weather & Seasons',   icon:'🌸' },
+  { en:'Feelings & Opinions', icon:'💬' },
+];
+
+let currentTopicIdx = -1;
+
+function shuffleTopic(){
+  let newIdx;
+  do {
+    newIdx = Math.floor(Math.random() * TOPIC_CARDS.length);
+  } while(newIdx === currentTopicIdx && TOPIC_CARDS.length > 1);
+  currentTopicIdx = newIdx;
+  const card = TOPIC_CARDS[currentTopicIdx];
+  document.getElementById('topicCard').textContent = `${card.icon} ${card.en}`;
+}
+
 // 発言テキストからトピックを判定するマップ
 const TOPIC_MAP = [
   { topic:'intro',         regex:/hello|hi|meet|name|where.*from|from|live|introduce|years old|speak|english|repeat|understand|mean/ },
@@ -247,20 +277,16 @@ const TOPIC_MAP = [
   { topic:'culture',       regex:/tradition|custom|festival|holiday|religion|belief|language|dialect|accent|multicultural|diversity|equality|stereotype|prejudice|global|international|exchange|respect|peace|environment/ },
 ];
 
-// テキストからトピックを推定して単語候補を返す（最大14語）
 function getWords(text) {
   const t = text.toLowerCase();
   const matched = new Set();
-
   TOPIC_MAP.forEach(({ topic, regex }) => {
     if (regex.test(t)) matched.add(topic);
   });
-
   let words = [...WORD_DB.default];
   matched.forEach(topic => {
     if (WORD_DB[topic]) words = [...WORD_DB[topic], ...words];
   });
-
   const seen = new Set();
   return words.filter(w => {
     if (seen.has(w.w)) return false;
@@ -269,39 +295,75 @@ function getWords(text) {
   }).slice(0, 18);
 }
 
-function updateWordBridge(lastText){
-  const words=getWords(lastText);
-  const grid=document.getElementById('wordsGrid');
-  grid.innerHTML='';
-  words.forEach(item=>{
-    const div=document.createElement('div');
-    div.className='word-chip';
-    const enSpan=document.createElement('span');
-    enSpan.className='en';
-    enSpan.textContent=item.w;
-    const nativeSpan=document.createElement('span');
-    nativeSpan.className='native';
-    nativeSpan.textContent=item.jp;
+// 翻訳キャッシュ
+const transCache = {};
+
+async function translateWord(word, targetLang){
+  if(targetLang === 'en') return null;
+  const key = `${targetLang}:${word}`;
+  if(transCache[key]) return transCache[key];
+  try{
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en-US|${MYMEMORY_LANG[targetLang]||'ja-JP'}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const result = data?.responseData?.translatedText || word;
+    transCache[key] = result;
+    return result;
+  }catch(e){
+    return word;
+  }
+}
+
+async function updateWordBridge(lastText){
+  const words = getWords(lastText);
+  const grid = document.getElementById('wordsGrid');
+  grid.innerHTML = '';
+
+  words.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'word-chip';
+    div.id = `chip-${item.w.replace(/[\s'?!,]/g,'_')}`;
+    const enSpan = document.createElement('span');
+    enSpan.className = 'en';
+    enSpan.textContent = item.w;
     div.appendChild(enSpan);
-    div.appendChild(nativeSpan);
+    if(myLang !== 'en'){
+      const nativeSpan = document.createElement('span');
+      nativeSpan.className = 'native';
+      nativeSpan.textContent = myLang === 'ja' ? item.jp : '...';
+      div.appendChild(nativeSpan);
+    }
     grid.appendChild(div);
   });
+
+  // 日本語以外・英語以外の場合はAPIで翻訳して更新
+  if(myLang !== 'ja' && myLang !== 'en'){
+    words.forEach(async item => {
+      const translated = await translateWord(item.w, myLang);
+      const chipId = `chip-${item.w.replace(/[\s'?!,]/g,'_')}`;
+      const chip = document.getElementById(chipId);
+      if(chip){
+        const native = chip.querySelector('.native');
+        if(native) native.textContent = translated;
+      }
+    });
+  }
 }
 
 function toggleDrawer(){
-  drawerOpen=!drawerOpen;
-  document.getElementById('wbDrawer').className='wb-drawer'+(drawerOpen?' open':'');
-  document.getElementById('wbBtn').className='wb-open-btn'+(drawerOpen?' active':'');
+  drawerOpen = !drawerOpen;
+  document.getElementById('wbDrawer').className = 'wb-drawer' + (drawerOpen ? ' open' : '');
+  document.getElementById('wbBtn').className = 'wb-open-btn' + (drawerOpen ? ' active' : '');
 
   if(drawerOpen){
     wbOpenCount++;
-    wbOpenTime=Date.now();
-    const grid=document.getElementById('wordsGrid');
+    wbOpenTime = Date.now();
+    const grid = document.getElementById('wordsGrid');
     if(!grid.querySelector('.word-chip')) updateWordBridge('');
   } else {
-    if(wbOpenTime!==null){
-      wbTotalSec+=Math.round((Date.now()-wbOpenTime)/1000);
-      wbOpenTime=null;
+    if(wbOpenTime !== null){
+      wbTotalSec += Math.round((Date.now() - wbOpenTime) / 1000);
+      wbOpenTime = null;
     }
   }
 }

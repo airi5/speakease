@@ -25,6 +25,9 @@ async function join(){
 
   // UI言語を選択した言語に更新
   updateUILang();
+
+  // WordBridgeをデフォルトで開く
+  toggleDrawer();
 }
 
 // ── タイマー ──────────────────────────────────
@@ -89,8 +92,6 @@ function addMyEntry(text){
     timestamp:Date.now()};
   sessionLog.push({...entry,speaker:'me'});
   cntMe++;
-  document.getElementById('cntMe').textContent=`あなた ${cntMe}回`;
-  document.getElementById('myCnt').textContent=`${cntMe}回`;
   renderEntry(entry,'me');
   publish(entry);
   if(drawerOpen) updateWordBridge(text);
