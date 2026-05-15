@@ -73,34 +73,47 @@ function buildDash(){
 function dlCSV(){
   if(!sessionLog.length){alert('記録がありません');return;}
 
+  // ルームコードを分解（例：AX-G01-R1 → 学校ペア:AX, グループ:G01, 実施回:R1）
+  const parts=roomCode.split('-');
+  const schoolPair=parts[0]||'';
+  const groupId=parts[1]||'';
+  const round=parts[2]||'';
+  const toolUsed=round==='R1'?'あり':'なし';
+
   const logRows=sessionLog.map(e=>
     `"${e.time||''}","${e.name}","${e.speaker}","${e.text.replace(/"/g,'""')}"`
   );
-  const logCSV='﻿時刻,話者名,役割,発言（英語）\n'+logRows.join('\n');
+  const logCSV='\uFEFF時刻,話者名,役割,発言（英語）\n'+logRows.join('\n');
 
-  const silRows=silenceLogs.map((s,i)=>
-    `${i+1},${s.duration_sec},${s.after_speaker}`
-  );
+  const silRows=silenceLogs.map((s,i)=>`${i+1},${s.duration_sec},${s.after_speaker}`);
   const silCSV='\n\n沈黙ログ\n#,沈黙時間（秒）,直前の話者\n'+silRows.join('\n');
 
   const dur=sessionStart?Math.round((Date.now()-sessionStart)/1000):0;
   const avgSil=silenceLogs.length
-    ? Math.round(silenceLogs.reduce((a,s)=>a+s.duration_sec,0)/silenceLogs.length)
-    : 0;
+    ?Math.round(silenceLogs.reduce((a,s)=>a+s.duration_sec,0)/silenceLogs.length):0;
+
   const summaryCSV=`\n\nサマリー\n項目,値\n`+
-    `自分の発言回数,${cntMe}\n`+
+    `個人ID,${myPersonId}\n`+
+    `ニックネーム,${myName}\n`+
+    `ルームコード,${roomCode}\n`+
+    `学校ペア,${schoolPair}\n`+
+    `グループ,${groupId}\n`+
+    `実施回,${round}\n`+
+    `ツール使用,${toolUsed}\n`+
+    `発言回数,${cntMe}\n`+
     `相手の発言回数,${cntOther}\n`+
-    `自分のtoken数（総単語数）,${myTokens.length}\n`+
-    `自分のtype数（異なり語数）,${myTypes.size}\n`+
-    `沈黙回数（3秒以上）,${silenceLogs.length}\n`+
-    `平均沈黙時間（秒）,${avgSil}\n`+
+    `token数（総単語数）,${myTokens.length}\n`+
+    `type数（異なり語数）,${myTypes.size}\n`+
+    `翻訳ボタン押下回数,${transClickCount}\n`+
     `WordBridge使用回数,${wbOpenCount}\n`+
     `WordBridge合計使用時間（秒）,${wbTotalSec}\n`+
+    `沈黙回数（3秒以上）,${silenceLogs.length}\n`+
+    `平均沈黙時間（秒）,${avgSil}\n`+
     `会話時間（秒）,${dur}\n`;
 
   const full=logCSV+silCSV+summaryCSV;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([full],{type:'text/csv;charset=utf-8'}));
-  a.download=`speakease_${roomCode}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`speakease_${myPersonId}_${roomCode}_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
