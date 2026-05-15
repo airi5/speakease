@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SpeakEase — 完全無料版</title>
+<title>SpeakEase</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,66 +13,66 @@
   <!-- トップバー -->
   <div class="topbar">
     <div class="logo">Speak<span>Ease</span></div>
-    <div style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ecfdf5;border:1px solid #a7f3d0;color:#059669;letter-spacing:.05em">完全無料</div>
-    <div class="room-pill">ルーム：<b id="roomDisp">---</b></div>
+    <div style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ecfdf5;border:1px solid #a7f3d0;color:#059669;letter-spacing:.05em">Free</div>
+    <div class="room-pill">Room: <b id="roomDisp">---</b></div>
     <div class="rec-pill off" id="recPill">
-      <div class="rec-dot"></div><span id="recTxt">待機中</span>
+      <div class="rec-dot"></div><span id="recTxt">Waiting</span>
     </div>
     <div class="timer-disp" id="timerDisp">00:00</div>
     <div class="tsep"></div>
-    <button class="dash-btn" onclick="toggleDash()">分析</button>
+    <button class="dash-btn" id="dashBtn" onclick="toggleDash()">Analysis</button>
   </div>
 
- <!-- 参加画面 -->
+  <!-- 参加画面（英語固定・言語選択前） -->
   <div class="join-wrap" id="joinWrap">
     <div class="join-card">
       <div class="join-title">SpeakEase</div>
-      <div class="join-sub">名前と母国語を設定して参加してください。<br>「訳を見る」を押したとき、あなたの言語で表示されます。</div>
+      <div class="join-sub">Enter your name and native language to join.<br>This will be used when you press "See translation".</div>
       <div class="f">
-        <label>あなたの名前</label>
-        <input type="text" id="nameIn" placeholder="例：田中">
+        <label>Your Name</label>
+        <input type="text" id="nameIn" placeholder="e.g. Tanaka">
       </div>
       <div class="f">
-        <label>個人ID（事前に送付されたIDを入力してください）</label>
-        <input type="text" id="personIdIn" placeholder="例：P001">
+        <label>Personal ID (sent to you before the session)</label>
+        <input type="text" id="personIdIn" placeholder="e.g. P001">
       </div>
       <div class="f">
-        <label>母国語（訳を見るときの言語）</label>
+        <label>Native Language (for translation)</label>
         <select id="langIn">
           <option value="en">English</option>
-          <optgroup label="アジア">
+          <optgroup label="Asia">
             <option value="ja">日本語</option>
-            <option value="ko">한국어（韓国語）</option>
-            <option value="zh">中文（中国語）</option>
-            <option value="ar">العربية（アラビア語）</option>
-            <option value="hi">हिन्दी（ヒンディー語）</option>
-            <option value="th">ภาษาไทย（タイ語）</option>
-            <option value="vi">Tiếng Việt（ベトナム語）</option>
-            <option value="id">Bahasa Indonesia（インドネシア語）</option>
-            <option value="ms">Bahasa Melayu（マレー語）</option>
+            <option value="ko">한국어</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+            <option value="hi">हिन्दी</option>
+            <option value="th">ภาษาไทย</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="ms">Bahasa Melayu</option>
           </optgroup>
-          <optgroup label="ヨーロッパ">
-            <option value="es">Español（スペイン語）</option>
-            <option value="pt">Português（ポルトガル語）</option>
-            <option value="fr">Français（フランス語）</option>
-            <option value="de">Deutsch（ドイツ語）</option>
-            <option value="it">Italiano（イタリア語）</option>
-            <option value="nl">Nederlands（オランダ語）</option>
-            <option value="ru">Русский（ロシア語）</option>
-            <option value="uk">Українська（ウクライナ語）</option>
-            <option value="pl">Polski（ポーランド語）</option>
-            <option value="tr">Türkçe（トルコ語）</option>
-            <option value="el">Ελληνικά（ギリシャ語）</option>
-            <option value="sv">Svenska（スウェーデン語）</option>
+          <optgroup label="Europe">
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="nl">Nederlands</option>
+            <option value="ru">Русский</option>
+            <option value="uk">Українська</option>
+            <option value="pl">Polski</option>
+            <option value="tr">Türkçe</option>
+            <option value="el">Ελληνικά</option>
+            <option value="sv">Svenska</option>
           </optgroup>
         </select>
       </div>
       <div class="f">
-        <label>ルームコード（研究者から送付されたコードを入力）</label>
-        <input type="text" id="roomIn" placeholder="例：AX-G01-R1">
+        <label>Room Code (sent by the researcher)</label>
+        <input type="text" id="roomIn" placeholder="e.g. AX-G01-R1">
       </div>
-      <button class="join-btn" onclick="join()">参加する</button>
-      <div class="join-note">※ 個人IDとルームコードは事前に研究者から送付されます</div>
+      <button class="join-btn" onclick="join()">Join</button>
+      <div class="join-note">※ Your Personal ID and Room Code will be sent by the researcher in advance.</div>
     </div>
   </div>
 
@@ -82,9 +82,9 @@
     <!-- ログパネル -->
     <div class="log-panel">
       <div class="log-header">
-        <div class="log-header-title">リアルタイム議事録</div>
-        <div class="count-badge me" id="cntMe">あなた 0回</div>
-        <div class="count-badge other" id="cntOther">他の参加者 0回</div>
+        <div class="log-header-title" id="logHeaderTitle">Live Minutes</div>
+        <div class="count-badge me" id="cntMe">You 0x</div>
+        <div class="count-badge other" id="cntOther">Others 0x</div>
       </div>
       <div class="log-area" id="logArea">
         <div class="log-empty" id="logEmpty">
@@ -93,7 +93,7 @@
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
           </div>
-          <div class="log-empty-text">話し始めると<br>ここに表示されます</div>
+          <div class="log-empty-text" id="logEmptyText">Start speaking and it will appear here</div>
         </div>
       </div>
       <div class="controls">
@@ -108,26 +108,25 @@
             <div class="wfb"></div><div class="wfb"></div><div class="wfb"></div>
             <div class="wfb"></div><div class="wfb"></div>
           </div>
-          <span id="micLbl">話す</span>
+          <span id="micLbl">ON</span>
         </button>
-        <div class="ctrl-hint" id="ctrlHint">認識中... 話してください</div>
-        <button class="end-btn" onclick="endSession()">終了</button>
+        <div class="ctrl-hint" id="ctrlHint">Listening... speak now</div>
+        <button class="end-btn" id="endBtn" onclick="endSession()">End</button>
       </div>
     </div>
 
     <!-- サイドバー -->
     <div class="sidebar">
       <div class="side-sec">
-        <div class="side-lbl">参加者</div>
+        <div class="side-lbl" id="participantsLabel">Participants</div>
         <div id="pList"></div>
       </div>
       <div class="side-sec">
-        <div class="side-lbl">訳の言語</div>
+        <div class="side-lbl" id="langLabel">Translation language</div>
         <div class="lang-row">
-          <label>「訳を見る」の言語</label>
           <select id="langSw" onchange="myLang=this.value">
             <option value="en">English</option>
-            <optgroup label="アジア">
+            <optgroup label="Asia">
               <option value="ja">日本語</option>
               <option value="ko">한국어</option>
               <option value="zh">中文</option>
@@ -138,7 +137,7 @@
               <option value="id">Bahasa Indonesia</option>
               <option value="ms">Bahasa Melayu</option>
             </optgroup>
-            <optgroup label="ヨーロッパ">
+            <optgroup label="Europe">
               <option value="es">Español</option>
               <option value="pt">Português</option>
               <option value="fr">Français</option>
@@ -163,7 +162,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          単語を探す（WordBridge）
+          <span id="wbBtnLabel">Find words (WordBridge)</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px">
             <polyline points="18 15 12 9 6 15"/>
           </svg>
@@ -173,16 +172,15 @@
       <!-- WordBridgeドロワー -->
       <div class="wb-drawer" id="wbDrawer">
         <div class="wb-inner">
-          <div class="wb-lbl">単語・表現の候補</div>
+          <div class="wb-lbl" id="wbLbl">Word suggestions</div>
           <div class="words-grid" id="wordsGrid">
-            <div class="wb-empty">発言が認識されると関連する単語が出てきます</div>
+            <div class="wb-empty" id="wbEmpty">Words will appear as you speak</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ダッシュボードオーバーレイ -->
   <!-- ダッシュボードオーバーレイ -->
   <div class="dash-overlay" id="dashOverlay">
     <div class="dash-head">
@@ -194,7 +192,6 @@
 
 </div>
 
-<!-- JS読み込み順: config → state → db → speech → wordbridge → ui → dashboard → app -->
 <script src="config.js"></script>
 <script src="state.js"></script>
 <script src="db.js"></script>
