@@ -22,6 +22,9 @@ async function join(){
   initSR();
   loadExisting();
   sbSubscribe();
+
+  // UI言語を選択した言語に更新
+  updateUILang();
 }
 
 // ── タイマー ──────────────────────────────────
@@ -121,3 +124,29 @@ window.addEventListener('beforeunload',()=>{
   if(heartbeatInt) clearInterval(heartbeatInt);
   clearInterval(timerInt);
 });
+
+// ── UI言語更新 ────────────────────────────────
+function updateUILang(){
+  // 議事録タイトル
+  const logTitle=document.getElementById('logHeaderTitle');
+  if(logTitle) logTitle.textContent=t('logTitle');
+  // カウントバッジ
+  document.getElementById('cntMe').textContent=`${t('you').replace(/[（()）]/g,'')} ${cntMe}${t('times')}`;
+  document.getElementById('cntOther').textContent=`${t('otherCount')} 0${t('times')}`;
+  // コントロールヒント
+  document.getElementById('ctrlHint').textContent=t('speakHint');
+  // 終了ボタン
+  const endBtn=document.getElementById('endBtn');
+  if(endBtn) endBtn.textContent=t('endBtn');
+  // WordBridgeボタン
+  const wbBtn=document.getElementById('wbBtnLabel');
+  if(wbBtn) wbBtn.textContent=t('wordBridge');
+  // WordBridgeヒント
+  const wbEmpty=document.getElementById('wbEmpty');
+  if(wbEmpty) wbEmpty.textContent=t('wordHint');
+  // 訳の言語ラベル
+  const langLabel=document.getElementById('langLabel');
+  if(langLabel) langLabel.textContent=t('langLabel');
+  // 待機中ステータス
+  document.getElementById('recTxt').textContent=t('waiting');
+}
