@@ -12,7 +12,7 @@ function esc(s){
 
 const MYMEMORY_LANG = {
   en:'en-US',
-  ja:'ja-JP', ko:'ko-KR', zh:'zh-CN', ar:'ar-SA', hi:'hi-IN', th:'th-TH',
+  ja:'ja-JP', ko:'ko-KR', zh:'zh-TW', ar:'ar-SA', hi:'hi-IN', th:'th-TH',
   vi:'vi-VN', id:'id-ID', ms:'ms-MY',
   es:'es-ES', pt:'pt-BR', fr:'fr-FR', de:'de-DE', it:'it-IT', nl:'nl-NL',
   ru:'ru-RU', uk:'uk-UA', pl:'pl-PL', tr:'tr-TR', el:'el-GR', sv:'sv-SE',
