@@ -108,10 +108,18 @@ function addOtherEntry(entry) {
 
 // ── 会話終了 ──────────────────────────────────
 function endSession(){
-  if(!confirm('会話を終了して分析を見ますか？'))return;
+  const msg = myLang==='ja' ? '会話を終了して分析を見ますか？'
+    : myLang==='ko' ? '대화를 종료하고 분석을 보시겠습니까？'
+    : myLang==='zh' ? '结束对话并查看分析？'
+    : myLang==='es' ? '¿Terminar la conversación y ver el análisis？'
+    : myLang==='fr' ? 'Terminer la conversation et voir l\'analyse？'
+    : myLang==='de' ? 'Gespräch beenden und Analyse anzeigen？'
+    : myLang==='pt' ? 'Encerrar a conversa e ver a análise？'
+    : 'End the conversation and view the analysis?';
+  if(!confirm(msg))return;
   clearInterval(timerInt);
   stopMic();
-  if(drawerOpen && wbOpenTime!==null){
+  if(drawerOpen&&wbOpenTime!==null){
     wbTotalSec+=Math.round((Date.now()-wbOpenTime)/1000);
     wbOpenTime=null;
   }
@@ -127,16 +135,19 @@ window.addEventListener('beforeunload',()=>{
 
 // ── UI言語更新 ────────────────────────────────
 function updateUILang(){
+  // 英語固定
+  document.getElementById('recTxt').textContent = 'Waiting';
+  document.getElementById('dashBtn').textContent = 'Analysis';
+  // ログタイトル（選択言語）
   document.getElementById('logHeaderTitle').textContent = t('logTitle');
-  document.getElementById('cntMe').textContent = `${t('you').replace(/[（()）]/g,'')} 0${t('times')}`;
-  document.getElementById('cntOther').textContent = `${t('otherCount')} 0${t('times')}`;
+  // コントロール（選択言語）
   document.getElementById('ctrlHint').textContent = t('speakHint');
   document.getElementById('endBtn').textContent = t('endBtn');
+  // WordBridge（選択言語）
   document.getElementById('wbBtnLabel').textContent = t('wordBridge');
   document.getElementById('wbEmpty').textContent = t('wordHint');
+  document.getElementById('wbLbl').textContent = t('wordBridge');
+  // サイドバー（選択言語）
   document.getElementById('langLabel').textContent = t('langLabel');
   document.getElementById('participantsLabel').textContent = t('participants');
-  document.getElementById('wbLbl').textContent = t('wordBridge');
-  document.getElementById('recTxt').textContent = t('waiting');
-  document.getElementById('dashBtn').textContent = 'Analysis';
 }
