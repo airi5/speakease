@@ -1,45 +1,68 @@
 function renderEntry(entry, speaker){
-  const empty=document.getElementById('logEmpty');
-  if(empty)empty.remove();
-  const area=document.getElementById('logArea');
+  const empty = document.getElementById('logEmpty');
+  if(empty) empty.remove();
+  const area = document.getElementById('logArea');
 
-  const div=document.createElement('div');
-  div.className=`entry ${speaker}`;
+  const div = document.createElement('div');
+  div.className = `entry ${speaker}`;
+  div.id = `entry-${entry.id}`;
 
-  const meta=document.createElement('div');
-  meta.className='e-meta';
-  const nameSpan=document.createElement('span');
-  nameSpan.className='e-name';
-  nameSpan.textContent=entry.name;
-  const timeSpan=document.createElement('span');
-  timeSpan.className='e-time';
-  timeSpan.textContent=entry.time||'';
+  const meta = document.createElement('div');
+  meta.className = 'e-meta';
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'e-name';
+  nameSpan.textContent = entry.name;
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'e-time';
+  timeSpan.textContent = entry.time || '';
   meta.appendChild(nameSpan);
   meta.appendChild(timeSpan);
 
-  const bubble=document.createElement('div');
-  bubble.className='bubble';
-  const bEn=document.createElement('div');
-  bEn.className='b-en';
-  bEn.textContent=entry.text;
-  const bTrans=document.createElement('div');
-  bTrans.className='b-trans';
-  bTrans.id=`tr-${entry.id}`;
-  const bActions=document.createElement('div');
-  bActions.className='b-actions';
-  const transBtn=document.createElement('button');
-  transBtn.className='trans-btn';
-  transBtn.textContent=t('seeTranslation');
-  transBtn.addEventListener('click',()=>toggleTrans(entry.id,entry.text,transBtn,bTrans));
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  const bEn = document.createElement('div');
+  bEn.className = 'b-en';
+  bEn.id = `text-${entry.id}`;
+  bEn.textContent = entry.text;
+  const bTrans = document.createElement('div');
+  bTrans.className = 'b-trans';
+  bTrans.id = `tr-${entry.id}`;
+  const bActions = document.createElement('div');
+  bActions.className = 'b-actions';
+
+  // 訳を見るボタン
+  const transBtn = document.createElement('button');
+  transBtn.className = 'trans-btn';
+  transBtn.textContent = t('seeTranslation');
+  transBtn.addEventListener('click', ()=>toggleTrans(entry.id, entry.text, transBtn, bTrans));
   bActions.appendChild(transBtn);
+
+  // 自分の発言のみ：削除ボタン・？ボタン
+  if(speaker === 'me'){
+    // ？ボタン
+    const qBtn = document.createElement('button');
+    qBtn.className = 'trans-btn';
+    qBtn.textContent = '？';
+    qBtn.title = 'Mark as question';
+    qBtn.addEventListener('click', ()=>markAsQuestion(entry.id, bEn));
+    bActions.appendChild(qBtn);
+
+    // 削除ボタン
+    const delBtn = document.createElement('button');
+    delBtn.className = 'trans-btn';
+    delBtn.textContent = '🗑';
+    delBtn.title = 'Delete';
+    delBtn.addEventListener('click', ()=>deleteEntry(entry.id, div));
+    bActions.appendChild(delBtn);
+  }
+
   bubble.appendChild(bEn);
   bubble.appendChild(bTrans);
   bubble.appendChild(bActions);
-
   div.appendChild(meta);
   div.appendChild(bubble);
   area.appendChild(div);
-  area.scrollTop=area.scrollHeight;
+  area.scrollTop = area.scrollHeight;
 }
 
 function updateParticipantList(){
@@ -142,4 +165,21 @@ async function toggleTrans(id, text, btn, el){
     el.textContent=t('transError');
     el.classList.remove('loading');
   }
+}
+
+// ① 発言を削除
+function deleteEntry(id, divEl){
+  divEl.remove();
+  const idx = sessionLog.findIndex(e => e.id === id);
+  if(idx !== -1) sessionLog.splice(idx, 1);
+  cntMe = sessionLog.filter(e => e.speaker === 'me').length;
+  updateParticipantList();
+}
+
+// ② 質問マーク追加
+function markAsQuestion(id, bEnEl){
+  if(bEnEl.textContent.endsWith('？')) return;
+  bEnEl.textContent = bEnEl.textContent + '？';
+  const entry = sessionLog.find(e => e.id === id);
+  if(entry) entry.text = bEnEl.textContent;
 }
