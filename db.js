@@ -169,15 +169,31 @@ async function sbMarkQuestion(entryId) {
 
 // 話題をSupabaseに保存・全員に同期
 async function sbSetTopic(topicKey){
-  await fetch(`${SB_URL}/rest/v1/rooms`, {
-    method: 'POST',
-    headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({
-      room_code: roomCode,
-      current_topic: topicKey,
-      updated_at: new Date().toISOString(),
-    }),
-  });
+  // まずUPDATEを試みる
+  const res = await fetch(
+    `${SB_URL}/rest/v1/rooms?room_code=eq.${encodeURIComponent(roomCode)}`,
+    {
+      method: 'PATCH',
+      headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        current_topic: topicKey,
+        updated_at: new Date().toISOString(),
+      }),
+    }
+  );
+  // 存在しない場合はINSERT
+  const text = await res.text();
+  if(res.status === 404 || text === '[]' || text === ''){
+    await fetch(`${SB_URL}/rest/v1/rooms`, {
+      method: 'POST',
+      headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        room_code: roomCode,
+        current_topic: topicKey,
+        updated_at: new Date().toISOString(),
+      }),
+    });
+  }
 }
 
 // 話題を取得
