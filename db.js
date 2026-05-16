@@ -48,6 +48,12 @@ function sbSubscribe() {
               schema: 'public',
               table:  'messages',
               filter: `room_code=eq.${roomCode}`,
+            },
+            {
+              event:  '*',
+              schema: 'public',
+              table:  'rooms',
+              filter: `room_code=eq.${roomCode}`,
             }
           ]
         }
@@ -80,6 +86,13 @@ function sbSubscribe() {
             textEl.textContent = textEl.textContent + '？';
           }
         }
+        return;
+      }
+
+      // roomsテーブルのトピック変更
+      if(msg.payload?.data?.table === 'rooms'){
+        const topic = record.current_topic;
+        if(topic) onTopicReceived(topic);
         return;
       }
 
@@ -126,4 +139,27 @@ async function sbMarkQuestion(entryId) {
   });
   const data = await res.json();
   console.log('sbMarkQuestion response:', JSON.stringify(data));
+}
+
+// 話題をSupabaseに保存・全員に同期
+async function sbSetTopic(topicKey){
+  await fetch(`${SB_URL}/rest/v1/rooms`, {
+    method: 'POST',
+    headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      room_code: roomCode,
+      current_topic: topicKey,
+      updated_at: new Date().toISOString(),
+    }),
+  });
+}
+
+// 話題を取得
+async function sbGetTopic(){
+  const res = await fetch(
+    `${SB_URL}/rest/v1/rooms?room_code=eq.${encodeURIComponent(roomCode)}`,
+    { headers: SB_HEADERS }
+  );
+  const data = await res.json();
+  return data?.[0]?.current_topic || null;
 }
