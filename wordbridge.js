@@ -447,6 +447,8 @@ async function shuffleTopic(){
   currentTopicIdx = newIdx;
   const card = TOPIC_CARDS[currentTopicIdx];
 
+  console.log('shuffleTopic:', card.key);
+
   // 自分の画面に表示
   applyTopic(card);
 
