@@ -225,75 +225,151 @@ const WORD_DB = {
     {w:'exchange',jp:'交流・交換'},{w:'understanding',jp:'理解'},
     {w:'respect',jp:'尊重'},{w:'peace',jp:'平和'},{w:'environment',jp:'環境'},
   ],
+  choice_mountain_sea: [
+    {w:'mountain',jp:'山'},{w:'sea',jp:'海'},{w:'beach',jp:'ビーチ'},
+    {w:'hiking',jp:'ハイキング'},{w:'surfing',jp:'サーフィン'},{w:'camping',jp:'キャンプ'},
+    {w:'scenery',jp:'景色'},{w:'fresh air',jp:'新鮮な空気'},{w:'waves',jp:'波'},
+    {w:'peaceful',jp:'穏やか'},{w:'exciting',jp:'わくわく'},{w:'nature',jp:'自然'},
+    {w:'prefer',jp:'好む'},{w:'because',jp:'なぜなら'},{w:'both',jp:'どちらも'},
+    {w:'relaxing',jp:'リラックス'},{w:'adventure',jp:'冒険'},{w:'view',jp:'眺め'},
+  ],
+  choice_night_morning: [
+    {w:'night owl',jp:'夜型'},{w:'early bird',jp:'朝型'},{w:'stay up late',jp:'夜更かし'},
+    {w:'wake up early',jp:'早起き'},{w:'midnight',jp:'深夜'},{w:'sunrise',jp:'日の出'},
+    {w:'productive',jp:'生産的な'},{w:'quiet',jp:'静か'},{w:'sleep',jp:'睡眠'},
+    {w:'routine',jp:'習慣'},{w:'energy',jp:'エネルギー'},{w:'prefer',jp:'好む'},
+    {w:'usually',jp:'たいてい'},{w:'depends',jp:'場合による'},{w:'lately',jp:'最近は'},
+    {w:'tired',jp:'疲れた'},{w:'focus',jp:'集中する'},{w:'alarm',jp:'アラーム'},
+  ],
+  choice_online_offline: [
+    {w:'online',jp:'オンライン'},{w:'in-person',jp:'対面'},{w:'face to face',jp:'直接会う'},
+    {w:'video call',jp:'ビデオ通話'},{w:'chat',jp:'チャット'},{w:'meeting',jp:'ミーティング'},
+    {w:'convenient',jp:'便利'},{w:'connection',jp:'つながり'},{w:'distance',jp:'距離'},
+    {w:'prefer',jp:'好む'},{w:'easier',jp:'より簡単'},{w:'better',jp:'より良い'},
+    {w:'communication',jp:'コミュニケーション'},{w:'social',jp:'社交的'},
+    {w:'technology',jp:'テクノロジー'},{w:'both',jp:'どちらも'},{w:'depends',jp:'場合による'},
+    {w:'personally',jp:'個人的には'},
+  ],
+  choice_cats_dogs: [
+    {w:'cat',jp:'猫'},{w:'dog',jp:'犬'},{w:'cute',jp:'かわいい'},{w:'fluffy',jp:'ふわふわ'},
+    {w:'loyal',jp:'忠実'},{w:'independent',jp:'独立心が強い'},{w:'playful',jp:'遊び好き'},
+    {w:'calm',jp:'落ち着いている'},{w:'energetic',jp:'元気'},{w:'pet',jp:'ペット'},
+    {w:'prefer',jp:'好む'},{w:'both',jp:'どちらも'},{w:'have one',jp:'飼っている'},
+    {w:'want to have',jp:'飼いたい'},{w:'allergic',jp:'アレルギーがある'},
+    {w:'walk',jp:'散歩'},{w:'purr',jp:'ゴロゴロ'},{w:'bark',jp:'吠える'},
+  ],
+  choice_coffee_tea: [
+    {w:'coffee',jp:'コーヒー'},{w:'tea',jp:'お茶'},{w:'green tea',jp:'緑茶'},
+    {w:'black tea',jp:'紅茶'},{w:'latte',jp:'ラテ'},{w:'espresso',jp:'エスプレッソ'},
+    {w:'herbal tea',jp:'ハーブティー'},{w:'boba',jp:'タピオカ'},{w:'sweet',jp:'甘い'},
+    {w:'bitter',jp:'苦い'},{w:'hot',jp:'ホット'},{w:'iced',jp:'アイス'},
+    {w:'prefer',jp:'好む'},{w:'morning',jp:'朝'},{w:'relax',jp:'リラックス'},
+    {w:'caffeine',jp:'カフェイン'},{w:'favorite',jp:'お気に入り'},{w:'drink',jp:'飲み物'},
+  ],
+  choice_games_sports: [
+    {w:'video game',jp:'ビデオゲーム'},{w:'sport',jp:'スポーツ'},{w:'outdoor',jp:'アウトドア'},
+    {w:'indoor',jp:'インドア'},{w:'team',jp:'チーム'},{w:'solo',jp:'一人で'},
+    {w:'competitive',jp:'競争的な'},{w:'fun',jp:'楽しい'},{w:'exercise',jp:'運動'},
+    {w:'strategy',jp:'戦略'},{w:'skill',jp:'スキル'},{w:'prefer',jp:'好む'},
+    {w:'both',jp:'どちらも'},{w:'depends on mood',jp:'気分による'},
+    {w:'lately',jp:'最近'},{w:'play',jp:'プレイする'},{w:'win',jp:'勝つ'},
+    {w:'tournament',jp:'大会'},
+  ],
+  choice_books_movies: [
+    {w:'book',jp:'本'},{w:'movie',jp:'映画'},{w:'novel',jp:'小説'},{w:'film',jp:'フィルム'},
+    {w:'read',jp:'読む'},{w:'watch',jp:'見る'},{w:'imagination',jp:'想像力'},
+    {w:'visual',jp:'視覚的'},{w:'story',jp:'ストーリー'},{w:'character',jp:'キャラクター'},
+    {w:'prefer',jp:'好む'},{w:'both',jp:'どちらも'},{w:'recently',jp:'最近'},
+    {w:'recommend',jp:'おすすめ'},{w:'genre',jp:'ジャンル'},{w:'favorite',jp:'お気に入り'},
+    {w:'ending',jp:'結末'},{w:'page-turner',jp:'引き込まれる本'},
+  ],
+  choice_city_country: [
+    {w:'city',jp:'都市'},{w:'countryside',jp:'田舎'},{w:'urban',jp:'都会的な'},
+    {w:'rural',jp:'農村の'},{w:'convenient',jp:'便利'},{w:'peaceful',jp:'穏やか'},
+    {w:'busy',jp:'忙しい'},{w:'quiet',jp:'静か'},{w:'nature',jp:'自然'},
+    {w:'commute',jp:'通勤'},{w:'transport',jp:'交通'},{w:'prefer',jp:'好む'},
+    {w:'grew up in',jp:'〜で育った'},{w:'live in',jp:'〜に住んでいる'},
+    {w:'someday',jp:'いつか'},{w:'both',jp:'どちらも'},{w:'lifestyle',jp:'ライフスタイル'},
+    {w:'community',jp:'コミュニティ'},
+  ],
+  career: [
+    {w:'dream job',jp:'夢の仕事'},{w:'career path',jp:'キャリアパス'},{w:'major',jp:'専攻'},
+    {w:'graduate',jp:'卒業する'},{w:'internship',jp:'インターン'},{w:'salary',jp:'給料'},
+    {w:'passion',jp:'情熱'},{w:'work-life balance',jp:'仕事と生活のバランス'},
+    {w:'entrepreneur',jp:'起業家'},{w:'engineer',jp:'エンジニア'},{w:'teacher',jp:'教師'},
+    {w:'doctor',jp:'医者'},{w:'artist',jp:'アーティスト'},{w:'scientist',jp:'科学者'},
+    {w:'goal',jp:'目標'},{w:'future',jp:'将来'},{w:'skill',jp:'スキル'},
+    {w:'challenge',jp:'挑戦'},
+  ],
+  festivals: [
+    {w:'festival',jp:'お祭り'},{w:'holiday',jp:'祝日'},{w:'celebrate',jp:'お祝いする'},
+    {w:'tradition',jp:'伝統'},{w:'fireworks',jp:'花火'},{w:'parade',jp:'パレード'},
+    {w:'costume',jp:'衣装'},{w:'food stall',jp:'屋台'},{w:'New Year',jp:'お正月'},
+    {w:'Christmas',jp:'クリスマス'},{w:'Lunar New Year',jp:'旧正月'},
+    {w:'harvest festival',jp:'収穫祭'},{w:'music festival',jp:'音楽フェス'},
+    {w:'family gathering',jp:'家族の集まり'},{w:'gift',jp:'プレゼント'},
+    {w:'decoration',jp:'飾り'},{w:'special food',jp:'特別な食べ物'},{w:'fun',jp:'楽しい'},
+  ],
+  cooking: [
+    {w:'recipe',jp:'レシピ'},{w:'ingredient',jp:'食材'},{w:'cook',jp:'料理する'},
+    {w:'bake',jp:'焼く'},{w:'fry',jp:'揚げる'},{w:'boil',jp:'茹でる'},
+    {w:'chop',jp:'切る'},{w:'season',jp:'味付けする'},{w:'taste',jp:'味見する'},
+    {w:'delicious',jp:'美味しい'},{w:'homemade',jp:'手作り'},{w:'traditional',jp:'伝統的な'},
+    {w:'easy to make',jp:'簡単に作れる'},{w:'my specialty',jp:'得意料理'},
+    {w:'local dish',jp:'郷土料理'},{w:'spice',jp:'スパイス'},{w:'sweet',jp:'甘い'},
+    {w:'savory',jp:'塩味の'},
+  ],
+  routine: [
+    {w:'wake up',jp:'起きる'},{w:'breakfast',jp:'朝食'},{w:'commute',jp:'通学・通勤'},
+    {w:'school',jp:'学校'},{w:'lunch break',jp:'昼休み'},{w:'after school',jp:'放課後'},
+    {w:'dinner',jp:'夕食'},{w:'bath',jp:'お風呂'},{w:'bedtime',jp:'就寝時間'},
+    {w:'exercise',jp:'運動'},{w:'study',jp:'勉強'},{w:'hobby',jp:'趣味'},
+    {w:'weekend',jp:'週末'},{w:'busy',jp:'忙しい'},{w:'relax',jp:'くつろぐ'},
+    {w:'usually',jp:'たいてい'},{w:'routine',jp:'ルーティン'},{w:'schedule',jp:'スケジュール'},
+  ],
+  facts: [
+    {w:'did you know?',jp:'知ってた？'},{w:'interesting',jp:'面白い'},{w:'surprising',jp:'驚き'},
+    {w:'actually',jp:'実は'},{w:'research',jp:'研究'},{w:'science',jp:'科学'},
+    {w:'history',jp:'歴史'},{w:'culture',jp:'文化'},{w:'world record',jp:'世界記録'},
+    {w:'unique',jp:'ユニーク'},{w:'rare',jp:'珍しい'},{w:'famous',jp:'有名な'},
+    {w:'believe it or not',jp:'信じられないけど'},{w:'I learned that',jp:'〜と知った'},
+    {w:'recently heard',jp:'最近聞いた'},{w:'fascinating',jp:'魅力的な'},
+    {w:'fact',jp:'事実'},{w:'true story',jp:'本当の話'},
+  ],
 };
 
-// 話題提案カードのトピック一覧
+// 話題カードとWORD_DBキーの対応
 const TOPIC_CARDS = [
-  { en:'Hobbies & Interests', icon:'🎨' },
-  { en:'Food & Cooking',      icon:'🍜' },
-  { en:'School & Study',      icon:'📚' },
-  { en:'Sports',              icon:'⚽' },
-  { en:'Music & Movies',      icon:'🎵' },
-  { en:'Travel & Places',     icon:'✈️' },
-  { en:'Family & Home',       icon:'🏠' },
-  { en:'Future & Dreams',     icon:'🌟' },
-  { en:'Technology',          icon:'💻' },
-  { en:'Pets & Animals',      icon:'🐾' },
-  { en:'Culture & Society',   icon:'🌍' },
-  { en:'Health & Lifestyle',  icon:'💪' },
-  { en:'Weather & Seasons',   icon:'🌸' },
-  { en:'Feelings & Opinions', icon:'💬' },
+  { en:'Hobbies & Interests', icon:'🎨', key:'hobby' },
+  { en:'Food & Cooking',      icon:'🍜', key:'food' },
+  { en:'School & Study',      icon:'📚', key:'school' },
+  { en:'Sports',              icon:'⚽', key:'sports' },
+  { en:'Music & Movies',      icon:'🎵', key:'entertainment' },
+  { en:'Travel & Places',     icon:'✈️', key:'travel' },
+  { en:'Family & Home',       icon:'🏠', key:'family' },
+  { en:'Future & Dreams',     icon:'🌟', key:'work' },
+  { en:'Technology',          icon:'💻', key:'tech' },
+  { en:'Pets & Animals',      icon:'🐾', key:'pets' },
+  { en:'Culture & Society',   icon:'🌍', key:'culture' },
+  { en:'Health & Lifestyle',  icon:'💪', key:'health' },
+  { en:'Weather & Seasons',   icon:'🌸', key:'weather' },
+  { en:'Feelings & Opinions', icon:'💬', key:'emotion' },
+  { en:'Mountains or Sea?',   icon:'🏔️', key:'choice_mountain_sea' },
+  { en:'Night owl or Early bird?', icon:'🌙', key:'choice_night_morning' },
+  { en:'Online or In-person?', icon:'📱', key:'choice_online_offline' },
+  { en:'Cats or Dogs?',       icon:'🐱', key:'choice_cats_dogs' },
+  { en:'Coffee or Tea?',      icon:'☕', key:'choice_coffee_tea' },
+  { en:'Games or Sports?',    icon:'🎮', key:'choice_games_sports' },
+  { en:'Books or Movies?',    icon:'📚', key:'choice_books_movies' },
+  { en:'City or Countryside?', icon:'🌆', key:'choice_city_country' },
+  { en:'Future Career',       icon:'🎓', key:'career' },
+  { en:'Festivals & Holidays', icon:'🎉', key:'festivals' },
+  { en:'Cooking & Recipes',   icon:'🍳', key:'cooking' },
+  { en:'Daily Routine',       icon:'💤', key:'routine' },
+  { en:'Interesting Facts',   icon:'🧠', key:'facts' },
 ];
 
 let currentTopicIdx = -1;
-
-function shuffleTopic(){
-  let newIdx;
-  do {
-    newIdx = Math.floor(Math.random() * TOPIC_CARDS.length);
-  } while(newIdx === currentTopicIdx && TOPIC_CARDS.length > 1);
-  currentTopicIdx = newIdx;
-  const card = TOPIC_CARDS[currentTopicIdx];
-  document.getElementById('topicCard').textContent = `${card.icon} ${card.en}`;
-}
-
-// 発言テキストからトピックを判定するマップ
-const TOPIC_MAP = [
-  { topic:'intro',         regex:/hello|hi|meet|name|where.*from|from|live|introduce|years old|speak|english|repeat|understand|mean/ },
-  { topic:'hobby',         regex:/draw|paint|sketch|art|picture|music|guitar|piano|violin|drum|read|novel|manga|cook|bak|game|photo|hike|camp|danc|sing|craft|knit|sew|garden|fish|collect|yoga|hobby|like|enjoy|interest|passionate|into|spend time/ },
-  { topic:'food',          regex:/food|eat|cook|bak|dish|meal|breakfast|lunch|dinner|snack|dessert|restaurant|cafe|delicious|spicy|sweet|salty|sour|bitter|crispy|sushi|ramen|curry|pizza|pasta|burger|taco|kimchi|recipe|ingredient|flavor|taste|hungry|vegetarian|allerg/ },
-  { topic:'school',        regex:/school|study|class|teacher|professor|exam|quiz|homework|assignment|project|club|subject|math|science|history|literature|pe|university|college|campus|major|grade|graduation|research|thesis|presentation|seminar|deadline|library/ },
-  { topic:'weather',       regex:/weather|rain|sun|cloud|fog|wind|storm|hot|warm|cool|cold|freez|humid|dry|season|spring|summer|autumn|fall|winter|typhoon|earthquake|snow|hail|rainbow|sunset|cherry blossom|forecast|climate/ },
-  { topic:'family',        regex:/family|parent|mother|father|mom|dad|brother|sister|sibling|grandp|cousin|aunt|uncle|only child|oldest|youngest|live with|hometown|grow up|move|neighbor|house|apartment|countryside|city/ },
-  { topic:'travel',        regex:/travel|trip|journey|visit|flight|train|bus|hotel|hostel|sightseeing|souvenir|passport|visa|luggage|tourist|hidden gem|backpack|road trip|temple|shrine|castle|museum|gallery|beach|mountain|forest|island|lake|waterfall|abroad|exchange|study abroad/ },
-  { topic:'work',          regex:/work|job|career|office|company|startup|entrepreneur|part.time|internship|remote|freelance|salary|promot|retire|passion|challenge|achieve|success|failure|skill|talent|volunteer|leadership/ },
-  { topic:'entertainment', regex:/movie|film|anime|drama|documentary|comedy|action|horror|romance|fantasy|concert|festival|theater|musical|exhibition|recommend|sequel|remake|character|plot|ending|k.pop|j.pop|hip.hop|classical|jazz|rock|playlist|album|lyric|watch|listen|series/ },
-  { topic:'sports',        regex:/soccer|football|basketball|baseball|volleyball|tennis|badminton|table tennis|swim|run|marathon|cycling|ski|snowboard|surf|martial|judo|karate|gymnas|team|match|score|win|lose|practice|tournament|stadium|gym|fan|champion|olympics|world cup/ },
-  { topic:'pets',          regex:/dog|cat|rabbit|hamster|bird|fish|turtle|snake|parrot|puppy|kitten|pet|cute|fluffy|playful|naughty|gentle|smart|adopt|breed|paw|tail|fur|vet|zoo|wildlife/ },
-  { topic:'tech',          regex:/app|smartphone|tablet|laptop|headphone|social media|instagram|tiktok|youtube|twitter|internet|wi.fi|bluetooth|ai|robot|program|code|website|game|console|streaming|online|digital|vr|electric car/ },
-  { topic:'health',        regex:/exercise|workout|gym|diet|nutrition|sleep|stress|mental|health|healthy|fit|tired|energy|vitamin|jog|stretch|hospital|medicine|doctor/ },
-  { topic:'emotion',       regex:/happy|sad|excit|nervous|scared|angry|surpris|proud|embarrass|lonely|grateful|confident|shy|outgoing|kind|funny|serious|creative|honest|patient|curious|optimistic|pessimistic|feel|feeling|emotion/ },
-  { topic:'opinion',       regex:/think|believe|opinion|view|agree|disagree|however|therefore|because|reason|example|such as|compare|according|heard|depends|point/ },
-  { topic:'culture',       regex:/tradition|custom|festival|holiday|religion|belief|language|dialect|accent|multicultural|diversity|equality|stereotype|prejudice|global|international|exchange|respect|peace|environment/ },
-];
-
-function getWords(text) {
-  const t = text.toLowerCase();
-  const matched = new Set();
-  TOPIC_MAP.forEach(({ topic, regex }) => {
-    if (regex.test(t)) matched.add(topic);
-  });
-  let words = [...WORD_DB.default];
-  matched.forEach(topic => {
-    if (WORD_DB[topic]) words = [...WORD_DB[topic], ...words];
-  });
-  const seen = new Set();
-  return words.filter(w => {
-    if (seen.has(w.w)) return false;
-    seen.add(w.w);
-    return true;
-  }).slice(0, 18);
-}
 
 // 翻訳キャッシュ
 const transCache = {};
@@ -314,8 +390,20 @@ async function translateWord(word, targetLang){
   }
 }
 
-async function updateWordBridge(lastText){
-  const words = getWords(lastText);
+// トピックキーから単語リストを取得
+function getWordsByTopic(topicKey){
+  const words = WORD_DB[topicKey] || WORD_DB.default;
+  const seen = new Set();
+  return words.filter(w => {
+    if(seen.has(w.w)) return false;
+    seen.add(w.w);
+    return true;
+  }).slice(0, 18);
+}
+
+// 単語グリッドを表示
+async function renderWordGrid(topicKey){
+  const words = getWordsByTopic(topicKey);
   const grid = document.getElementById('wordsGrid');
   grid.innerHTML = '';
 
@@ -336,7 +424,7 @@ async function updateWordBridge(lastText){
     grid.appendChild(div);
   });
 
-  // 日本語以外・英語以外の場合はAPIで翻訳して更新
+  // 日本語以外はAPIで翻訳
   if(myLang !== 'ja' && myLang !== 'en'){
     words.forEach(async item => {
       const translated = await translateWord(item.w, myLang);
@@ -350,6 +438,39 @@ async function updateWordBridge(lastText){
   }
 }
 
+// シャッフルボタンを押したとき
+async function shuffleTopic(){
+  let newIdx;
+  do {
+    newIdx = Math.floor(Math.random() * TOPIC_CARDS.length);
+  } while(newIdx === currentTopicIdx && TOPIC_CARDS.length > 1);
+  currentTopicIdx = newIdx;
+  const card = TOPIC_CARDS[currentTopicIdx];
+
+  // 自分の画面に表示
+  applyTopic(card);
+
+  // Supabaseに保存して全員に同期
+  await sbSetTopic(card.key);
+}
+
+// トピックを画面に反映
+function applyTopic(card){
+  document.getElementById('topicCard').textContent = `${card.icon} ${card.en}`;
+  renderWordGrid(card.key);
+}
+
+// 他の人がシャッフルしたとき（Supabaseから受信）
+function onTopicReceived(topicKey){
+  const card = TOPIC_CARDS.find(c => c.key === topicKey);
+  if(card) applyTopic(card);
+}
+
+// updateWordBridgeは互換性のために残す（発言テキストからは使わない）
+function updateWordBridge(lastText){
+  // 何もしない（話題カード方式に変更したため）
+}
+
 function toggleDrawer(){
   drawerOpen = !drawerOpen;
   document.getElementById('wbDrawer').className = 'wb-drawer' + (drawerOpen ? ' open' : '');
@@ -358,8 +479,9 @@ function toggleDrawer(){
   if(drawerOpen){
     wbOpenCount++;
     wbOpenTime = Date.now();
-    const grid = document.getElementById('wordsGrid');
-    if(!grid.querySelector('.word-chip')) updateWordBridge('');
+    // 現在のトピックで単語を表示
+    const topicKey = currentTopicIdx >= 0 ? TOPIC_CARDS[currentTopicIdx].key : 'default';
+    renderWordGrid(topicKey);
   } else {
     if(wbOpenTime !== null){
       wbTotalSec += Math.round((Date.now() - wbOpenTime) / 1000);
