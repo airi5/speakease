@@ -58,6 +58,8 @@ function sbSubscribe() {
   realtimeWs.onmessage = (e) => {
     try {
       const msg = JSON.parse(e.data);
+      console.log('ws msg type:', msg.payload?.data?.type, 'record:', JSON.stringify(msg.payload?.data?.record));
+
       const record = msg.payload?.data?.record || msg.payload?.record;
       if (!record) return;
       if (record.room_code !== roomCode) return;
@@ -65,12 +67,15 @@ function sbSubscribe() {
       // UPDATEイベントの処理
       const eventType = msg.payload?.data?.type || msg.payload?.type;
       if(eventType === 'UPDATE'){
+        console.log('UPDATE received:', record.id, 'deleted:', record.deleted, 'question:', record.question);
         if(record.deleted){
           const el = document.getElementById(`entry-${record.id}`);
+          console.log('looking for entry-'+record.id, 'found:', el);
           if(el) el.remove();
         }
         if(record.question){
           const textEl = document.getElementById(`text-${record.id}`);
+          console.log('looking for text-'+record.id, 'found:', textEl);
           if(textEl && !textEl.textContent.endsWith('？')){
             textEl.textContent = textEl.textContent + '？';
           }
@@ -101,18 +106,24 @@ function sbSubscribe() {
 
 // 発言を削除（deleted=trueに更新）
 async function sbDelete(entryId) {
-  await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
+  console.log('sbDelete called with id:', entryId);
+  const res = await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
     method: 'PATCH',
-    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    headers: { ...SB_HEADERS, 'Prefer': 'return=representation' },
     body: JSON.stringify({ deleted: true }),
   });
+  const data = await res.json();
+  console.log('sbDelete response:', JSON.stringify(data));
 }
 
 // ？マークを追加（question=trueに更新）
 async function sbMarkQuestion(entryId) {
-  await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
+  console.log('sbMarkQuestion called with id:', entryId);
+  const res = await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
     method: 'PATCH',
-    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    headers: { ...SB_HEADERS, 'Prefer': 'return=representation' },
     body: JSON.stringify({ question: true }),
   });
+  const data = await res.json();
+  console.log('sbMarkQuestion response:', JSON.stringify(data));
 }
