@@ -167,18 +167,20 @@ async function toggleTrans(id, text, btn, el){
 }
 
 // ① 発言を削除
-function deleteEntry(id, divEl){
+async function deleteEntry(id, divEl){
   divEl.remove();
   const idx = sessionLog.findIndex(e => e.id === id);
   if(idx !== -1) sessionLog.splice(idx, 1);
   cntMe = sessionLog.filter(e => e.speaker === 'me').length;
   updateParticipantList();
+  await sbDelete(id);
 }
 
 // ② 質問マーク追加
-function markAsQuestion(id, bEnEl){
+async function markAsQuestion(id, bEnEl){
   if(bEnEl.textContent.endsWith('？')) return;
   bEnEl.textContent = bEnEl.textContent + '？';
   const entry = sessionLog.find(e => e.id === id);
   if(entry) entry.text = bEnEl.textContent;
+  await sbMarkQuestion(id);
 }
