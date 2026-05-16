@@ -26,7 +26,6 @@ async function sbSelect() {
 function sbSubscribe() {
   const wsUrl = `wss://${SB_URL.replace('https://', '')}/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`;
   realtimeWs = new WebSocket(wsUrl);
-
   realtimeWs.onopen = () => {
     realtimeWs.send(JSON.stringify({
       topic:   'realtime:public:messages',
@@ -35,26 +34,50 @@ function sbSubscribe() {
         config: {
           broadcast:  { self: false },
           presence:   { key: '' },
-          postgres_changes: [{
-            event:  'INSERT',
-            schema: 'public',
-            table:  'messages',
-            filter: `room_code=eq.${roomCode}`,
-          }]
+          postgres_changes: [
+            {
+              event:  'INSERT',
+              schema: 'public',
+              table:  'messages',
+              filter: `room_code=eq.${roomCode}`,
+            },
+            {
+              event:  'UPDATE',
+              schema: 'public',
+              table:  'messages',
+              filter: `room_code=eq.${roomCode}`,
+            }
+          ]
         }
       },
       ref: '1',
     }));
   };
-
   realtimeWs.onmessage = (e) => {
     try {
       const msg = JSON.parse(e.data);
       const record = msg.payload?.data?.record || msg.payload?.record;
       if (!record) return;
-      if (record.name === myName) return;
       if (record.room_code !== roomCode) return;
 
+      // UPDATEイベントの処理
+      const eventType = msg.payload?.data?.type || msg.payload?.type;
+      if(eventType === 'UPDATE'){
+        if(record.deleted){
+          const el = document.getElementById(`entry-${record.id}`);
+          if(el) el.remove();
+        }
+        if(record.question){
+          const textEl = document.getElementById(`text-${record.id}`);
+          if(textEl && !textEl.textContent.endsWith('？')){
+            textEl.textContent = textEl.textContent + '？';
+          }
+        }
+        return;
+      }
+
+      // INSERTイベントの処理
+      if (record.name === myName) return;
       const entry = {
         ...record,
         time: new Date(record.created_at).toLocaleTimeString('ja-JP', { hour:'2-digit', minute:'2-digit' }),
@@ -62,17 +85,32 @@ function sbSubscribe() {
       addOtherEntry(entry);
     } catch(err) { console.error('ws msg error:', err); }
   };
-
   realtimeWs.onerror = (e) => console.error('ws error:', e);
   realtimeWs.onclose = () => {
     setTimeout(() => { if (roomCode) sbSubscribe(); }, 3000);
   };
-
-  // ハートビート（30秒ごと）- 再接続時に古いintervalを破棄
   if(heartbeatInt) clearInterval(heartbeatInt);
   heartbeatInt = setInterval(() => {
     if (realtimeWs && realtimeWs.readyState === WebSocket.OPEN) {
       realtimeWs.send(JSON.stringify({ topic: 'phoenix', event: 'heartbeat', payload: {}, ref: '0' }));
     }
   }, 30000);
+}
+
+// 発言を削除（deleted=trueに更新）
+async function sbDelete(entryId) {
+  await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ deleted: true }),
+  });
+}
+
+// ？マークを追加（question=trueに更新）
+async function sbMarkQuestion(entryId) {
+  await fetch(`${SB_URL}/rest/v1/messages?id=eq.${entryId}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ question: true }),
+  });
 }
