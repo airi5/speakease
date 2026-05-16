@@ -167,9 +167,24 @@
         </button>
       </div>
 
-      <!-- WordBridgeドロワー -->
+     <!-- WordBridgeドロワー -->
       <div class="wb-drawer" id="wbDrawer">
         <div class="wb-inner">
+          <!-- 話題提案カード -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div id="topicCard"
+              style="flex:1;padding:8px 12px;border-radius:8px;
+              background:#ede9fe;border:1.5px solid #c4b5fd;
+              font-size:13px;font-weight:700;color:#5b21b6;text-align:center">
+              🎲 Press shuffle for a topic!
+            </div>
+            <button onclick="shuffleTopic()"
+              style="padding:8px 12px;border-radius:8px;border:1.5px solid #e5e7eb;
+              background:#fff;font-size:16px;cursor:pointer;font-weight:700;
+              font-family:'Nunito',sans-serif"
+              title="Shuffle topic">🔀</button>
+          </div>
+          <!-- 単語候補 -->
           <div class="wb-lbl" id="wbLbl">Word suggestions</div>
           <div class="words-grid" id="wordsGrid">
             <div class="wb-empty" id="wbEmpty">Words will appear as you speak</div>
