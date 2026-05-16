@@ -22,6 +22,7 @@ async function join(){
   initSR();
   loadExisting();
   sbSubscribe();
+  sbSubscribeRooms();
 
   // UI言語を選択した言語に更新
   updateUILang();
@@ -146,7 +147,9 @@ function endSession(){
 // ── ページ離脱時のクリーンアップ ──────────────
 window.addEventListener('beforeunload',()=>{
   if(realtimeWs) realtimeWs.close();
+  if(roomsWs) roomsWs.close();
   if(heartbeatInt) clearInterval(heartbeatInt);
+  if(roomsHeartbeatInt) clearInterval(roomsHeartbeatInt);
   clearInterval(timerInt);
 });
 
