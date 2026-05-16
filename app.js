@@ -42,7 +42,8 @@ function startTimer(){
 
 // ── Supabase保存・読み込み ────────────────────
 async function publish(entry) {
-  await sbInsert(entry);
+  const dbId = await sbInsert(entry);
+  return dbId;
 }
 
 async function loadExisting() {
@@ -87,13 +88,28 @@ function countVocab(text){
 function addMyEntry(text){
   recordSilence('me');
   countVocab(text);
-  const entry={id:Date.now(),name:myName,lang:myLang,text,
+  const timestamp=Date.now();
+  const entry={id:timestamp,name:myName,lang:myLang,text,
     time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
-    timestamp:Date.now()};
+    timestamp:timestamp};
   sessionLog.push({...entry,speaker:'me'});
   cntMe++;
   renderEntry(entry,'me');
-  publish(entry);
+
+  // Supabaseに保存してDBのIDで上書き
+  publish(entry).then(dbId=>{
+    if(dbId){
+      // DOMのIDを更新
+      const divEl=document.getElementById(`entry-${timestamp}`);
+      if(divEl) divEl.id=`entry-${dbId}`;
+      const textEl=document.getElementById(`text-${timestamp}`);
+      if(textEl) textEl.id=`text-${dbId}`;
+      // sessionLogのIDを更新
+      const logEntry=sessionLog.find(e=>e.timestamp===timestamp&&e.speaker==='me');
+      if(logEntry) logEntry.id=dbId;
+    }
+  });
+
   if(drawerOpen) updateWordBridge(text);
 }
 
