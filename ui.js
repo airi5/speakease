@@ -44,7 +44,7 @@ function renderEntry(entry, speaker){
     qBtn.className = 'trans-btn';
     qBtn.textContent = '？';
     qBtn.title = 'Mark as question';
-    qBtn.addEventListener('click', ()=>markAsQuestion(entry.id, bEn));
+    qBtn.addEventListener('click', ()=>markAsQuestion(bEn));
     bActions.appendChild(qBtn);
 
     // 削除ボタン
@@ -52,7 +52,7 @@ function renderEntry(entry, speaker){
     delBtn.className = 'trans-btn';
     delBtn.textContent = '🗑';
     delBtn.title = 'Delete';
-    delBtn.addEventListener('click', ()=>deleteEntry(entry.id, div));
+    delBtn.addEventListener('click', ()=>deleteEntry(div));
     bActions.appendChild(delBtn);
   }
 
@@ -144,7 +144,6 @@ async function toggleTrans(id, text, btn, el){
     return;
   }
 
-  // 翻訳ボタン押下回数をカウント
   transClickCount++;
 
   el.innerHTML=`<span class="sp"></span>${t('translating')}`;
@@ -167,20 +166,22 @@ async function toggleTrans(id, text, btn, el){
 }
 
 // ① 発言を削除
-async function deleteEntry(id, divEl){
+async function deleteEntry(divEl){
+  const currentId = divEl.id.replace('entry-', '');
   divEl.remove();
-  const idx = sessionLog.findIndex(e => e.id === id);
+  const idx = sessionLog.findIndex(e => String(e.id) === currentId);
   if(idx !== -1) sessionLog.splice(idx, 1);
   cntMe = sessionLog.filter(e => e.speaker === 'me').length;
   updateParticipantList();
-  await sbDelete(id);
+  await sbDelete(currentId);
 }
 
 // ② 質問マーク追加
-async function markAsQuestion(id, bEnEl){
+async function markAsQuestion(bEnEl){
   if(bEnEl.textContent.endsWith('？')) return;
+  const currentId = bEnEl.id.replace('text-', '');
   bEnEl.textContent = bEnEl.textContent + '？';
-  const entry = sessionLog.find(e => e.id === id);
+  const entry = sessionLog.find(e => String(e.id) === currentId);
   if(entry) entry.text = bEnEl.textContent;
-  await sbMarkQuestion(id);
+  await sbMarkQuestion(currentId);
 }
