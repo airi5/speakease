@@ -1,8 +1,8 @@
 // 発言をSupabaseに保存
 async function sbInsert(entry) {
-  await fetch(`${SB_URL}/rest/v1/messages`, {
+  const res = await fetch(`${SB_URL}/rest/v1/messages`, {
     method:  'POST',
-    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    headers: { ...SB_HEADERS, 'Prefer': 'return=representation' },
     body: JSON.stringify({
       room_code: roomCode,
       name:      entry.name,
@@ -11,6 +11,8 @@ async function sbInsert(entry) {
       speaker:   'me',
     }),
   });
+  const data = await res.json();
+  return data?.[0]?.id || null;
 }
 
 // 同一ルームの既存発言を取得
