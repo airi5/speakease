@@ -66,7 +66,7 @@ async function loadExisting() {
   } catch(e) { console.error('loadExisting:', e); }
 }
 
-// ── 発言追加 ──────────────────────────────────
+// ── 発言を追加 ──────────────────────────────────
 function recordSilence(speakerBefore){
   if(lastSpeechTime!==null){
     const now=Date.now();
