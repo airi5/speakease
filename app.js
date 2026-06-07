@@ -28,7 +28,7 @@ async function join(){
   updateUILang();
 
   // WordBridgeをデフォルトで開く
-  toggleDrawer();
+  if (!IS_LOG_ONLY) toggleDrawer();
 }
 
 // ── タイマー ──────────────────────────────────
