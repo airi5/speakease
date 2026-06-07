@@ -297,3 +297,14 @@ html,body{height:100%;background:var(--bg);color:var(--ink);
   margin-bottom:-2px;
 }
 .auth-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+body.log-only .wb-trigger,
+body.log-only .wb-drawer,
+body.log-only .log-area,
+body.log-only #pList { display:none; }
+body.log-only .log-panel::after{
+  content:"Recording in progress. Please talk on Zoom as usual.";
+  display:flex; align-items:center; justify-content:center;
+  height:100%; padding:24px; text-align:center;
+  font-size:14px; color:#64748b; font-family:'Noto Sans JP',sans-serif;
+}
