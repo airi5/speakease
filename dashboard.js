@@ -176,7 +176,8 @@ function dlCSV(){
   const schoolPair=parts[0]||'';
   const groupId=parts[1]||'';
   const round=parts[2]||'';
-  const toolUsed=round==='R1'?'Yes':'No';
+　const mode=(parts[3]||'').toUpperCase();
+　const toolUsed=mode==='L'?'No':'Yes';
   const logRows=sessionLog.map(e=>
     `"${e.time||''}","${e.name}","${e.speaker}","${e.text.replace(/"/g,'""')}"`
   );
