@@ -108,6 +108,10 @@ function applyExperimentMode(){
   const round = (String(roomCode).split('-')[2] || '').toUpperCase();
   IS_LOG_ONLY = !EXPERIMENT.toolRounds.includes(round);
   document.body.classList.toggle('log-only', IS_LOG_ONLY);
+  if(IS_LOG_ONLY){
+    const r=document.getElementById('loRoom'); if(r) r.textContent=roomCode;
+    const n=document.getElementById('loName'); if(n) n.textContent=myName;
+  }
 }
 function initSR(){
   applyExperimentMode();
