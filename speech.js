@@ -105,12 +105,12 @@ function setRec(on){
 
 /* ---- 初期化（join() から呼ばれる） ---- */
 function applyExperimentMode(){
-  const round = (String(roomCode).split('-')[2] || '').toUpperCase();
-  IS_LOG_ONLY = !EXPERIMENT.toolRounds.includes(round);
+  const mode = (String(roomCode).split('-')[3] || '').toUpperCase();
+  IS_LOG_ONLY = (mode === 'L');     // L = log_only、それ以外(T等)はツール
   document.body.classList.toggle('log-only', IS_LOG_ONLY);
   if(IS_LOG_ONLY){
-    const r=document.getElementById('loRoom'); if(r) r.textContent=roomCode;
-    const n=document.getElementById('loName'); if(n) n.textContent=myName;
+    const r = document.getElementById('loRoom'); if(r) r.textContent = roomCode;
+    const n = document.getElementById('loName'); if(n) n.textContent = myName;
   }
 }
 function initSR(){
