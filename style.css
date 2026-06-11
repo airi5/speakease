@@ -308,3 +308,31 @@ body.log-only .log-panel::after{
   height:100%; padding:24px; text-align:center;
   font-size:14px; color:#64748b; font-family:'Noto Sans JP',sans-serif;
 }
+
+
+/* ── log_only 録音画面 ── */
+.lo-screen{position:absolute;inset:0;z-index:25;background:var(--bg);
+  display:none;align-items:center;justify-content:center;padding:2rem}
+body.log-only .lo-screen{display:flex}
+body.log-only #dashContent .stats{display:none}   /* 終了レポートはアンケートだけ表示 */
+.lo-card{width:420px;max-width:92vw;background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:24px 24px 28px;box-shadow:0 8px 32px rgba(59,130,246,.1)}
+.lo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.lo-center{text-align:center;padding:8px 0 24px}
+.lo-dot{position:relative;width:14px;height:14px;margin:0 auto 24px}
+.lo-ring{position:absolute;inset:0;border-radius:50%;background:var(--rose);
+  animation:loPulse 1.6s ease-out infinite}
+.lo-core{position:absolute;inset:0;border-radius:50%;background:var(--rose)}
+@keyframes loPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+.lo-title{font-size:24px;font-weight:900;color:var(--ink);margin-bottom:10px}
+.lo-sub{font-size:14px;color:var(--ink3);line-height:1.7;max-width:300px;margin:0 auto;
+  font-family:'Noto Sans JP',sans-serif}
+.lo-timer{font-size:34px;font-weight:900;color:var(--ink);margin-top:24px;
+  font-variant-numeric:tabular-nums}
+.lo-name{font-size:12px;font-weight:700;color:var(--ink3);margin-top:4px}
+.lo-finish{width:100%;border:none;background:var(--blue);color:#fff;font-size:16px;
+  font-weight:800;padding:14px;border-radius:var(--r);cursor:pointer;
+  font-family:'Nunito',sans-serif;letter-spacing:.02em}
+.lo-finish:hover{background:var(--blue-d)}
+.lo-hint{font-size:11px;color:var(--ink3);text-align:center;margin-top:11px;
+  line-height:1.6;font-family:'Noto Sans JP',sans-serif}
