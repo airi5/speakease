@@ -1,19 +1,19 @@
 /* ============================================================
-   SpeakEase  speech.js  (改良版・最新)
-   - 連続認識：ボタン不要、自動で聞き続ける（要望②③を解決）
-   - 認識エンジン差し替え可能：後で Deepgram を挿すだけ
+   SpeakEase  speech.js  (Deepgram版)
+   - 連続認識：ボタン不要、自動で聞き続ける
+   - 認識エンジン：Deepgram Nova-3（一時トークン＋WebSocket）
    - log_only モード：ツールUIを出さず、記録だけ走らせる
    - 生チャンクを speech_log に記録（研究データ／集計は後処理）
    ============================================================ */
 
 const SPEECH_CONFIG = {
   lang: 'en-US',
-  engine: 'webspeech',   // 'webspeech'（現行・無料） / 'deepgram'（後で差し替え）
+  engine: 'deepgram',    // 'webspeech'（無料・予備） / 'deepgram'（本番）
 };
 
-// room code の3番目（例 AX-G01-R1 の "R1"）でツール提示の有無を決める
+// room code の4番目（例 AX-G01-R1-T の "T"）でツール/ログを決める
 const EXPERIMENT = {
-  toolRounds: ['R1'],    // この回はツール提示。それ以外は log_only（ツール非表示）
+  toolRounds: ['R1'],    // ※現在は未使用（T/Lフラグで判定）
 };
 
 let IS_LOG_ONLY = false;
@@ -21,13 +21,13 @@ let speechEngine = null;
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 
-/* ---- Web Speech エンジン（現行・無料） ---- */
+/* ---- Web Speech エンジン（無料・予備） ---- */
 function createWebSpeechEngine(){
   let rec = null, running = false, handlers = {};
   function build(){
     const r = new SR();
     r.lang = SPEECH_CONFIG.lang;
-    r.continuous = true;       // ★止めない（沈黙ごとに勝手に終わらせない）
+    r.continuous = true;
     r.interimResults = true;
     r.maxAlternatives = 1;
     r.onresult = e => {
@@ -43,7 +43,7 @@ function createWebSpeechEngine(){
       if(e.error==='no-speech' || e.error==='aborted') return;
       console.error('SR error:', e.error);
     };
-    r.onend = () => { if(running){ try{ r.start(); }catch(_){} } };  // 録音中なら自動再開
+    r.onend = () => { if(running){ try{ r.start(); }catch(_){} } };
     return r;
   }
   return {
@@ -52,10 +52,69 @@ function createWebSpeechEngine(){
   };
 }
 
-/* ---- Deepgram エンジン（後で実装。今は雛形だけ） ---- */
+/* ---- Deepgram エンジン（Nova-3 ストリーミング） ---- */
 function createDeepgramEngine(){
-  console.warn('Deepgram engine not implemented yet; using Web Speech.');
-  return SR ? createWebSpeechEngine() : null;
+  let ws = null, recorder = null, micStream = null;
+  let running = false, handlers = {};
+
+  async function getToken(){
+    const res = await fetch(`${SB_URL}/functions/v1/deepgram-token`, { method: 'POST' });
+    const data = await res.json();
+    return data.access_token;
+  }
+
+  async function connect(){
+    let token;
+    try { token = await getToken(); } catch(e){ console.error('token fetch failed', e); return; }
+    if(!token){ console.error('Deepgram: no access_token'); return; }
+
+    const qs = new URLSearchParams({
+      model: 'nova-3',
+      language: 'en',
+      smart_format: 'true',
+      interim_results: 'true',
+      endpointing: '300',
+      mip_opt_out: 'true',          // 参加者音声を学習に使わせない
+    });
+    // ブラウザはヘッダを付けられないので ['token', token] で認証
+    ws = new WebSocket(`wss://api.deepgram.com/v1/listen?${qs}`, ['token', token]);
+
+    ws.onopen = async () => {
+      try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+      catch(e){ console.error('mic error', e); return; }
+      const mime = (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
+        ? 'audio/webm;codecs=opus' : 'audio/webm';
+      recorder = new MediaRecorder(micStream, { mimeType: mime });
+      recorder.ondataavailable = (ev) => {
+        if(ev.data.size > 0 && ws && ws.readyState === WebSocket.OPEN) ws.send(ev.data);
+      };
+      recorder.start(250);          // 250msごとに音声を送る
+    };
+
+    ws.onmessage = (msg) => {
+      let data; try { data = JSON.parse(msg.data); } catch(_){ return; }
+      if(data.type !== 'Results') return;
+      const text = data.channel && data.channel.alternatives && data.channel.alternatives[0]
+        ? (data.channel.alternatives[0].transcript || '') : '';
+      if(!text) return;
+      if(data.is_final){ if(handlers.onFinal) handlers.onFinal(text); }
+      else { if(handlers.onPartial) handlers.onPartial(text); }
+    };
+
+    ws.onerror = (e) => { console.error('Deepgram WS error', e); };
+    ws.onclose = () => { stopAudio(); if(running) setTimeout(connect, 500); }; // 切れたら再接続
+  }
+
+  function stopAudio(){
+    try { if(recorder && recorder.state !== 'inactive') recorder.stop(); } catch(_){}
+    try { if(micStream) micStream.getTracks().forEach(t => t.stop()); } catch(_){}
+    recorder = null; micStream = null;
+  }
+
+  return {
+    start(h){ handlers = h || {}; running = true; connect(); },
+    stop(){ running = false; stopAudio(); try { if(ws) ws.close(); } catch(_){} ws = null; },
+  };
 }
 
 function createEngine(){
@@ -87,7 +146,7 @@ function stopMic(){
   if(speechEngine) speechEngine.stop();
   setMicUI(false); setRec(false);
 }
-function toggleMic(){ isRec ? stopMic() : startMic(); }   // ボタンは「一時停止」として任意利用
+function toggleMic(){ isRec ? stopMic() : startMic(); }
 
 function setMicUI(on){
   const btn=document.getElementById('micBtn'), lbl=document.getElementById('micLbl'),
@@ -120,5 +179,5 @@ function initSR(){
     const btn=document.getElementById('micBtn'); if(btn){ btn.disabled=true; btn.style.opacity='.4'; }
     return;
   }
-  startMic();   // ★ボタンを押さず自動で聞き始める
+  startMic();
 }
