@@ -77,7 +77,7 @@ function createDeepgramEngine(){
       mip_opt_out: 'true',          // 参加者音声を学習に使わせない
     });
     // ブラウザはヘッダを付けられないので ['token', token] で認証
-    ws = new WebSocket(`wss://api.deepgram.com/v1/listen?${qs}`, ['token', token]);
+    ws = new WebSocket(`wss://api.deepgram.com/v1/listen?${qs}`, ['bearer', token]);
 
     ws.onopen = async () => {
       try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
