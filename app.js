@@ -28,7 +28,7 @@ async function join(){
   updateUILang();
 
   // WordBridgeをデフォルトで開く
-  toggleDrawer();
+  if (!IS_LOG_ONLY) toggleDrawer();
 }
 
 // ── タイマー ──────────────────────────────────
@@ -38,6 +38,7 @@ function startTimer(){
     const t=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
     document.getElementById('timerDisp').textContent=t;
     document.getElementById('sideTimer').textContent=t;
+    const lo=document.getElementById('loTimer'); if(lo) lo.textContent=t;
   },1000);
 }
 

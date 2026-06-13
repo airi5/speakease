@@ -205,3 +205,16 @@ async function sbGetTopic(){
   const data = await res.json();
   return data?.[0]?.current_topic || null;
 }
+
+async function logChunk(text){
+  try{
+    await fetch(`${SB_URL}/rest/v1/speech_log`, {
+      method:'POST',
+      headers:{...SB_HEADERS, 'Prefer':'return=minimal'},
+      body: JSON.stringify({
+        room_code: roomCode, person_id: myPersonId,
+        name: myName, text: text, client_ts: Date.now(),
+      }),
+    });
+  }catch(e){ console.error('logChunk', e); }
+}

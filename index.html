@@ -202,7 +202,25 @@
     </div>
     <div id="dashContent"></div>
   </div>
-
+<!-- log_only 録音画面 -->
+<div class="lo-screen" id="loScreen">
+  <div class="lo-card">
+    <div class="lo-top">
+      <div class="logo">Speak<span>Ease</span></div>
+      <div class="room-pill">Room <b id="loRoom">---</b></div>
+    </div>
+    <div class="lo-center">
+      <div class="lo-dot"><span class="lo-ring"></span><span class="lo-core"></span></div>
+      <div class="lo-title">Recording in progress</div>
+      <p class="lo-sub">You can minimize this tab and talk on Zoom as usual. Your conversation is being recorded for the study.</p>
+      <div class="lo-timer" id="loTimer">00:00</div>
+      <div class="lo-name">Signed in as <span id="loName">---</span></div>
+    </div>
+    <button class="lo-finish" onclick="endSession()">Finish session</button>
+    <p class="lo-hint">When your session ends, come back to this tab and tap Finish to answer a short questionnaire.</p>
+  </div>
+</div>
+  
 </div>
 
 <script src="config.js"></script>
