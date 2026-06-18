@@ -37,17 +37,8 @@ function renderEntry(entry, speaker){
   transBtn.addEventListener('click', ()=>toggleTrans(entry.id, entry.text, transBtn, bTrans));
   bActions.appendChild(transBtn);
 
-  // 自分の発言のみ：削除ボタン・？ボタン
+  // 自分の発言のみ：削除ボタン
   if(speaker === 'me'){
-    // ？ボタン
-    const qBtn = document.createElement('button');
-    qBtn.className = 'trans-btn';
-    qBtn.textContent = '？';
-    qBtn.title = 'Mark as question';
-    qBtn.addEventListener('click', ()=>markAsQuestion(bEn));
-    bActions.appendChild(qBtn);
-
-    // 削除ボタン
     const delBtn = document.createElement('button');
     delBtn.className = 'trans-btn';
     delBtn.textContent = '🗑';
@@ -165,7 +156,7 @@ async function toggleTrans(id, text, btn, el){
   }
 }
 
-// ① 発言を削除
+// 発言を削除
 async function deleteEntry(divEl){
   const currentId = divEl.id.replace('entry-', '');
   divEl.remove();
@@ -174,14 +165,4 @@ async function deleteEntry(divEl){
   cntMe = sessionLog.filter(e => e.speaker === 'me').length;
   updateParticipantList();
   await sbDelete(currentId);
-}
-
-// ② 質問マーク追加
-async function markAsQuestion(bEnEl){
-  if(bEnEl.textContent.endsWith('？')) return;
-  const currentId = bEnEl.id.replace('text-', '');
-  bEnEl.textContent = bEnEl.textContent + '？';
-  const entry = sessionLog.find(e => String(e.id) === currentId);
-  if(entry) entry.text = bEnEl.textContent;
-  await sbMarkQuestion(currentId);
 }
