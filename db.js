@@ -206,9 +206,17 @@ async function sbGetTopic(){
   return data?.[0]?.current_topic || null;
 }
 
+// テスト用ルームかどうかを判定（先頭が TEST- ならテスト）
+function isTestRoom(code){
+  if(!code) return false;
+  return code.startsWith('TEST-');
+}
+
 async function logChunk(text){
+  // テスト部屋なら speech_log_test、本番なら speech_log
+  const table = isTestRoom(roomCode) ? 'speech_log_test' : 'speech_log';
   try{
-    await fetch(`${SB_URL}/rest/v1/speech_log`, {
+    await fetch(`${SB_URL}/rest/v1/${table}`, {
       method:'POST',
       headers:{...SB_HEADERS, 'Prefer':'return=minimal'},
       body: JSON.stringify({
