@@ -150,6 +150,9 @@ async function submitSurvey(){
     wtc5:surveyAnswers['wtc5']||null, wtc6:surveyAnswers['wtc6']||null,
     wtc7:surveyAnswers['wtc7']||null,
     free_text: free,
+    trans_count: transClickCount,
+    wb_count:    wbOpenCount,
+    talk_sec:    sessionStart ? Math.round((Date.now()-sessionStart)/1000) : 0,
     created_at: new Date().toISOString(),
   };
   try{
