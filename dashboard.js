@@ -18,6 +18,21 @@ function buildDash(){
   const topW=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(e=>e[0]);
   const wtcItems=t('wtc');
 
+  // log-onlyのときはツール体験を前提とした qa3〜qa6 を出さない
+  const qaList = IS_LOG_ONLY
+    ? [
+        {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
+        {id:'qa2',lo:'qa2lo',hi:'qa2hi',q:'qa2q'},
+      ]
+    : [
+        {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
+        {id:'qa2',lo:'qa2lo',hi:'qa2hi',q:'qa2q'},
+        {id:'qa3',lo:'qa3lo',hi:'qa3hi',q:'qa3q'},
+        {id:'qa4',lo:'qa4lo',hi:'qa4hi',q:'qa4q'},
+        {id:'qa5',lo:'qa5lo',hi:'qa5hi',q:'qa5q'},
+        {id:'qa6',lo:'qa6lo',hi:'qa6hi',q:'qa6q'},
+      ];
+
   document.getElementById('dashTitle').textContent=t('dashTitle');
   document.getElementById('dashClose').textContent=t('dashClose');
 
@@ -54,14 +69,7 @@ function buildDash(){
           ${t('surveySection1')}
         </div>
 
-        ${[
-          {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
-          {id:'qa2',lo:'qa2lo',hi:'qa2hi',q:'qa2q'},
-          {id:'qa3',lo:'qa3lo',hi:'qa3hi',q:'qa3q'},
-          {id:'qa4',lo:'qa4lo',hi:'qa4hi',q:'qa4q'},
-          {id:'qa5',lo:'qa5lo',hi:'qa5hi',q:'qa5q'},
-          {id:'qa6',lo:'qa6lo',hi:'qa6hi',q:'qa6q'},
-        ].map(item=>`
+        ${qaList.map(item=>`
           <div>
             <div style="font-size:13px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
