@@ -94,11 +94,21 @@ function createDeepgramEngine(){
     ws.onmessage = (msg) => {
       let data; try { data = JSON.parse(msg.data); } catch(_){ return; }
       if(data.type !== 'Results') return;
-      const text = data.channel && data.channel.alternatives && data.channel.alternatives[0]
-        ? (data.channel.alternatives[0].transcript || '') : '';
+      const alt = data.channel && data.channel.alternatives && data.channel.alternatives[0];
+      const text = alt ? (alt.transcript || '') : '';
       if(!text) return;
-      if(data.is_final){ if(handlers.onFinal) handlers.onFinal(text); }
-      else { if(handlers.onPartial) handlers.onPartial(text); }
+
+      if(data.is_final){
+        // 単語レベルの時刻から、この発話の開始・終了（秒）を取り出す
+        const words = (alt && alt.words) || [];
+        const times = words.length
+          ? { start: words[0].start, end: words[words.length-1].end }
+          : { start: data.start ?? null,
+              end: (data.start != null && data.duration != null) ? data.start + data.duration : null };
+        if(handlers.onFinal) handlers.onFinal(text, times);
+      } else {
+        if(handlers.onPartial) handlers.onPartial(text);
+      }
     };
 
     ws.onerror = (e) => { console.error('Deepgram WS error', e); };
@@ -128,8 +138,8 @@ function onEnginePartial(text){
   if(hint && !IS_LOG_ONLY) hint.textContent = `「${text}」`;
 }
 
-function onEngineFinal(chunk){
-  logChunk(chunk);                       // ★研究データ：speech_logへ（全回）
+function onEngineFinal(chunk, times){
+  logChunk(chunk, times);                // ★研究データ：speech_logへ（発話の開始/終了秒つき）
   if(!IS_LOG_ONLY) addMyEntry(chunk);    // 表示＋ライブ集計：ツール回のみ
 }
 
