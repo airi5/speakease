@@ -212,7 +212,7 @@ function isTestRoom(code){
   return code.startsWith('TEST-');
 }
 
-async function logChunk(text){
+async function logChunk(text, times){
   // テスト部屋なら speech_log_test、本番なら speech_log
   const table = isTestRoom(roomCode) ? 'speech_log_test' : 'speech_log';
   try{
@@ -222,6 +222,8 @@ async function logChunk(text){
       body: JSON.stringify({
         room_code: roomCode, person_id: myPersonId,
         name: myName, text: text, client_ts: Date.now(),
+        start_sec: times?.start ?? null,
+        end_sec:   times?.end   ?? null,
       }),
     });
   }catch(e){ console.error('logChunk', e); }
