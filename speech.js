@@ -140,7 +140,14 @@ function onEnginePartial(text){
 }
 
 function onEngineFinal(chunk, times){
-  logChunk(chunk, times);                // ★研究データ：speech_logへ（発話の開始/終了秒つき）
+  // マイクテスト中：記録せず、合格判定に使う
+  if(MIC_TEST_MODE){
+    const h = document.getElementById('mtHeard');
+    if(h) h.textContent = `「${chunk}」`;
+    micTestPass(false);
+    return;
+  }
+  logChunk(chunk, times);                // ★研究データ：speech_logへ
   if(!IS_LOG_ONLY) addMyEntry(chunk);    // 表示＋ライブ集計：ツール回のみ
 }
 
@@ -191,4 +198,44 @@ function initSR(){
     return;
   }
   startMic();
+}
+
+/* ---- マイクテスト ---- */
+let MIC_TEST_MODE = false;
+let micTestTimer = null;
+
+function startMicTest(){
+  MIC_TEST_MODE = true;
+  const el = document.getElementById('micTest');
+  if(el) el.style.display = 'flex';
+  startMic();                       // 認識エンジンを起動
+  // 15秒たっても声が来なければ警告
+  micTestTimer = setTimeout(() => {
+    if(!MIC_TEST_MODE) return;
+    document.getElementById('mtIcon').textContent = '⚠️';
+    document.getElementById('mtTitle').textContent = 'Mic not detected';
+    document.getElementById('mtMsg').innerHTML =
+      'Your voice was not detected.<br>声が認識されませんでした。<br><br>'
+      + '・Use <b>Chrome</b> or <b>Edge</b>（Safari は不可）<br>'
+      + '・Allow microphone access<br>'
+      + '・Reload the page（ページを再読み込み）';
+    document.getElementById('mtSkip').style.display = 'inline-block';
+  }, 15000);
+}
+
+// 認識できた／スキップした → 会話画面へ
+function micTestPass(skipped){
+  if(!MIC_TEST_MODE) return;
+  MIC_TEST_MODE = false;
+  if(micTestTimer){ clearTimeout(micTestTimer); micTestTimer = null; }
+  const el = document.getElementById('micTest');
+  if(!skipped){
+    document.getElementById('mtIcon').textContent = '✅';
+    document.getElementById('mtTitle').textContent = 'Mic OK!';
+    document.getElementById('mtMsg').textContent = 'Starting the session...';
+    setTimeout(() => { if(el) el.style.display='none'; }, 1200);
+  } else {
+    if(el) el.style.display='none';
+  }
+  sessionStart = Date.now();        // テスト中の時間は会話時間に含めない
 }
