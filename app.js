@@ -34,7 +34,8 @@ async function join(){
   document.getElementById('meetingWrap').style.display='grid';
   updateParticipantList();
   startTimer();
-  initSR();
+  applyExperimentMode();   // モード判定（log-only か）
+  startMicTest();          // ★マイクテストから開始
   loadExisting();
   sbSubscribe();
   sbSubscribeRooms();
