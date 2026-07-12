@@ -64,9 +64,10 @@ function createDeepgramEngine(){
   }
 
   async function connect(){
-    let token;
-    try { token = await getToken(); } catch(e){ console.error('token fetch failed', e); return; }
-    if(!token){ console.error('Deepgram: no access_token'); return; }
+    if(!running) return;
+    let token = null;
+    try { token = await getToken(); } catch(e){ console.error('token fetch failed', e); }
+    if(!token){ console.error('Deepgram: no access_token, retrying...'); setTimeout(connect, 3000); return; }
 
     const qs = new URLSearchParams({
       model: 'nova-3',
@@ -81,7 +82,7 @@ function createDeepgramEngine(){
 
     ws.onopen = async () => {
       try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-      catch(e){ console.error('mic error', e); return; }
+      catch(e){ console.error('mic error', e); setTimeout(connect, 3000); return; }
       const mime = (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
         ? 'audio/webm;codecs=opus' : 'audio/webm';
       recorder = new MediaRecorder(micStream, { mimeType: mime });
