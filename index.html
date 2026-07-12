@@ -231,5 +231,31 @@
 <script src="ui.js"></script>
 <script src="dashboard.js"></script>
 <script src="app.js"></script>
+
+<!-- マイクテスト -->
+<div id="micTest" style="display:none;position:fixed;inset:0;z-index:9998;
+  background:#f0f7ff;align-items:center;justify-content:center;font-family:'Nunito',sans-serif">
+  <div style="background:#fff;border-radius:24px;padding:40px 32px;max-width:420px;width:90%;
+    text-align:center;box-shadow:0 8px 32px rgba(59,130,246,.1)">
+    <div style="font-size:24px;font-weight:900;margin-bottom:8px">
+      <span style="color:#3b82f6">Speak</span><span style="color:#8b5cf6">Ease</span>
+    </div>
+    <div id="mtIcon" style="font-size:56px;margin:20px 0">🎤</div>
+    <div id="mtTitle" style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:10px">
+      Mic check
+    </div>
+    <div id="mtMsg" style="font-size:14px;color:#64748b;line-height:1.7;margin-bottom:20px">
+      Please say something in English<br>
+      （英語で何か一言話してください）
+    </div>
+    <div id="mtHeard" style="font-size:14px;color:#3b82f6;font-weight:700;min-height:22px"></div>
+    <button id="mtSkip" onclick="micTestPass(true)" style="display:none;margin-top:20px;
+      padding:12px 24px;border:none;border-radius:14px;background:#3b82f6;color:#fff;
+      font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
+      Continue anyway / このまま続ける
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
