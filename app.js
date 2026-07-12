@@ -1,3 +1,9 @@
+// 部屋コードの形式チェック  例: JT-G03-R1-T / TEST-G01-R2-L
+function validateRoomCode(code){
+  const c = String(code||'').trim().toUpperCase();
+  // 拠点(英字2〜4) - G+数字2桁 - R+数字 - T か L
+  return /^[A-Z]{2,4}-G\d{2}-R\d-[TL]$/.test(c) ? c : null;
+}
 // ── 参加 ──────────────────────────────────────
 async function join(){
   const name=document.getElementById('nameIn').value.trim();
@@ -8,10 +14,19 @@ async function join(){
   if(!personId){alert('Please enter your personal ID.');return;}
   if(!room){alert('Please enter a room code.');return;}
 
+  // ★ルームコードの形式を検証（例: JT-G01-R1-T）
+  const validRoom = validateRoomCode(room);
+  if(!validRoom){
+    alert('ルームコードが正しくありません。配布されたコードをそのまま入力してください。\n'
+        + 'Invalid room code. Please copy the code exactly as provided.\n\n'
+        + '例 / Example:  JT-G01-R1-T');
+    return;
+  }
+
   myName=name;
   myPersonId=personId;
   myLang=lang;
-  roomCode=room;
+  roomCode=validRoom;            // ★整形済み（大文字）のコードを使う
   sessionStart=Date.now();
   document.getElementById('roomDisp').textContent=roomCode;
   document.getElementById('langSw').value=myLang;
