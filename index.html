@@ -152,30 +152,16 @@
           </select>
         </div>
       </div>
-      <div class="side-timer" id="sideTimer">00:00</div>
+      <div class="side-timer" id="sideTimer" style="display:none">00:00</div>
 
-      <!-- WordBridgeトリガー -->
-      <div class="wb-trigger">
-        <button class="wb-open-btn" id="wbBtn" onclick="toggleDrawer()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <span id="wbBtnLabel">Find words (WordBridge)</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px">
-            <polyline points="18 15 12 9 6 15"/>
-          </svg>
-        </button>
+      <!-- ツール切り替えタブ（WordBridge / HelpBox） -->
+      <div class="tool-tabs">
+        <button class="tool-tab active" id="toolTabWordbridge" onclick="switchTool('wordbridge')">🌉 WordBridge</button>
+        <button class="tool-tab" id="toolTabHelpbox" onclick="switchTool('helpbox')">🆘 HelpBox</button>
       </div>
 
-     <!-- WordBridgeドロワー -->
-      <div class="wb-drawer" id="wbDrawer">
-        <div class="wb-inner">
-
-          <!-- WordBridge見出し -->
-          <div class="wb-header">
-            <div class="wb-header-title">🌉 WordBridge</div>
-            <div class="wb-header-sub">Grow the conversation, one word at a time</div>
-          </div>
+      <!-- WordBridgeパネル -->
+      <div class="tool-panel" id="wordbridgePanel">
 
           <!-- 話題レベルボタン（誰でも押せる／成長アイコン） -->
           <div class="wb-level-lbl">Pick a topic level</div>
@@ -191,10 +177,9 @@
             </button>
           </div>
 
-          <!-- ルーレット開始/停止ボタン -->
+          <!-- ルーレット開始ボタン（自動で止まって確定するのでStopは廃止） -->
           <div class="wb-spin-row">
             <button class="wb-spin-btn start" id="wbStartBtn" onclick="startSpin()" disabled>▶ Start</button>
-            <button class="wb-spin-btn stop" id="wbStopBtn" onclick="stopSpin()" disabled>■ Stop</button>
           </div>
 
           <!-- 選ばれた話題カード -->
@@ -217,7 +202,33 @@
           <div class="words-grid" id="wordsGrid">
             <div class="wb-empty" id="wbEmpty">Pick a topic level to see words</div>
           </div>
-        </div>
+      </div>
+
+      <!-- HelpBoxパネル -->
+      <div class="tool-panel" id="helpboxPanel" style="display:none">
+
+          <!-- HelpBox内タブ（固定フレーズ／会話サポート） -->
+          <div class="help-subtabs">
+            <button class="help-subtab active" id="helpSubTabFixed" onclick="switchHelpSubTab('fixed')">💬 基本フレーズ</button>
+            <button class="help-subtab" id="helpSubTabDynamic" onclick="switchHelpSubTab('dynamic')">🔄 会話サポート</button>
+          </div>
+
+          <div class="help-sub-panel" id="helpFixedPanel">
+            <div class="wb-word-lvl-row">
+              <label for="helpLvlSel">Phrase level</label>
+              <select id="helpLvlSel" onchange="renderHelpFixedTab(Number(this.value))">
+                <option value="1">初級 (Easy)</option>
+                <option value="2" selected>中級 (Medium)</option>
+                <option value="3">上級 (Hard)</option>
+              </select>
+            </div>
+            <div class="help-phrase-list" id="helpFixedList"></div>
+          </div>
+
+          <div class="help-sub-panel" id="helpDynamicPanel" style="display:none">
+            <div class="help-dynamic-hint" id="helpDynamicHint">会話の進み具合に合わせてフレーズが変わります</div>
+            <div class="help-phrase-list" id="helpDynamicList"></div>
+          </div>
       </div>
     </div>
   </div>
@@ -256,6 +267,7 @@
 <script src="db.js"></script>
 <script src="speech.js"></script>
 <script src="wordbridge.js"></script>
+<script src="helpbox.js"></script>
 <script src="ui.js"></script>
 <script src="dashboard.js"></script>
 <script src="app.js"></script>
