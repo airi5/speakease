@@ -44,6 +44,7 @@ const WORD_DB = {
     {w:'recently started',jp:'最近始めた',lvl:2},{w:'really into',jp:'はまっている',lvl:2},
     {w:'spend time',jp:'時間を使う',lvl:2},{w:'relaxing',jp:'リラックスする',lvl:1},
     {w:'a way to unwind',jp:'息抜きの方法',lvl:3},{w:'niche interest',jp:'マニアックな趣味',lvl:3},
+    {w:'therapeutic',jp:'癒しになる',lvl:3},{w:'meditative',jp:'瞑想的な',lvl:3},
   ],
   food: [
     {w:'delicious',jp:'美味しい',lvl:1},{w:'spicy',jp:'辛い',lvl:1},{w:'sweet',jp:'甘い',lvl:1},
@@ -62,6 +63,7 @@ const WORD_DB = {
     {w:'recipe',jp:'レシピ',lvl:1},{w:'ingredient',jp:'食材',lvl:2},{w:'flavor',jp:'風味',lvl:2},
     {w:'restaurant',jp:'レストラン',lvl:1},{w:'café',jp:'カフェ',lvl:1},
     {w:'comfort food',jp:'ほっとする料理',lvl:3},{w:'acquired taste',jp:'慣れないと好きになれない味',lvl:3},
+    {w:'umami',jp:'うま味',lvl:3},{w:'palate',jp:'味覚',lvl:3},
   ],
   school: [
     {w:'study',jp:'勉強する',lvl:1},{w:'class',jp:'授業',lvl:1},{w:'teacher',jp:'先生',lvl:1},
@@ -78,6 +80,7 @@ const WORD_DB = {
     {w:'difficult',jp:'難しい',lvl:1},{w:'easy',jp:'簡単',lvl:1},{w:'interesting',jp:'面白い',lvl:1},
     {w:'boring',jp:'退屈な',lvl:1},{w:'deadline',jp:'締め切り',lvl:2},{w:'library',jp:'図書館',lvl:1},
     {w:'curriculum',jp:'カリキュラム',lvl:3},{w:'academic pressure',jp:'学業のプレッシャー',lvl:3},
+    {w:'rote memorization',jp:'丸暗記',lvl:3},
   ],
   weather: [
     {w:'sunny',jp:'晴れ',lvl:1},{w:'rainy',jp:'雨',lvl:1},{w:'cloudy',jp:'曇り',lvl:1},
@@ -93,6 +96,7 @@ const WORD_DB = {
     {w:'fireworks',jp:'花火',lvl:1},{w:'temperature',jp:'気温',lvl:1},{w:'forecast',jp:'予報',lvl:2},
     {w:'climate change',jp:'気候変動',lvl:2},{w:'global warming',jp:'地球温暖化',lvl:2},
     {w:'unpredictable weather',jp:'変わりやすい天気',lvl:3},
+    {w:'meteorologist',jp:'気象予報士',lvl:3},{w:'atmospheric pressure',jp:'気圧',lvl:3},{w:'seasonal shift',jp:'季節の移り変わり',lvl:3},
   ],
   family: [
     {w:'parents',jp:'両親',lvl:1},{w:'mother',jp:'お母さん',lvl:1},{w:'father',jp:'お父さん',lvl:1},
@@ -108,6 +112,8 @@ const WORD_DB = {
     {w:'countryside',jp:'田舎',lvl:1},{w:'city',jp:'都市',lvl:1},{w:'suburb',jp:'郊外',lvl:2},
     {w:'culture',jp:'文化',lvl:2},{w:'language',jp:'言語',lvl:1},
     {w:'extended family',jp:'親戚一同',lvl:3},{w:'generation gap',jp:'世代間ギャップ',lvl:3},
+    {w:'household',jp:'世帯',lvl:2},
+    {w:'nuclear family',jp:'核家族',lvl:3},{w:'family dynamics',jp:'家族間の力学',lvl:3},
   ],
   travel: [
     {w:'visit',jp:'訪れる',lvl:1},{w:'trip',jp:'旅行',lvl:1},{w:'journey',jp:'旅',lvl:2},
@@ -126,6 +132,7 @@ const WORD_DB = {
     {w:'someday',jp:'いつか',lvl:1},{w:'dream trip',jp:'夢の旅',lvl:1},
     {w:'exchange student',jp:'交換留学生',lvl:2},{w:'study abroad',jp:'留学',lvl:2},
     {w:'off the beaten path',jp:'穴場の・人が行かない',lvl:3},{w:'culture shock',jp:'カルチャーショック',lvl:3},
+    {w:'wanderlust',jp:'旅への強い憧れ',lvl:3},{w:'itinerary',jp:'旅程',lvl:3},
   ],
   work: [
     {w:'job',jp:'仕事',lvl:1},{w:'career',jp:'キャリア',lvl:2},{w:'dream',jp:'夢',lvl:1},
@@ -156,6 +163,7 @@ const WORD_DB = {
     {w:'classical',jp:'クラシック',lvl:1},{w:'jazz',jp:'ジャズ',lvl:1},{w:'rock',jp:'ロック',lvl:1},
     {w:'playlist',jp:'プレイリスト',lvl:1},{w:'album',jp:'アルバム',lvl:1},{w:'lyrics',jp:'歌詞',lvl:2},
     {w:'plot twist',jp:'どんでん返し',lvl:3},{w:'underrated',jp:'過小評価されている',lvl:3},
+    {w:'cinematic',jp:'映画的な',lvl:3},{w:'nostalgic',jp:'懐かしい',lvl:3},
   ],
   sports: [
     {w:'soccer',jp:'サッカー',lvl:1},{w:'football',jp:'フットボール',lvl:1},{w:'basketball',jp:'バスケ',lvl:1},
@@ -172,6 +180,8 @@ const WORD_DB = {
     {w:'support',jp:'応援する',lvl:1},{w:'champion',jp:'チャンピオン',lvl:1},{w:'record',jp:'記録',lvl:1},
     {w:'Olympics',jp:'オリンピック',lvl:1},{w:'World Cup',jp:'ワールドカップ',lvl:1},
     {w:'underdog',jp:'番狂わせを起こす側',lvl:3},
+    {w:'endurance',jp:'持久力',lvl:2},{w:'technique',jp:'技術',lvl:2},
+    {w:'peak performance',jp:'最高のパフォーマンス',lvl:3},{w:'sports psychology',jp:'スポーツ心理学',lvl:3},{w:'competitive edge',jp:'競争力の優位性',lvl:3},
   ],
   pets: [
     {w:'dog',jp:'犬',lvl:1},{w:'cat',jp:'猫',lvl:1},{w:'rabbit',jp:'うさぎ',lvl:1},
@@ -185,6 +195,7 @@ const WORD_DB = {
     {w:'tail',jp:'しっぽ',lvl:1},{w:'fur',jp:'毛',lvl:1},{w:'veterinarian',jp:'獣医',lvl:2},
     {w:'animal shelter',jp:'動物シェルター',lvl:2},{w:'zoo',jp:'動物園',lvl:1},
     {w:'wildlife',jp:'野生動物',lvl:2},{w:'endangered',jp:'絶滅危惧種',lvl:3},
+    {w:'domesticated',jp:'家畜化された',lvl:3},{w:'companionship',jp:'心の支え・仲間意識',lvl:3},{w:'temperament',jp:'気質',lvl:3},
   ],
   tech: [
     {w:'app',jp:'アプリ',lvl:1},{w:'smartphone',jp:'スマートフォン',lvl:1},{w:'tablet',jp:'タブレット',lvl:1},
@@ -199,6 +210,7 @@ const WORD_DB = {
     {w:'online shopping',jp:'オンラインショッピング',lvl:1},{w:'digital',jp:'デジタル',lvl:1},
     {w:'virtual reality',jp:'VR',lvl:2},{w:'electric car',jp:'電気自動車',lvl:2},
     {w:'algorithm',jp:'アルゴリズム',lvl:3},{w:'data privacy',jp:'データプライバシー',lvl:3},
+    {w:'machine learning',jp:'機械学習',lvl:3},{w:'cybersecurity',jp:'サイバーセキュリティ',lvl:3},
   ],
   health: [
     {w:'exercise',jp:'運動',lvl:1},{w:'workout',jp:'トレーニング',lvl:1},{w:'gym',jp:'ジム',lvl:1},
@@ -209,6 +221,7 @@ const WORD_DB = {
     {w:'jog',jp:'ジョギング',lvl:1},{w:'stretch',jp:'ストレッチ',lvl:1},{w:'balance',jp:'バランス',lvl:1},
     {w:'hospital',jp:'病院',lvl:1},{w:'medicine',jp:'薬',lvl:1},{w:'doctor',jp:'医者',lvl:1},
     {w:'well-being',jp:'心身の健康',lvl:3},{w:'self-care',jp:'セルフケア',lvl:2},
+    {w:'holistic',jp:'全体論的な',lvl:3},{w:'chronic',jp:'慢性の',lvl:3},{w:'preventive care',jp:'予防医療',lvl:3},
   ],
   emotion: [
     {w:'happy',jp:'嬉しい',lvl:1},{w:'sad',jp:'悲しい',lvl:1},{w:'excited',jp:'興奮している',lvl:1},
@@ -231,6 +244,8 @@ const WORD_DB = {
     {w:'I\'m learning English',jp:'英語を勉強中です',lvl:1},{w:'my English is not perfect',jp:'英語は得意じゃないけど',lvl:2},
     {w:'can you repeat?',jp:'もう一度言ってもらえますか？',lvl:1},{w:'I don\'t understand',jp:'わかりません',lvl:1},
     {w:'what does that mean?',jp:'どういう意味ですか？',lvl:1},{w:'how do you say',jp:'〜は英語でどう言う？',lvl:1},
+    {w:'small talk',jp:'世間話',lvl:2},{w:'get to know',jp:'知り合いになる',lvl:2},{w:'first impression',jp:'第一印象',lvl:2},
+    {w:'break the ice',jp:'場の緊張をほぐす',lvl:3},{w:'rapport',jp:'信頼関係',lvl:3},{w:'common ground',jp:'共通点',lvl:3},
   ],
   opinion: [
     {w:'I believe',jp:'〜だと信じています',lvl:2},{w:'in my view',jp:'私の見方では',lvl:2},
@@ -242,6 +257,7 @@ const WORD_DB = {
     {w:'I\'ve heard that',jp:'〜と聞いたことがあります',lvl:2},{w:'it depends',jp:'場合によります',lvl:1},
     {w:'that\'s a good point',jp:'いいポイントですね',lvl:2},{w:'I hadn\'t thought of that',jp:'考えていなかった',lvl:3},
     {w:'to some extent',jp:'ある程度は',lvl:3},{w:'I see your point, but',jp:'言いたいことはわかるけど',lvl:3},
+    {w:'I like',jp:'私は好きです',lvl:1},
   ],
   culture: [
     {w:'tradition',jp:'伝統',lvl:2},{w:'custom',jp:'慣習',lvl:2},{w:'festival',jp:'祭り',lvl:1},
@@ -261,6 +277,8 @@ const WORD_DB = {
     {w:'peaceful',jp:'穏やか',lvl:1},{w:'exciting',jp:'わくわく',lvl:1},{w:'nature',jp:'自然',lvl:1},
     {w:'prefer',jp:'好む',lvl:1},{w:'because',jp:'なぜなら',lvl:1},{w:'both',jp:'どちらも',lvl:1},
     {w:'relaxing',jp:'リラックス',lvl:1},{w:'adventure',jp:'冒険',lvl:1},{w:'view',jp:'眺め',lvl:1},
+    {w:'altitude',jp:'標高',lvl:2},{w:'coastal',jp:'沿岸の',lvl:2},{w:'landscape',jp:'風景',lvl:2},
+    {w:'breathtaking',jp:'息をのむような',lvl:3},{w:'tranquility',jp:'静けさ',lvl:3},{w:'rugged terrain',jp:'険しい地形',lvl:3},
   ],
   choice_night_morning: [
     {w:'night owl',jp:'夜型',lvl:2},{w:'early bird',jp:'朝型',lvl:2},{w:'stay up late',jp:'夜更かし',lvl:1},
@@ -269,6 +287,7 @@ const WORD_DB = {
     {w:'routine',jp:'習慣',lvl:1},{w:'energy',jp:'エネルギー',lvl:1},{w:'prefer',jp:'好む',lvl:1},
     {w:'usually',jp:'たいてい',lvl:1},{w:'depends',jp:'場合による',lvl:1},{w:'lately',jp:'最近は',lvl:2},
     {w:'tired',jp:'疲れた',lvl:1},{w:'focus',jp:'集中する',lvl:1},{w:'alarm',jp:'アラーム',lvl:1},
+    {w:'circadian rhythm',jp:'概日リズム',lvl:3},{w:'peak productivity',jp:'生産性が最も高い時間帯',lvl:3},{w:'sleep cycle',jp:'睡眠サイクル',lvl:3},{w:'chronotype',jp:'朝型・夜型の体質',lvl:3},
   ],
   choice_online_offline: [
     {w:'online',jp:'オンライン',lvl:1},{w:'in-person',jp:'対面',lvl:2},{w:'face to face',jp:'直接会う',lvl:1},
@@ -278,6 +297,7 @@ const WORD_DB = {
     {w:'communication',jp:'コミュニケーション',lvl:2},{w:'social',jp:'社交的',lvl:2},
     {w:'technology',jp:'テクノロジー',lvl:1},{w:'both',jp:'どちらも',lvl:1},{w:'depends',jp:'場合による',lvl:1},
     {w:'personally',jp:'個人的には',lvl:2},
+    {w:'digital fatigue',jp:'デジタル疲れ',lvl:3},{w:'nonverbal cues',jp:'非言語的な合図',lvl:3},{w:'authentic connection',jp:'本物のつながり',lvl:3},
   ],
   choice_cats_dogs: [
     {w:'cat',jp:'猫',lvl:1},{w:'dog',jp:'犬',lvl:1},{w:'cute',jp:'かわいい',lvl:1},{w:'fluffy',jp:'ふわふわ',lvl:1},
@@ -286,6 +306,7 @@ const WORD_DB = {
     {w:'prefer',jp:'好む',lvl:1},{w:'both',jp:'どちらも',lvl:1},{w:'have one',jp:'飼っている',lvl:1},
     {w:'want to have',jp:'飼いたい',lvl:1},{w:'allergic',jp:'アレルギーがある',lvl:2},
     {w:'walk',jp:'散歩',lvl:1},{w:'purr',jp:'ゴロゴロ',lvl:2},{w:'bark',jp:'吠える',lvl:1},
+    {w:'domestication',jp:'家畜化',lvl:3},{w:'temperament',jp:'気質',lvl:3},{w:'companionship',jp:'心の支え',lvl:3},
   ],
   choice_coffee_tea: [
     {w:'coffee',jp:'コーヒー',lvl:1},{w:'tea',jp:'お茶',lvl:1},{w:'green tea',jp:'緑茶',lvl:1},
@@ -294,6 +315,8 @@ const WORD_DB = {
     {w:'bitter',jp:'苦い',lvl:1},{w:'hot',jp:'ホット',lvl:1},{w:'iced',jp:'アイス',lvl:1},
     {w:'prefer',jp:'好む',lvl:1},{w:'morning',jp:'朝',lvl:1},{w:'relax',jp:'リラックス',lvl:1},
     {w:'caffeine',jp:'カフェイン',lvl:2},{w:'favorite',jp:'お気に入り',lvl:1},{w:'drink',jp:'飲み物',lvl:1},
+    {w:'brew',jp:'淹れる',lvl:2},{w:'aroma',jp:'香り',lvl:2},{w:'roast',jp:'焙煎',lvl:2},
+    {w:'caffeine tolerance',jp:'カフェイン耐性',lvl:3},{w:'artisanal',jp:'職人技の',lvl:3},{w:'ritual',jp:'習慣・儀式',lvl:3},
   ],
   choice_games_sports: [
     {w:'video game',jp:'ビデオゲーム',lvl:1},{w:'sport',jp:'スポーツ',lvl:1},{w:'outdoor',jp:'アウトドア',lvl:1},
@@ -303,6 +326,7 @@ const WORD_DB = {
     {w:'both',jp:'どちらも',lvl:1},{w:'depends on mood',jp:'気分による',lvl:2},
     {w:'lately',jp:'最近',lvl:1},{w:'play',jp:'プレイする',lvl:1},{w:'win',jp:'勝つ',lvl:1},
     {w:'tournament',jp:'大会',lvl:2},
+    {w:'sedentary',jp:'座りがちな',lvl:3},{w:'hand-eye coordination',jp:'目と手の協調運動',lvl:3},{w:'competitive gaming',jp:'eスポーツ',lvl:3},
   ],
   choice_books_movies: [
     {w:'book',jp:'本',lvl:1},{w:'movie',jp:'映画',lvl:1},{w:'novel',jp:'小説',lvl:1},{w:'film',jp:'フィルム',lvl:1},
@@ -311,6 +335,8 @@ const WORD_DB = {
     {w:'prefer',jp:'好む',lvl:1},{w:'both',jp:'どちらも',lvl:1},{w:'recently',jp:'最近',lvl:1},
     {w:'recommend',jp:'おすすめ',lvl:1},{w:'genre',jp:'ジャンル',lvl:2},{w:'favorite',jp:'お気に入り',lvl:1},
     {w:'ending',jp:'結末',lvl:1},{w:'page-turner',jp:'引き込まれる本',lvl:3},
+    {w:'adaptation',jp:'映像化・脚色',lvl:2},
+    {w:'narrative structure',jp:'物語の構成',lvl:3},{w:'character development',jp:'キャラクターの成長描写',lvl:3},{w:'suspend disbelief',jp:'現実味のなさを気にせず楽しむ',lvl:3},
   ],
   choice_city_country: [
     {w:'city',jp:'都市',lvl:1},{w:'countryside',jp:'田舎',lvl:1},{w:'urban',jp:'都会的な',lvl:2},
@@ -320,6 +346,7 @@ const WORD_DB = {
     {w:'grew up in',jp:'〜で育った',lvl:1},{w:'live in',jp:'〜に住んでいる',lvl:1},
     {w:'someday',jp:'いつか',lvl:1},{w:'both',jp:'どちらも',lvl:1},{w:'lifestyle',jp:'ライフスタイル',lvl:2},
     {w:'community',jp:'コミュニティ',lvl:2},
+    {w:'gentrification',jp:'ジェントリフィケーション',lvl:3},{w:'population density',jp:'人口密度',lvl:3},{w:'quality of life',jp:'生活の質',lvl:3},{w:'work commute',jp:'通勤',lvl:3},
   ],
   career: [
     {w:'dream job',jp:'夢の仕事',lvl:1},{w:'career path',jp:'キャリアパス',lvl:2},{w:'major',jp:'専攻',lvl:2},
@@ -329,6 +356,7 @@ const WORD_DB = {
     {w:'doctor',jp:'医者',lvl:1},{w:'artist',jp:'アーティスト',lvl:1},{w:'scientist',jp:'科学者',lvl:1},
     {w:'goal',jp:'目標',lvl:1},{w:'future',jp:'将来',lvl:1},{w:'skill',jp:'スキル',lvl:1},
     {w:'challenge',jp:'挑戦',lvl:1},{w:'job security',jp:'雇用の安定',lvl:3},
+    {w:'career trajectory',jp:'キャリアの軌跡',lvl:3},
   ],
   festivals: [
     {w:'festival',jp:'お祭り',lvl:1},{w:'holiday',jp:'祝日',lvl:1},{w:'celebrate',jp:'お祝いする',lvl:1},
@@ -338,6 +366,8 @@ const WORD_DB = {
     {w:'harvest festival',jp:'収穫祭',lvl:2},{w:'music festival',jp:'音楽フェス',lvl:1},
     {w:'family gathering',jp:'家族の集まり',lvl:1},{w:'gift',jp:'プレゼント',lvl:1},
     {w:'decoration',jp:'飾り',lvl:1},{w:'special food',jp:'特別な食べ物',lvl:1},{w:'fun',jp:'楽しい',lvl:1},
+    {w:'ritual',jp:'儀式',lvl:2},{w:'commemorate',jp:'記念する',lvl:2},
+    {w:'cultural heritage',jp:'文化遺産',lvl:3},{w:'communal celebration',jp:'共同体でのお祝い',lvl:3},{w:'age-old tradition',jp:'古くからの伝統',lvl:3},
   ],
   cooking: [
     {w:'recipe',jp:'レシピ',lvl:1},{w:'ingredient',jp:'食材',lvl:1},{w:'cook',jp:'料理する',lvl:1},
@@ -347,6 +377,7 @@ const WORD_DB = {
     {w:'easy to make',jp:'簡単に作れる',lvl:1},{w:'my specialty',jp:'得意料理',lvl:2},
     {w:'local dish',jp:'郷土料理',lvl:2},{w:'spice',jp:'スパイス',lvl:1},{w:'sweet',jp:'甘い',lvl:1},
     {w:'savory',jp:'塩味の',lvl:2},
+    {w:'culinary',jp:'料理の',lvl:3},{w:'umami',jp:'うま味',lvl:3},{w:'fermentation',jp:'発酵',lvl:3},{w:'from scratch',jp:'一から手作りで',lvl:3},
   ],
   routine: [
     {w:'wake up',jp:'起きる',lvl:1},{w:'breakfast',jp:'朝食',lvl:1},{w:'commute',jp:'通学・通勤',lvl:2},
@@ -355,6 +386,8 @@ const WORD_DB = {
     {w:'exercise',jp:'運動',lvl:1},{w:'study',jp:'勉強',lvl:1},{w:'hobby',jp:'趣味',lvl:1},
     {w:'weekend',jp:'週末',lvl:1},{w:'busy',jp:'忙しい',lvl:1},{w:'relax',jp:'くつろぐ',lvl:1},
     {w:'usually',jp:'たいてい',lvl:1},{w:'routine',jp:'ルーティン',lvl:1},{w:'schedule',jp:'スケジュール',lvl:1},
+    {w:'multitask',jp:'同時進行する',lvl:2},{w:'unwind',jp:'ゆっくりする',lvl:2},{w:'time management',jp:'時間管理',lvl:2},
+    {w:'creature of habit',jp:'決まった行動をする人',lvl:3},{w:'circadian rhythm',jp:'概日リズム',lvl:3},{w:'monotonous',jp:'単調な',lvl:3},
   ],
   facts: [
     {w:'did you know?',jp:'知ってた？',lvl:1},{w:'interesting',jp:'面白い',lvl:1},{w:'surprising',jp:'驚き',lvl:2},
@@ -364,6 +397,7 @@ const WORD_DB = {
     {w:'believe it or not',jp:'信じられないけど',lvl:2},{w:'I learned that',jp:'〜と知った',lvl:2},
     {w:'recently heard',jp:'最近聞いた',lvl:2},{w:'fascinating',jp:'魅力的な',lvl:3},
     {w:'fact',jp:'事実',lvl:1},{w:'true story',jp:'本当の話',lvl:2},
+    {w:'astonishing',jp:'驚くべき',lvl:3},{w:'empirical evidence',jp:'実証的な証拠',lvl:3},{w:'counterintuitive',jp:'直感に反する',lvl:3},
   ],
 
   // ------------------------- 新規追加話題 -------------------------
@@ -375,6 +409,8 @@ const WORD_DB = {
     {w:'morning',jp:'朝',lvl:1},{w:'afternoon',jp:'午後',lvl:1},{w:'evening',jp:'夕方',lvl:1},
     {w:'what time is it?',jp:'今何時ですか？',lvl:1},{w:'favorite color',jp:'好きな色',lvl:1},
     {w:'number',jp:'数字',lvl:1},{w:'shape',jp:'形',lvl:1},{w:'circle',jp:'丸',lvl:1},
+    {w:'approximately',jp:'およそ',lvl:2},{w:'a couple of',jp:'2つほどの',lvl:2},{w:'quarter past',jp:'15分過ぎ',lvl:2},
+    {w:'numerical value',jp:'数値',lvl:3},{w:'chronological order',jp:'時系列順',lvl:3},{w:'primary colors',jp:'原色',lvl:3},
   ],
   shopping: [
     {w:'shop',jp:'店',lvl:1},{w:'buy',jp:'買う',lvl:1},{w:'price',jp:'値段',lvl:1},
@@ -384,6 +420,8 @@ const WORD_DB = {
     {w:'credit card',jp:'クレジットカード',lvl:1},{w:'receipt',jp:'レシート',lvl:1},
     {w:'online shopping',jp:'ネットショッピング',lvl:1},{w:'return',jp:'返品する',lvl:2},
     {w:'shopping mall',jp:'ショッピングモール',lvl:1},{w:'bargain',jp:'お買い得品',lvl:2},
+    {w:'compare prices',jp:'価格を比較する',lvl:2},{w:'impulse buy',jp:'衝動買い',lvl:2},
+    {w:'consumer behavior',jp:'消費者行動',lvl:3},{w:'value for money',jp:'コストパフォーマンス',lvl:3},{w:'retail therapy',jp:'買い物でストレス発散すること',lvl:3},
   ],
   money: [
     {w:'save money',jp:'貯金する',lvl:1},{w:'spend',jp:'使う',lvl:1},{w:'budget',jp:'予算',lvl:2},
@@ -392,6 +430,7 @@ const WORD_DB = {
     {w:'debt',jp:'借金',lvl:2},{w:'invest',jp:'投資する',lvl:2},{w:'currency',jp:'通貨',lvl:2},
     {w:'exchange rate',jp:'為替レート',lvl:3},{w:'inflation',jp:'インフレ',lvl:3},
     {w:'financial goal',jp:'金銭的な目標',lvl:3},{w:'worth it',jp:'それだけの価値がある',lvl:2},
+    {w:'financial literacy',jp:'金融リテラシー',lvl:3},
   ],
   relationships: [
     {w:'friend',jp:'友達',lvl:1},{w:'best friend',jp:'親友',lvl:1},{w:'close friend',jp:'仲の良い友達',lvl:1},
@@ -401,6 +440,8 @@ const WORD_DB = {
     {w:'apologize',jp:'謝る',lvl:2},{w:'misunderstanding',jp:'誤解',lvl:2},
     {w:'stay in touch',jp:'連絡を取り合う',lvl:2},{w:'lose touch',jp:'疎遠になる',lvl:3},
     {w:'first impression',jp:'第一印象',lvl:2},{w:'bond',jp:'絆',lvl:3},
+    {w:'friendly',jp:'友好的な',lvl:1},
+    {w:'emotional intimacy',jp:'感情的な親密さ',lvl:3},{w:'reciprocity',jp:'相互性',lvl:3},
   ],
   environment: [
     {w:'environment',jp:'環境',lvl:2},{w:'pollution',jp:'汚染',lvl:2},{w:'recycle',jp:'リサイクルする',lvl:1},
@@ -409,6 +450,7 @@ const WORD_DB = {
     {w:'climate change',jp:'気候変動',lvl:2},{w:'endangered species',jp:'絶滅危惧種',lvl:3},
     {w:'deforestation',jp:'森林破壊',lvl:3},{w:'eco-friendly',jp:'環境に優しい',lvl:2},
     {w:'reduce',jp:'減らす',lvl:1},{w:'reuse',jp:'再利用する',lvl:1},{w:'global issue',jp:'地球規模の問題',lvl:3},
+    {w:'nature',jp:'自然',lvl:1},
   ],
   ethics: [
     {w:'right or wrong',jp:'正しいか間違っているか',lvl:2},{w:'moral',jp:'道徳的な',lvl:3},
@@ -417,6 +459,7 @@ const WORD_DB = {
     {w:'consequence',jp:'結果・影響',lvl:3},{w:'principle',jp:'原則',lvl:3},
     {w:'justify',jp:'正当化する',lvl:3},{w:'controversial',jp:'議論を呼ぶ',lvl:3},
     {w:'perspective',jp:'視点',lvl:3},{w:'benefit of the doubt',jp:'疑わしきは罰せず',lvl:3},
+    {w:'good',jp:'良い',lvl:1},{w:'bad',jp:'悪い',lvl:1},{w:'kind',jp:'優しい',lvl:1},{w:'fair',jp:'公平な',lvl:1},
   ],
   society: [
     {w:'society',jp:'社会',lvl:2},{w:'community',jp:'コミュニティ',lvl:2},{w:'generation',jp:'世代',lvl:2},
@@ -425,6 +468,7 @@ const WORD_DB = {
     {w:'urbanization',jp:'都市化',lvl:3},{w:'minority',jp:'少数派',lvl:3},
     {w:'norm',jp:'規範',lvl:3},{w:'trend',jp:'トレンド',lvl:2},{w:'public opinion',jp:'世論',lvl:3},
     {w:'policy',jp:'政策',lvl:3},{w:'awareness',jp:'意識・認識',lvl:2},
+    {w:'people',jp:'人々',lvl:1},{w:'group',jp:'グループ',lvl:1},{w:'city',jp:'都市',lvl:1},{w:'together',jp:'一緒に',lvl:1},
   ],
   ai_future: [
     {w:'artificial intelligence',jp:'人工知能',lvl:2},{w:'automation',jp:'自動化',lvl:3},
@@ -433,6 +477,7 @@ const WORD_DB = {
     {w:'human touch',jp:'人間らしさ',lvl:3},{w:'efficient',jp:'効率的な',lvl:2},
     {w:'ethical concern',jp:'倫理的な懸念',lvl:3},{w:'future technology',jp:'未来の技術',lvl:2},
     {w:'depend on',jp:'〜に依存する',lvl:2},{w:'dystopia',jp:'ディストピア',lvl:3},
+    {w:'computer',jp:'コンピューター',lvl:1},{w:'smart',jp:'賢い',lvl:1},{w:'helpful',jp:'役に立つ',lvl:1},
   ],
   education: [
     {w:'education system',jp:'教育制度',lvl:3},{w:'exam-focused',jp:'試験重視の',lvl:3},
@@ -441,6 +486,7 @@ const WORD_DB = {
     {w:'online learning',jp:'オンライン学習',lvl:2},{w:'lifelong learning',jp:'生涯学習',lvl:3},
     {w:'equal opportunity',jp:'機会の平等',lvl:3},{w:'standardized test',jp:'標準化されたテスト',lvl:3},
     {w:'curriculum',jp:'カリキュラム',lvl:3},{w:'motivation',jp:'モチベーション',lvl:2},
+    {w:'school',jp:'学校',lvl:1},{w:'teacher',jp:'先生',lvl:1},{w:'learn',jp:'学ぶ',lvl:1},{w:'homework',jp:'宿題',lvl:1},
   ],
 };
 
@@ -519,17 +565,16 @@ async function translateWord(word, targetLang){
 
 // トピックキー + 単語レベルから単語リストを取得
 // 単語レベルは話題のレベルと独立: 例えば話題が初級でも上級の単語を選べる
+// 指定レベルの単語を優先し、足りない場合は「近いレベル」から順に補充する
+// （例：上級を指定して上級語が足りない場合、初級より先に中級から補充する）
 function getWordsByTopic(topicKey, wordLevel){
   const allWords = WORD_DB[topicKey] || WORD_DB.default;
   const lvl = wordLevel || currentWordLevel;
   const seen = new Set();
 
-  // 指定レベルの単語を優先し、足りない場合は近いレベルで補充する
-  const byLevel = allWords.filter(w => w.lvl === lvl);
-  const fallback = allWords.filter(w => w.lvl !== lvl);
-  const combined = [...byLevel, ...fallback];
+  const sorted = [...allWords].sort((a, b) => Math.abs(a.lvl - lvl) - Math.abs(b.lvl - lvl));
 
-  return combined.filter(w => {
+  return sorted.filter(w => {
     if(seen.has(w.w)) return false;
     seen.add(w.w);
     return true;
@@ -629,12 +674,12 @@ function selectTopicLevel(level){
 }
 
 // ▶ Startボタン：ルーレットのように話題を高速で切り替え、だんだん減速して自動的に止まる
+// （Stopボタンは廃止。必ず自動で止まって確定する）
 function startSpin(){
   if(!currentLevel || spinState.active || !spinState.pool || spinState.pool.length === 0) return;
 
   spinState.active = true;
   document.getElementById('wbStartBtn').disabled = true;
-  document.getElementById('wbStopBtn').disabled = false;
   setLevelButtonsDisabled(true);
 
   const topicCard = document.getElementById('topicCard');
@@ -646,7 +691,7 @@ function startSpin(){
   const maxDelay = 260;   // だんだんこの速さまで減速
   const growth = 1.09;
   const startTime = Date.now();
-  const maxDuration = 2600; // 最大でこの時間で自動停止（Rちゃんの声：勝手に止まってもOK）
+  const maxDuration = 2600; // この時間で必ず自動停止する
 
   function tick(){
     const pick = pool[Math.floor(Math.random() * pool.length)];
@@ -664,19 +709,11 @@ function startSpin(){
   tick();
 }
 
-// ■ Stopボタン：その瞬間に表示されている話題で確定させる
-function stopSpin(){
-  if(!spinState.active) return;
-  clearTimeout(spinState.timeoutId);
-  finishSpin(spinState.lastPick);
-}
-
-// スピン終了処理（自動停止／手動Stop共通）
+// スピン終了処理（自動停止のみ）
 async function finishSpin(card){
   spinState.active = false;
   clearTimeout(spinState.timeoutId);
   document.getElementById('wbStartBtn').disabled = false;
-  document.getElementById('wbStopBtn').disabled = true;
   setLevelButtonsDisabled(false);
 
   const topicCard = document.getElementById('topicCard');
@@ -749,21 +786,49 @@ function updateWordBridge(lastText){
   // 何もしない（話題カード方式に変更したため）
 }
 
-function toggleDrawer(){
-  drawerOpen = !drawerOpen;
-  document.getElementById('wbDrawer').className = 'wb-drawer' + (drawerOpen ? ' open' : '');
-  document.getElementById('wbBtn').className = 'wb-open-btn' + (drawerOpen ? ' active' : '');
+// join()から呼ばれる：WordBridgeは常時表示になったので「開く」動作の代わりに
+// 利用計測（wbOpenCount/wbOpenTime）だけをセッション開始時に初期化する。
+// drawerOpen は「今WordBridgeタブを見ているか」を表す値として引き続き使う
+// （app.jsのendSession()が drawerOpen を見て集計する処理をそのまま使えるようにするため）。
+function initWordBridgeTracking(){
+  drawerOpen = true;
+  wbOpenCount = 1;
+  wbOpenTime = Date.now();
+}
 
-  if(drawerOpen){
+// WordBridge / HelpBox のパネル切り替え
+// タブ切り替えのたびに、直前に見ていた方の使用時間を確定し、
+// 切り替え先の使用回数・開始時刻を記録する（旧・ドロワー開閉の計測をタブ切替に置き換え）
+let activeTool = 'wordbridge';
+function switchTool(tool){
+  if(tool === activeTool) return;
+  const now = Date.now();
+
+  if(activeTool === 'wordbridge' && wbOpenTime !== null){
+    wbTotalSec += Math.round((now - wbOpenTime) / 1000);
+    wbOpenTime = null;
+  } else if(activeTool === 'helpbox' && typeof hbOpenTime !== 'undefined' && hbOpenTime !== null){
+    hbTotalSec += Math.round((now - hbOpenTime) / 1000);
+    hbOpenTime = null;
+  }
+
+  activeTool = tool;
+  drawerOpen = (tool === 'wordbridge'); // endSession()の集計がこの値を見るので維持
+
+  if(tool === 'wordbridge'){
     wbOpenCount++;
-    wbOpenTime = Date.now();
-    // 現在のトピックで単語を表示
-    const topicKey = currentTopicIdx >= 0 ? TOPIC_CARDS[currentTopicIdx].key : 'default';
-    renderWordGrid(topicKey, currentWordLevel);
-  } else {
-    if(wbOpenTime !== null){
-      wbTotalSec += Math.round((Date.now() - wbOpenTime) / 1000);
-      wbOpenTime = null;
-    }
+    wbOpenTime = now;
+  } else if(typeof hbOpenCount !== 'undefined'){
+    hbOpenCount++;
+    hbOpenTime = now;
+  }
+
+  document.getElementById('toolTabWordbridge').classList.toggle('active', tool === 'wordbridge');
+  document.getElementById('toolTabHelpbox').classList.toggle('active', tool === 'helpbox');
+  document.getElementById('wordbridgePanel').style.display = tool === 'wordbridge' ? '' : 'none';
+  document.getElementById('helpboxPanel').style.display = tool === 'helpbox' ? '' : 'none';
+
+  if(tool === 'helpbox' && typeof onHelpBoxShown === 'function'){
+    onHelpBoxShown(); // HelpBox表示のたびに会話サポートタブの内容をその時点の状況で更新
   }
 }
