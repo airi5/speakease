@@ -216,6 +216,9 @@ function dlCSV(){
   const silCSV='\n\nグループ沈黙ログ\n#,沈黙時間（秒）,直前の話者,直後の話者\n'+silRows.join('\n');
   const dur=sessionStart?Math.round((Date.now()-sessionStart)/1000):0;
   const avgSil=avgGroupSil;
+  // HelpBoxはWordBridgeと対になる計測値。未定義環境（旧state.js）でも壊れないようフォールバックする
+  const hbCount = typeof hbOpenCount !== 'undefined' ? hbOpenCount : 0;
+  const hbSec   = typeof hbTotalSec  !== 'undefined' ? hbTotalSec  : 0;
   const summaryCSV=`\n\nサマリー\n項目,値\n`+
     `個人ID,${myPersonId}\nニックネーム,${myName}\nルームコード,${roomCode}\n`+
     `学校ペア,${schoolPair}\nグループ,${groupId}\n実施回,${round}\nツール使用,${toolUsed}\n`+
@@ -223,6 +226,7 @@ function dlCSV(){
     `token数,${myTokens.length}\ntype数,${myTypes.size}\n`+
     `翻訳回数,${transClickCount}\nWordBridge使用回数,${wbOpenCount}\n`+
     `WordBridge使用時間（秒）,${wbTotalSec}\n`+
+    `HelpBox使用回数,${hbCount}\nHelpBox使用時間（秒）,${hbSec}\n`+
     `沈黙回数,${silenceLogs.length}\n平均沈黙時間（秒）,${avgSil}\n会話時間（秒）,${dur}\n`;
   const full=logCSV+silCSV+summaryCSV;
   const a=document.createElement('a');
