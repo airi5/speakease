@@ -496,6 +496,7 @@ const TOPIC_CARDS = [
 
 let currentTopicIdx = -1;
 let currentWordLevel = 2; // 単語レベル（話題レベルとは独立）デフォルトは中級
+let currentLevel = null; // 現在選ばれている話題レベル（再抽選ボタン用）
 
 // 翻訳キャッシュ
 const transCache = {};
@@ -541,20 +542,40 @@ async function renderWordGrid(topicKey, wordLevel){
   const grid = document.getElementById('wordsGrid');
   grid.innerHTML = '';
 
-  words.forEach(item => {
+  words.forEach((item, i) => {
     const div = document.createElement('div');
-    div.className = 'word-chip';
+    div.className = 'word-chip animate-in';
+    div.style.animationDelay = `${i * 25}ms`;
     div.id = `chip-${item.w.replace(/[\s'?!,]/g,'_')}`;
+    div.tabIndex = 0;
+    div.setAttribute('role', 'button');
+
+    const textWrap = document.createElement('div');
+    textWrap.className = 'chip-text';
     const enSpan = document.createElement('span');
     enSpan.className = 'en';
     enSpan.textContent = item.w;
-    div.appendChild(enSpan);
+    textWrap.appendChild(enSpan);
     if(myLang !== 'en'){
       const nativeSpan = document.createElement('span');
       nativeSpan.className = 'native';
       nativeSpan.textContent = myLang === 'ja' ? item.jp : '...';
-      div.appendChild(nativeSpan);
+      textWrap.appendChild(nativeSpan);
     }
+    div.appendChild(textWrap);
+
+    const check = document.createElement('div');
+    check.className = 'chip-check';
+    check.textContent = '✓';
+    div.appendChild(check);
+
+    // タップ/クリックで「使った単語」としてチェック（見た目のみ・練習の達成感を出す）
+    const toggleUsed = () => div.classList.toggle('used');
+    div.addEventListener('click', toggleUsed);
+    div.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleUsed(); }
+    });
+
     grid.appendChild(div);
   });
 
@@ -572,26 +593,106 @@ async function renderWordGrid(topicKey, wordLevel){
   }
 }
 
+// レベルボタンのハイライトを更新
+function highlightLevelButton(level){
+  const ids = { beginner: 'lvlBtnBeginner', intermediate: 'lvlBtnIntermediate', advanced: 'lvlBtnAdvanced' };
+  Object.values(ids).forEach(id => {
+    const btn = document.getElementById(id);
+    if(btn) btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(ids[level]);
+  if(activeBtn) activeBtn.classList.add('active');
+}
+
 // レベルボタンを押したとき（初級/中級/上級ボタンから呼び出す）
+// この時点ではまだ話題は決まらない。話題プール（候補）を用意して、
+// Startボタンでルーレットを開始できる状態にするだけ。
 // level: 'beginner' | 'intermediate' | 'advanced'
-async function selectTopicLevel(level){
-  const candidates = TOPIC_CARDS
-    .map((c, idx) => ({...c, idx}))
-    .filter(c => c.level === level && c.idx !== currentTopicIdx);
-  const pool = candidates.length > 0
-    ? candidates
-    : TOPIC_CARDS.map((c, idx) => ({...c, idx})).filter(c => c.level === level);
+let spinState = { active: false, timeoutId: null, lastPick: null };
 
-  if(pool.length === 0) return; // 該当レベルの話題が無い場合は何もしない
+function selectTopicLevel(level){
+  if(spinState.active) return; // スピン中はレベル変更不可
 
-  const chosen = pool[Math.floor(Math.random() * pool.length)];
-  currentTopicIdx = chosen.idx;
-  const card = TOPIC_CARDS[currentTopicIdx];
+  currentLevel = level;
+  spinState.pool = TOPIC_CARDS.map((c, idx) => ({...c, idx})).filter(c => c.level === level);
 
-  console.log('selectTopicLevel:', level, '->', card.key);
+  console.log('selectTopicLevel:', level, '-> pool size', spinState.pool.length);
 
-  applyTopic(card);
+  highlightLevelButton(level);
+
+  const topicCard = document.getElementById('topicCard');
+  topicCard.classList.remove('pop', 'spinning');
+  topicCard.innerHTML = `🎯 ${LEVEL_LABEL[level]}を選択！ ▶ Startを押してね`;
+
+  const startBtn = document.getElementById('wbStartBtn');
+  if(startBtn) startBtn.disabled = spinState.pool.length === 0;
+}
+
+// ▶ Startボタン：ルーレットのように話題を高速で切り替え、だんだん減速して自動的に止まる
+function startSpin(){
+  if(!currentLevel || spinState.active || !spinState.pool || spinState.pool.length === 0) return;
+
+  spinState.active = true;
+  document.getElementById('wbStartBtn').disabled = true;
+  document.getElementById('wbStopBtn').disabled = false;
+  setLevelButtonsDisabled(true);
+
+  const topicCard = document.getElementById('topicCard');
+  topicCard.classList.remove('pop');
+  topicCard.classList.add('spinning');
+
+  const pool = spinState.pool;
+  let delay = 60;         // 最初は速く切り替える
+  const maxDelay = 260;   // だんだんこの速さまで減速
+  const growth = 1.09;
+  const startTime = Date.now();
+  const maxDuration = 2600; // 最大でこの時間で自動停止（Rちゃんの声：勝手に止まってもOK）
+
+  function tick(){
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    spinState.lastPick = pick;
+    topicCard.innerHTML = `${pick.icon} ${pick.en}`;
+
+    const elapsed = Date.now() - startTime;
+    if(elapsed >= maxDuration || delay >= maxDelay){
+      finishSpin(pick);
+      return;
+    }
+    delay = Math.min(maxDelay, delay * growth);
+    spinState.timeoutId = setTimeout(tick, delay);
+  }
+  tick();
+}
+
+// ■ Stopボタン：その瞬間に表示されている話題で確定させる
+function stopSpin(){
+  if(!spinState.active) return;
+  clearTimeout(spinState.timeoutId);
+  finishSpin(spinState.lastPick);
+}
+
+// スピン終了処理（自動停止／手動Stop共通）
+async function finishSpin(card){
+  spinState.active = false;
+  clearTimeout(spinState.timeoutId);
+  document.getElementById('wbStartBtn').disabled = false;
+  document.getElementById('wbStopBtn').disabled = true;
+  setLevelButtonsDisabled(false);
+
+  const topicCard = document.getElementById('topicCard');
+  topicCard.classList.remove('spinning');
+
+  currentTopicIdx = card.idx;
+  applyTopic(TOPIC_CARDS[card.idx]);
   await sbSetTopic(card.key);
+}
+
+// スピン中はレベルボタンを操作できないようにする
+function setLevelButtonsDisabled(disabled){
+  ['lvlBtnBeginner', 'lvlBtnIntermediate', 'lvlBtnAdvanced'].forEach(id => {
+    const btn = document.getElementById(id);
+    if(btn) btn.disabled = disabled;
+  });
 }
 
 // 旧シャッフルボタンとの互換性維持用（全レベルからランダム）
@@ -619,16 +720,27 @@ function setWordLevel(level){
 
 // トピックを画面に反映
 function applyTopic(card){
-  document.getElementById('topicCard').textContent = `${card.icon} ${card.en}`;
+  const topicCard = document.getElementById('topicCard');
+  topicCard.innerHTML = `${card.icon} ${card.en}`;
+
+  // ポップアニメーション（同じクラスの再付与で再生させる）
+  topicCard.classList.remove('pop');
+  void topicCard.offsetWidth; // reflow で再トリガー
+  topicCard.classList.add('pop');
+
   renderWordGrid(card.key, currentWordLevel);
 }
 
-// 他の人がシャッフル/レベル選択したとき（Supabaseから受信）
+// 他の人がスピンで決めた話題を受け取ったとき（Supabaseから受信）
 function onTopicReceived(topicKey){
   const idx = TOPIC_CARDS.findIndex(c => c.key === topicKey);
   if(idx >= 0){
     currentTopicIdx = idx;
-    applyTopic(TOPIC_CARDS[idx]);
+    const card = TOPIC_CARDS[idx];
+    currentLevel = card.level;
+    spinState.pool = TOPIC_CARDS.map((c, i) => ({...c, idx: i})).filter(c => c.level === card.level);
+    highlightLevelButton(card.level);
+    applyTopic(card);
   }
 }
 
