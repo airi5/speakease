@@ -43,8 +43,8 @@ async function join(){
   // UI言語を選択した言語に更新
   updateUILang();
 
-  // WordBridgeをデフォルトで開く
-  if (!IS_LOG_ONLY) toggleDrawer();
+  // WordBridgeは常時表示になったため、利用計測（wbOpenCount/wbOpenTime）だけ開始する
+  if (!IS_LOG_ONLY) initWordBridgeTracking();
 }
 
 // ── タイマー ──────────────────────────────────
@@ -53,7 +53,7 @@ function startTimer(){
     const s=Math.floor((Date.now()-sessionStart)/1000);
     const t=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
     document.getElementById('timerDisp').textContent=t;
-    document.getElementById('sideTimer').textContent=t;
+    document.getElementById('sideTimer').textContent=t; // 非表示だが要素は残しているので更新は継続
     const lo=document.getElementById('loTimer'); if(lo) lo.textContent=t;
   },1000);
 }
@@ -154,9 +154,14 @@ function endSession(){
   if(!confirm(msg))return;
   clearInterval(timerInt);
   stopMic();
-  if(drawerOpen&&wbOpenTime!==null){
+  // WordBridge / HelpBox どちらか一方が必ず「表示中」の状態なので、
+  // drawerOpenの値を見てそれぞれの使用時間を確定させる
+  if(drawerOpen && wbOpenTime!==null){
     wbTotalSec+=Math.round((Date.now()-wbOpenTime)/1000);
     wbOpenTime=null;
+  } else if(!drawerOpen && typeof hbOpenTime !== 'undefined' && hbOpenTime!==null){
+    hbTotalSec+=Math.round((Date.now()-hbOpenTime)/1000);
+    hbOpenTime=null;
   }
   toggleDash();
 }
@@ -181,7 +186,6 @@ function updateUILang(){
   document.getElementById('ctrlHint').textContent = t('speakHint');
   document.getElementById('endBtn').textContent = t('endBtn');
   // WordBridge（選択言語）
-  document.getElementById('wbBtnLabel').textContent = t('wordBridge');
   document.getElementById('wbEmpty').textContent = t('wordHint');
   document.getElementById('wbLbl').textContent = t('wordBridge');
   // サイドバー（選択言語）
