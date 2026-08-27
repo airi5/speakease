@@ -170,24 +170,52 @@
      <!-- WordBridgeドロワー -->
       <div class="wb-drawer" id="wbDrawer">
         <div class="wb-inner">
-          <!-- 話題提案カード -->
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <div id="topicCard"
-              style="flex:1;padding:8px 12px;border-radius:8px;
-              background:#ede9fe;border:1.5px solid #c4b5fd;
-              font-size:13px;font-weight:700;color:#5b21b6;text-align:center">
-              🎲 Press shuffle for a topic!
-            </div>
-            <button onclick="shuffleTopic()"
-              style="padding:8px 12px;border-radius:8px;border:1.5px solid #e5e7eb;
-              background:#fff;font-size:16px;cursor:pointer;font-weight:700;
-              font-family:'Nunito',sans-serif"
-              title="Shuffle topic">🔀</button>
+
+          <!-- WordBridge見出し -->
+          <div class="wb-header">
+            <div class="wb-header-title">🌉 WordBridge</div>
+            <div class="wb-header-sub">Grow the conversation, one word at a time</div>
           </div>
-          <!-- 単語候補 -->
-          <div class="wb-lbl" id="wbLbl">Word suggestions</div>
+
+          <!-- 話題レベルボタン（誰でも押せる／成長アイコン） -->
+          <div class="wb-level-lbl">Pick a topic level</div>
+          <div class="wb-level-row">
+            <button class="wb-level-btn beginner" onclick="selectTopicLevel('beginner')" id="lvlBtnBeginner">
+              <span class="lvl-icon">🌱</span><span class="lvl-txt">初級</span>
+            </button>
+            <button class="wb-level-btn intermediate" onclick="selectTopicLevel('intermediate')" id="lvlBtnIntermediate">
+              <span class="lvl-icon">🌿</span><span class="lvl-txt">中級</span>
+            </button>
+            <button class="wb-level-btn advanced" onclick="selectTopicLevel('advanced')" id="lvlBtnAdvanced">
+              <span class="lvl-icon">🌳</span><span class="lvl-txt">上級</span>
+            </button>
+          </div>
+
+          <!-- ルーレット開始/停止ボタン -->
+          <div class="wb-spin-row">
+            <button class="wb-spin-btn start" id="wbStartBtn" onclick="startSpin()" disabled>▶ Start</button>
+            <button class="wb-spin-btn stop" id="wbStopBtn" onclick="stopSpin()" disabled>■ Stop</button>
+          </div>
+
+          <!-- 選ばれた話題カード -->
+          <div id="topicCard" class="wb-topic-card">
+            👆 Pick a level to get a topic!
+          </div>
+
+          <!-- 単語レベルトグル（話題レベルとは独立） -->
+          <div class="wb-word-lvl-row">
+            <label for="wordLvlSel">Word level</label>
+            <select id="wordLvlSel" onchange="setWordLevel(Number(this.value))">
+              <option value="1">初級 (Easy)</option>
+              <option value="2" selected>中級 (Medium)</option>
+              <option value="3">上級 (Hard)</option>
+            </select>
+          </div>
+
+          <!-- 単語候補（タップで使用済みチェック） -->
+          <div class="wb-lbl" id="wbLbl">Tap a word once you've used it</div>
           <div class="words-grid" id="wordsGrid">
-            <div class="wb-empty" id="wbEmpty">Words will appear as you speak</div>
+            <div class="wb-empty" id="wbEmpty">Pick a topic level to see words</div>
           </div>
         </div>
       </div>
