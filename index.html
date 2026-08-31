@@ -94,6 +94,15 @@
           <div class="log-empty-text" id="logEmptyText">Start speaking and it will appear here</div>
         </div>
       </div>
+
+      <!-- 理解度共有ボタン（誰でも押せる・双方向） -->
+      <div class="understanding-row">
+        <span class="understanding-lbl">How's it going?</span>
+        <button class="understanding-btn" id="ubtn-happy" onclick="setUnderstanding('happy')" title="よくわかった">😊</button>
+        <button class="understanding-btn" id="ubtn-neutral" onclick="setUnderstanding('neutral')" title="だいたいわかった">😐</button>
+        <button class="understanding-btn" id="ubtn-confused" onclick="setUnderstanding('confused')" title="よくわからなかった">😕</button>
+      </div>
+
       <div class="controls">
         <button class="mic-btn idle" id="micBtn" onclick="toggleMic()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -268,6 +277,7 @@
 <script src="speech.js"></script>
 <script src="wordbridge.js"></script>
 <script src="helpbox.js"></script>
+<script src="understanding.js"></script>
 <script src="ui.js"></script>
 <script src="dashboard.js"></script>
 <script src="app.js"></script>
