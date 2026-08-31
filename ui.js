@@ -71,12 +71,16 @@ function updateParticipantList(){
   const meNm=document.createElement('div');
   meNm.className='p-name';
   meNm.textContent=`${myName}${t('you')}`;
+  const meUnd=document.createElement('span');
+  meUnd.className='p-understanding';
+  meUnd.textContent = typeof getUnderstandingEmoji === 'function' ? getUnderstandingEmoji(myName) : '';
   const meCnt=document.createElement('div');
   meCnt.className='p-cnt';
   meCnt.id='myCnt';
   meCnt.textContent=`${cntMe}${t('times')}`;
   meRow.appendChild(meAv);
   meRow.appendChild(meNm);
+  meRow.appendChild(meUnd);
   meRow.appendChild(meCnt);
   pList.appendChild(meRow);
 
@@ -109,11 +113,15 @@ function updateParticipantList(){
       const nm=document.createElement('div');
       nm.className='p-name';
       nm.textContent=name;
+      const und=document.createElement('span');
+      und.className='p-understanding';
+      und.textContent = typeof getUnderstandingEmoji === 'function' ? getUnderstandingEmoji(name) : '';
       const c=document.createElement('div');
       c.className='p-cnt';
       c.textContent=`${cnt}${t('times')}`;
       row.appendChild(av);
       row.appendChild(nm);
+      row.appendChild(und);
       row.appendChild(c);
       pList.appendChild(row);
     });
