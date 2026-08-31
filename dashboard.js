@@ -214,6 +214,14 @@ function dlCSV(){
     `${i+1},${s.duration_sec},${s.after_speaker},${s.before_speaker}`
   );
   const silCSV='\n\nグループ沈黙ログ\n#,沈黙時間（秒）,直前の話者,直後の話者\n'+silRows.join('\n');
+
+  // 理解度共有ボタンのログ（誰が・いつ・どのレベルを押したか）
+  const uLogs = typeof understandingLogs !== 'undefined' ? understandingLogs : [];
+  const uRows = uLogs.map((u,i)=>
+    `${i+1},${new Date(u.timestamp).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit'})},${u.name},${u.level}`
+  );
+  const uCSV = '\n\n理解度共有ログ\n#,時刻,名前,レベル\n'+uRows.join('\n');
+
   const dur=sessionStart?Math.round((Date.now()-sessionStart)/1000):0;
   const avgSil=avgGroupSil;
   // HelpBoxはWordBridgeと対になる計測値。未定義環境（旧state.js）でも壊れないようフォールバックする
@@ -227,8 +235,9 @@ function dlCSV(){
     `翻訳回数,${transClickCount}\nWordBridge使用回数,${wbOpenCount}\n`+
     `WordBridge使用時間（秒）,${wbTotalSec}\n`+
     `HelpBox使用回数,${hbCount}\nHelpBox使用時間（秒）,${hbSec}\n`+
+    `理解度共有ボタン使用回数,${uLogs.length}\n`+
     `沈黙回数,${silenceLogs.length}\n平均沈黙時間（秒）,${avgSil}\n会話時間（秒）,${dur}\n`;
-  const full=logCSV+silCSV+summaryCSV;
+  const full=logCSV+silCSV+uCSV+summaryCSV;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([full],{type:'text/csv;charset=utf-8'}));
   a.download=`speakease_${myPersonId}_${roomCode}_${new Date().toISOString().slice(0,10)}.csv`;
