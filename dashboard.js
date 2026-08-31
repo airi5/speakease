@@ -18,7 +18,7 @@ function buildDash(){
   const topW=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(e=>e[0]);
   const wtcItems=t('wtc');
 
-  // log-onlyのときはツール体験を前提とした qa3〜qa6 を出さない
+  // log-onlyのときはツール体験を前提とした qa3〜qa8 を出さない
   const qaList = IS_LOG_ONLY
     ? [
         {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
@@ -31,6 +31,8 @@ function buildDash(){
         {id:'qa4',lo:'qa4lo',hi:'qa4hi',q:'qa4q'},
         {id:'qa5',lo:'qa5lo',hi:'qa5hi',q:'qa5q'},
         {id:'qa6',lo:'qa6lo',hi:'qa6hi',q:'qa6q'},
+        {id:'qa7',lo:'qa7lo',hi:'qa7hi',q:'qa7q'},
+        {id:'qa8',lo:'qa8lo',hi:'qa8hi',q:'qa8q'},
       ];
 
   document.getElementById('dashTitle').textContent=t('dashTitle');
@@ -145,6 +147,7 @@ async function submitSurvey(){
     qa1:surveyAnswers['qa1']||null, qa2:surveyAnswers['qa2']||null,
     qa3:surveyAnswers['qa3']||null, qa4:surveyAnswers['qa4']||null,
     qa5:surveyAnswers['qa5']||null, qa6:surveyAnswers['qa6']||null,
+    qa7:surveyAnswers['qa7']||null, qa8:surveyAnswers['qa8']||null,
     wtc1:surveyAnswers['wtc1']||null, wtc2:surveyAnswers['wtc2']||null,
     wtc3:surveyAnswers['wtc3']||null, wtc4:surveyAnswers['wtc4']||null,
     wtc5:surveyAnswers['wtc5']||null, wtc6:surveyAnswers['wtc6']||null,
