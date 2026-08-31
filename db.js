@@ -99,7 +99,7 @@ function sbSubscribe() {
   }, 30000);
 }
 
-// roomsテーブル専用のWebSocket（話題同期用）
+// roomsテーブル専用のWebSocket（話題同期・理解度共有ボタン用）
 let roomsWs = null;
 let roomsHeartbeatInt = null;
 
@@ -133,8 +133,16 @@ function sbSubscribeRooms() {
       const record = msg.payload?.data?.record || msg.payload?.record;
       if (!record) return;
       if (record.room_code !== roomCode) return;
+
       const topic = record.current_topic;
       if(topic) onTopicReceived(topic);
+
+      // 理解度共有ボタンの同期（自分が押した分は自分の画面では無視する）
+      if(record.understanding_name && record.understanding_name !== myName){
+        if(typeof onUnderstandingReceived === 'function'){
+          onUnderstandingReceived(record.understanding_name, record.understanding_level || null);
+        }
+      }
     } catch(err) { console.error('rooms ws error:', err); }
   };
   roomsWs.onerror = (e) => console.error('rooms ws error:', e);
@@ -204,6 +212,39 @@ async function sbGetTopic(){
   );
   const data = await res.json();
   return data?.[0]?.current_topic || null;
+}
+
+// 理解度共有ボタンの状態をSupabaseに保存・全員に同期
+// level は 'happy' | 'neutral' | 'confused' | null（nullで「消えた」ことを伝える）
+// sbSetTopicと同じ rooms テーブルの行に相乗りさせる（1ルーム1行の構成のため）
+async function sbSetUnderstanding(name, level){
+  // まずUPDATEを試みる
+  const res = await fetch(
+    `${SB_URL}/rest/v1/rooms?room_code=eq.${encodeURIComponent(roomCode)}`,
+    {
+      method: 'PATCH',
+      headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        understanding_name: name,
+        understanding_level: level,
+        understanding_updated_at: new Date().toISOString(),
+      }),
+    }
+  );
+  // 存在しない場合はINSERT
+  const text = await res.text();
+  if(res.status === 404 || text === '[]' || text === ''){
+    await fetch(`${SB_URL}/rest/v1/rooms`, {
+      method: 'POST',
+      headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        room_code: roomCode,
+        understanding_name: name,
+        understanding_level: level,
+        understanding_updated_at: new Date().toISOString(),
+      }),
+    });
+  }
 }
 
 // テスト用ルームかどうかを判定（先頭が TEST- ならテスト）
