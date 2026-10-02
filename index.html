@@ -102,6 +102,7 @@
         <button class="understanding-btn" id="ubtn-neutral" onclick="setUnderstanding('neutral')" title="だいたいわかった">😐</button>
         <button class="understanding-btn" id="ubtn-confused" onclick="setUnderstanding('confused')" title="よくわからなかった">😕</button>
       </div>
+      <div class="understanding-hint" id="understandingHint">Tap to share how well you're following along</div>
 
       <div class="controls">
         <button class="mic-btn idle" id="micBtn" onclick="toggleMic()">
@@ -173,16 +174,16 @@
       <div class="tool-panel" id="wordbridgePanel">
 
           <!-- 話題レベルボタン（誰でも押せる／成長アイコン） -->
-          <div class="wb-level-lbl">Pick a topic level</div>
+          <div class="wb-level-lbl" id="wbPickLevelLbl">Pick a topic level</div>
           <div class="wb-level-row">
             <button class="wb-level-btn beginner" onclick="selectTopicLevel('beginner')" id="lvlBtnBeginner">
-              <span class="lvl-icon">🌱</span><span class="lvl-txt">初級</span>
+              <span class="lvl-icon">🌱</span><span class="lvl-txt" id="lvlTxtBeginner">初級</span>
             </button>
             <button class="wb-level-btn intermediate" onclick="selectTopicLevel('intermediate')" id="lvlBtnIntermediate">
-              <span class="lvl-icon">🌿</span><span class="lvl-txt">中級</span>
+              <span class="lvl-icon">🌿</span><span class="lvl-txt" id="lvlTxtIntermediate">中級</span>
             </button>
             <button class="wb-level-btn advanced" onclick="selectTopicLevel('advanced')" id="lvlBtnAdvanced">
-              <span class="lvl-icon">🌳</span><span class="lvl-txt">上級</span>
+              <span class="lvl-icon">🌳</span><span class="lvl-txt" id="lvlTxtAdvanced">上級</span>
             </button>
           </div>
 
@@ -198,11 +199,11 @@
 
           <!-- 単語レベルトグル（話題レベルとは独立） -->
           <div class="wb-word-lvl-row">
-            <label for="wordLvlSel">Word level</label>
+            <label for="wordLvlSel" id="wordLvlLbl">Word level</label>
             <select id="wordLvlSel" onchange="setWordLevel(Number(this.value))">
-              <option value="1">初級 (Easy)</option>
-              <option value="2" selected>中級 (Medium)</option>
-              <option value="3">上級 (Hard)</option>
+              <option value="1" id="wordLvlOpt1">初級 (Easy)</option>
+              <option value="2" id="wordLvlOpt2" selected>中級 (Medium)</option>
+              <option value="3" id="wordLvlOpt3">上級 (Hard)</option>
             </select>
           </div>
 
@@ -218,17 +219,17 @@
 
           <!-- HelpBox内タブ（固定フレーズ／会話サポート） -->
           <div class="help-subtabs">
-            <button class="help-subtab active" id="helpSubTabFixed" onclick="switchHelpSubTab('fixed')">💬 基本フレーズ</button>
-            <button class="help-subtab" id="helpSubTabDynamic" onclick="switchHelpSubTab('dynamic')">🔄 会話サポート</button>
+            <button class="help-subtab active" id="helpSubTabFixed" onclick="switchHelpSubTab('fixed')">💬 <span id="helpSubTabFixedTxt">基本フレーズ</span></button>
+            <button class="help-subtab" id="helpSubTabDynamic" onclick="switchHelpSubTab('dynamic')">🔄 <span id="helpSubTabDynamicTxt">会話サポート</span></button>
           </div>
 
           <div class="help-sub-panel" id="helpFixedPanel">
             <div class="wb-word-lvl-row">
-              <label for="helpLvlSel">Phrase level</label>
+              <label for="helpLvlSel" id="helpLvlLbl">Phrase level</label>
               <select id="helpLvlSel" onchange="renderHelpFixedTab(Number(this.value))">
-                <option value="1">初級 (Easy)</option>
-                <option value="2" selected>中級 (Medium)</option>
-                <option value="3">上級 (Hard)</option>
+                <option value="1" id="helpLvlOpt1">初級 (Easy)</option>
+                <option value="2" id="helpLvlOpt2" selected>中級 (Medium)</option>
+                <option value="3" id="helpLvlOpt3">上級 (Hard)</option>
               </select>
             </div>
             <div class="help-phrase-list" id="helpFixedList"></div>
