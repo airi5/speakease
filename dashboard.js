@@ -48,7 +48,7 @@ function buildDash(){
       <div class="stat blue"><div class="stat-v">${myEntries.length}</div><div class="stat-l">${t('statSpeaks')}</div></div>
       <div class="stat"><div class="stat-v">${myTokens.length}</div><div class="stat-l">${t('statWords')}</div></div>
       <div class="stat"><div class="stat-v">${transClickCount}</div><div class="stat-l">${t('statTrans')}</div></div>
-      <div class="stat"><div class="stat-v">${wbOpenCount}</div><div class="stat-l">${t('statWB')}</div></div>
+      <div class="stat"><div class="stat-v">${wordCheckCount}</div><div class="stat-l">${t('statWB')}</div></div>
     </div>
     <div class="stats" style="margin-top:0">
       <div class="stat"><div class="stat-v">${durStr}</div><div class="stat-l">${t('statTime')}</div></div>
@@ -67,48 +67,48 @@ function buildDash(){
       </div>
       <div style="display:flex;flex-direction:column;gap:20px">
 
-        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)">
+        <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)">
           ${t('surveySection1')}
         </div>
 
         ${qaList.map(item=>`
           <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <span style="font-size:11px;color:var(--ink3)">${t(item.lo)}</span>
+              <span style="font-size:14px;color:var(--ink3)">${t(item.lo)}</span>
               <div style="display:flex;gap:6px" id="${item.id}">
                 ${[1,2,3,4,5,6].map(n=>`
                   <button onclick="selectQ('${item.id}',${n},this)"
-                    style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border2);
-                    background:var(--white);font-size:13px;font-weight:700;cursor:pointer;
+                    style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border2);
+                    background:var(--white);font-size:16px;font-weight:700;cursor:pointer;
                     font-family:'Nunito',sans-serif;transition:all .15s">${n}</button>`).join('')}
               </div>
-              <span style="font-size:11px;color:var(--ink3)">${t(item.hi)}</span>
+              <span style="font-size:14px;color:var(--ink3)">${t(item.hi)}</span>
             </div>
           </div>`).join('')}
 
-        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-top:8px">
+        <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-top:8px">
           ${t('surveySection2')}
         </div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:-12px">${t('surveyWTCNote')}</div>
+        <div style="font-size:14px;color:var(--ink3);margin-top:-12px">${t('surveyWTCNote')}</div>
 
         ${wtcItems.map((q,i)=>`
           <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">${i+1}. ${q}</div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:8px">${i+1}. ${q}</div>
             <div style="display:flex;gap:6px" id="wtc${i+1}">
               ${[1,2,3,4,5,6].map(n=>`
                 <button onclick="selectQ('wtc${i+1}',${n},this)"
-                  style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border2);
-                  background:var(--white);font-size:13px;font-weight:700;cursor:pointer;
+                  style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border2);
+                  background:var(--white);font-size:16px;font-weight:700;cursor:pointer;
                   font-family:'Nunito',sans-serif;transition:all .15s">${n}</button>`).join('')}
             </div>
           </div>`).join('')}
 
         <div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:8px">${t('surveyFree')}</div>
+          <div style="font-size:16px;font-weight:700;margin-bottom:8px">${t('surveyFree')}</div>
           <textarea id="qFree"
             style="width:100%;padding:10px;border:1.5px solid var(--border2);
-            border-radius:var(--rs);font-size:13px;resize:vertical;min-height:80px;outline:none"
+            border-radius:var(--rs);font-size:15px;resize:vertical;min-height:80px;outline:none"
             placeholder="${t('surveyFreePH')}"></textarea>
         </div>
 
@@ -118,7 +118,7 @@ function buildDash(){
           cursor:pointer;font-family:'Nunito',sans-serif">
           ${t('surveySubmit')}
         </button>
-        <div id="surveyMsg" style="font-size:12px;text-align:center;color:var(--green)"></div>
+        <div id="surveyMsg" style="font-size:13px;text-align:center;color:var(--green)"></div>
       </div>
     </div>`;
 }
@@ -237,6 +237,7 @@ function dlCSV(){
     `token数,${myTokens.length}\ntype数,${myTypes.size}\n`+
     `翻訳回数,${transClickCount}\nWordBridge使用回数,${wbOpenCount}\n`+
     `WordBridge使用時間（秒）,${wbTotalSec}\n`+
+    `単語のチェックを押した数,${wordCheckCount}\n`+
     `HelpBox使用回数,${hbCount}\nHelpBox使用時間（秒）,${hbSec}\n`+
     `理解度共有ボタン使用回数,${uLogs.length}\n`+
     `沈黙回数,${silenceLogs.length}\n平均沈黙時間（秒）,${avgSil}\n会話時間（秒）,${dur}\n`;
