@@ -160,6 +160,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);
 .understanding-btn:hover{border-color:var(--purple);background:var(--purple-l);transform:scale(1.08)}
 .understanding-btn.active{border-color:var(--purple);background:var(--purple);
   transform:scale(1.1);box-shadow:0 2px 8px rgba(139,92,246,.35)}
+.understanding-hint{font-size:10.5px;color:var(--ink3);text-align:center;
+  padding:0 14px 6px;line-height:1.3;font-family:'Noto Sans JP',sans-serif}
 .lang-row{display:flex;align-items:center;gap:6px}
 .lang-row label{font-size:11px;color:var(--ink2);flex:1;
   font-family:'Noto Sans JP',sans-serif}
