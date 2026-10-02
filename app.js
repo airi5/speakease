@@ -30,6 +30,7 @@ async function join(){
   sessionStart=Date.now();
   document.getElementById('roomDisp').textContent=roomCode;
   document.getElementById('langSw').value=myLang;
+  document.getElementById('langSw').disabled=true;   // ★入室後は母国語を変更不可にする
   document.getElementById('joinWrap').style.display='none';
   document.getElementById('meetingWrap').style.display='grid';
   updateParticipantList();
@@ -43,8 +44,8 @@ async function join(){
   // UI言語を選択した言語に更新
   updateUILang();
 
-  // WordBridgeは常時表示になったため、利用計測（wbOpenCount/wbOpenTime）だけ開始する
-  if (!IS_LOG_ONLY) initWordBridgeTracking();
+  // WordBridgeをデフォルトで開く
+  if (!IS_LOG_ONLY) toggleDrawer();
 }
 
 // ── タイマー ──────────────────────────────────
@@ -53,7 +54,7 @@ function startTimer(){
     const s=Math.floor((Date.now()-sessionStart)/1000);
     const t=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
     document.getElementById('timerDisp').textContent=t;
-    document.getElementById('sideTimer').textContent=t; // 非表示だが要素は残しているので更新は継続
+    document.getElementById('sideTimer').textContent=t;
     const lo=document.getElementById('loTimer'); if(lo) lo.textContent=t;
   },1000);
 }
@@ -154,14 +155,9 @@ function endSession(){
   if(!confirm(msg))return;
   clearInterval(timerInt);
   stopMic();
-  // WordBridge / HelpBox どちらか一方が必ず「表示中」の状態なので、
-  // drawerOpenの値を見てそれぞれの使用時間を確定させる
-  if(drawerOpen && wbOpenTime!==null){
+  if(drawerOpen&&wbOpenTime!==null){
     wbTotalSec+=Math.round((Date.now()-wbOpenTime)/1000);
     wbOpenTime=null;
-  } else if(!drawerOpen && typeof hbOpenTime !== 'undefined' && hbOpenTime!==null){
-    hbTotalSec+=Math.round((Date.now()-hbOpenTime)/1000);
-    hbOpenTime=null;
   }
   toggleDash();
 }
@@ -176,19 +172,54 @@ window.addEventListener('beforeunload',()=>{
 });
 
 // ── UI言語更新 ────────────────────────────────
+// 要素が存在しない場合でも途中で止まらないよう、1つずつ安全に更新するヘルパー
+function setText(id, text){
+  const el = document.getElementById(id);
+  if(el) el.textContent = text;
+}
+
 function updateUILang(){
   // 英語固定
-  document.getElementById('recTxt').textContent = 'Waiting';
-  document.getElementById('dashBtn').textContent = 'Analysis';
+  setText('recTxt', 'Waiting');
+  setText('dashBtn', 'Analysis');
   // ログタイトル（選択言語）
-  document.getElementById('logHeaderTitle').textContent = t('logTitle');
+  setText('logHeaderTitle', t('logTitle'));
   // コントロール（選択言語）
-  document.getElementById('ctrlHint').textContent = t('speakHint');
-  document.getElementById('endBtn').textContent = t('endBtn');
-  // WordBridge（選択言語）
-  document.getElementById('wbEmpty').textContent = t('wordHint');
-  document.getElementById('wbLbl').textContent = t('wordBridge');
+  setText('ctrlHint', t('speakHint'));
+  setText('endBtn', t('endBtn'));
   // サイドバー（選択言語）
-  document.getElementById('langLabel').textContent = t('langLabel');
-  document.getElementById('participantsLabel').textContent = t('participants');
+  setText('langLabel', t('langLabel'));
+  setText('participantsLabel', t('participants'));
+
+  // WordBridge（選択言語）
+  setText('wbEmpty', t('wordHint'));
+  setText('wbLbl', t('wordHint'));
+  setText('lvlTxtBeginner', t('levelBeginner'));
+  setText('lvlTxtIntermediate', t('levelIntermediate'));
+  setText('lvlTxtAdvanced', t('levelAdvanced'));
+  setText('wordLvlLbl', t('helpLevelLbl'));
+  setText('wordLvlOpt1', `${t('levelBeginner')} (Easy)`);
+  setText('wordLvlOpt2', `${t('levelIntermediate')} (Medium)`);
+  setText('wordLvlOpt3', `${t('levelAdvanced')} (Hard)`);
+
+  // HelpBox（選択言語）
+  setText('helpSubTabFixedTxt', t('helpTabBasic'));
+  setText('helpSubTabDynamicTxt', t('helpTabConvo'));
+  setText('helpLvlLbl', t('helpLevelLbl'));
+  setText('helpLvlOpt1', `${t('levelBeginner')} (Easy)`);
+  setText('helpLvlOpt2', `${t('levelIntermediate')} (Medium)`);
+  setText('helpLvlOpt3', `${t('levelAdvanced')} (Hard)`);
+  // 会話サポートタブの見出し（今表示中のタブがdynamicなら再計算して反映）
+  if(typeof activeHelpSubTab !== 'undefined' && activeHelpSubTab === 'dynamic' && typeof renderHelpDynamicTab === 'function'){
+    renderHelpDynamicTab();
+  }
+
+  // GotIt!（選択言語）
+  const uHappy = document.getElementById('ubtn-happy');
+  const uNeutral = document.getElementById('ubtn-neutral');
+  const uConfused = document.getElementById('ubtn-confused');
+  if(uHappy) uHappy.title = t('understandingHappy');
+  if(uNeutral) uNeutral.title = t('understandingNeutral');
+  if(uConfused) uConfused.title = t('understandingConfused');
+  setText('understandingHint', t('understandingHint'));
 }
