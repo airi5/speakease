@@ -102,6 +102,12 @@ function sbSubscribe() {
 // roomsテーブル専用のWebSocket（話題同期・理解度共有ボタン用）
 let roomsWs = null;
 let roomsHeartbeatInt = null;
+// 直近で確定している話題キー。GotIt!（理解度）の更新はrooms行の別カラムを
+// PATCHするだけだが、Supabase Realtimeはその行全体（current_topicも含む）を
+// 送ってくるため、ここで「本当に話題が変わったときだけ」反映するようにする。
+// （これをしないとGotIt!を押すたびに話題が「再受信」扱いになり、単語が毎回
+// 再シャッフルされてしまう）
+let currentSyncedTopic = null;
 
 function sbSubscribeRooms() {
   const wsUrl = `wss://${SB_URL.replace('https://', '')}/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`;
@@ -135,7 +141,10 @@ function sbSubscribeRooms() {
       if (record.room_code !== roomCode) return;
 
       const topic = record.current_topic;
-      if(topic) onTopicReceived(topic);
+      if(topic && topic !== currentSyncedTopic){
+        currentSyncedTopic = topic;
+        onTopicReceived(topic);
+      }
 
       // 理解度共有ボタンの同期（自分が押した分は自分の画面では無視する）
       if(record.understanding_name && record.understanding_name !== myName){
@@ -177,6 +186,8 @@ async function sbMarkQuestion(entryId) {
 
 // 話題をSupabaseに保存・全員に同期
 async function sbSetTopic(topicKey){
+  // 自分で確定させた話題として先に記録しておく（エコー受信時の二重再描画を防ぐ）
+  currentSyncedTopic = topicKey;
   // まずUPDATEを試みる
   const res = await fetch(
     `${SB_URL}/rest/v1/rooms?room_code=eq.${encodeURIComponent(roomCode)}`,
@@ -251,6 +262,27 @@ async function sbSetUnderstanding(name, level){
 function isTestRoom(code){
   if(!code) return false;
   return code.startsWith('TEST-');
+}
+
+// GotIt!（理解度共有ボタン）を押した記録をSupabaseに永続保存する
+// 「いつ・誰が・どのレベルを押したか」を1行ずつ記録する。CSVはセッション終了後に
+// ダウンロードし忘れると失われるが、こちらはボタンを押した瞬間に送信されるため残る。
+// speech_log と同じ命名ルールでテスト部屋は understanding_log_test に分離する。
+async function sbLogUnderstanding(name, level){
+  const table = isTestRoom(roomCode) ? 'understanding_log_test' : 'understanding_log';
+  try{
+    await fetch(`${SB_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        room_code:  roomCode,
+        person_id:  myPersonId,
+        name:       name,
+        level:      level,
+        created_at: new Date().toISOString(),
+      }),
+    });
+  }catch(e){ console.error('sbLogUnderstanding', e); }
 }
 
 async function logChunk(text, times){
