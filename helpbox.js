@@ -37,9 +37,11 @@ const HELP_FIXED_PHRASES = {
 };
 
 // ── タブ2: 会話サポート（発言数に応じて3段階で切り替え） ──
+// labelはt()キー名を持たせておき、表示時にその場の選択言語で解決する
+// （以前はここが日本語に固定されていて、フランス語などでは切り替わらなかった）
 const HELP_DYNAMIC_TIERS = {
   starting: {
-    label: '会話のはじめ',
+    labelKey: 'tierStarting',
     phrases: [
       { en: "So, how's your day going?", jp: '今日はどんな一日でしたか？' },
       { en: 'This is fun, right?', jp: 'これ、楽しいですね！' },
@@ -47,7 +49,7 @@ const HELP_DYNAMIC_TIERS = {
     ],
   },
   keepGoing: {
-    label: '会話を広げる',
+    labelKey: 'tierKeepGoing',
     phrases: [
       { en: 'That’s interesting, tell me more!', jp: '面白いですね、もっと教えてください！' },
       { en: 'What do you think about that?', jp: 'それについてどう思いますか？' },
@@ -55,7 +57,7 @@ const HELP_DYNAMIC_TIERS = {
     ],
   },
   goingDeeper: {
-    label: 'もう一歩踏み込む',
+    labelKey: 'tierGoingDeeper',
     phrases: [
       { en: 'Have you ever experienced something similar?', jp: '似たような経験をしたことはありますか？' },
       { en: 'What would you do differently?', jp: 'もし違う選択をするとしたら？' },
@@ -66,6 +68,10 @@ const HELP_DYNAMIC_TIERS = {
 
 let activeHelpSubTab = 'fixed';
 
+// フレーズを表示する。myLangが日本語なら元から用意済みのjpを即表示、
+// 英語ならそもそも訳を出さない、それ以外の言語（フランス語など）は
+// wordbridge.jsのtranslateWord()を再利用してAzure Translator経由で動的に翻訳する。
+// （以前はjpが常に表示され、日本語以外の言語では翻訳されず素通りしていたバグを修正）
 function renderPhraseList(containerId, phrases){
   const list = document.getElementById(containerId);
   list.innerHTML = '';
@@ -75,11 +81,21 @@ function renderPhraseList(containerId, phrases){
     const en = document.createElement('div');
     en.className = 'en';
     en.textContent = p.en;
-    const jp = document.createElement('div');
-    jp.className = 'jp';
-    jp.textContent = p.jp;
     div.appendChild(en);
-    div.appendChild(jp);
+
+    if(myLang !== 'en'){
+      const native = document.createElement('div');
+      native.className = 'jp';
+      native.textContent = myLang === 'ja' ? p.jp : '...';
+      div.appendChild(native);
+
+      if(myLang !== 'ja' && typeof translateWord === 'function'){
+        translateWord(p.en, myLang).then(translated => {
+          if(translated) native.textContent = translated;
+        });
+      }
+    }
+
     list.appendChild(div);
   });
 }
@@ -107,8 +123,9 @@ function getConversationTier(){
 function renderHelpDynamicTab(){
   const tier = getConversationTier();
   const tierData = HELP_DYNAMIC_TIERS[tier];
-  document.getElementById('helpDynamicHint').textContent =
-    `${tierData.label}（現在の発言数に応じて自動で変わります）`;
+  const label = typeof t === 'function' ? t(tierData.labelKey) : tierData.labelKey;
+  const suffix = typeof t === 'function' ? t('tierHintSuffix') : '';
+  document.getElementById('helpDynamicHint').textContent = `${label}${suffix}`;
   renderPhraseList('helpDynamicList', tierData.phrases);
 }
 
