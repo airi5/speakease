@@ -731,10 +731,14 @@ async function translateWord(word, targetLang){
   const key = `${targetLang}:${word}`;
   if(transCache[key]) return transCache[key];
   try{
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en-US|${MYMEMORY_LANG[targetLang]||'ja-JP'}`;
-    const res = await fetch(url);
+    const azureLang = AZURE_LANG[targetLang] || 'ja';
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: word, targetLang: azureLang }),
+    });
     const data = await res.json();
-    const result = data?.responseData?.translatedText || word;
+    const result = data?.translatedText || word;
     transCache[key] = result;
     return result;
   }catch(e){
@@ -799,8 +803,11 @@ async function renderWordGrid(topicKey, wordLevel){
     check.textContent = '✓';
     div.appendChild(check);
 
-    // タップ/クリックで「使った単語」としてチェック（見た目のみ・練習の達成感を出す）
-    const toggleUsed = () => div.classList.toggle('used');
+    // タップ/クリックで「使った単語」としてチェック（Insight Logの集計対象でもある）
+    const toggleUsed = () => {
+      const nowUsed = div.classList.toggle('used');
+      if(nowUsed){ wordCheckCount++; } else { wordCheckCount = Math.max(0, wordCheckCount - 1); }
+    };
     div.addEventListener('click', toggleUsed);
     div.addEventListener('keydown', (e) => {
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleUsed(); }
