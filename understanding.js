@@ -41,10 +41,13 @@ function setUnderstanding(level){
   updateUnderstandingButtons();
   if(typeof updateParticipantList === 'function') updateParticipantList();
 
-  // Supabaseで他の参加者に同期する
-  // TODO: db.js の実装に合わせて実際の関数名・テーブル構成を確認して接続する
+  // Supabaseで他の参加者にリアルタイム同期する（表示用）
   if(typeof sbSetUnderstanding === 'function'){
     sbSetUnderstanding(myName, level);
+  }
+  // 「いつ・誰が・どのレベルを押したか」を永続ログとして記録する（使用回数の集計用）
+  if(typeof sbLogUnderstanding === 'function'){
+    sbLogUnderstanding(myName, level);
   }
 }
 
