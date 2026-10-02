@@ -24,6 +24,8 @@ let hbOpenTime = null;
 let hbTotalSec = 0;
 // 翻訳ボタン押下回数
 let transClickCount = 0;
+// WordBridgeで単語チップを「使った」とチェックした回数（Insight Logの表示に使用）
+let wordCheckCount = 0;
 // 複数人対応:参加者ごとのカウント管理 { name: count }
 const otherCounts = {};
 // Supabase Realtime WebSocket
