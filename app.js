@@ -192,8 +192,17 @@ function updateUILang(){
   setText('participantsLabel', t('participants'));
 
   // WordBridge（選択言語）
-  setText('wbEmpty', t('wordHint'));
-  setText('wbLbl', t('wordHint'));
+  setText('wbEmpty', t('wbPickHint'));
+  setText('wbLbl', t('wbTapHint'));
+  // 話題レベル選択済みでまだカードが決まっていない場合のメッセージも選択言語で更新
+  if(typeof currentLevel !== 'undefined' && currentLevel && typeof spinState !== 'undefined' && !spinState.active){
+    const topicCardEl = document.getElementById('topicCard');
+    if(topicCardEl && !topicCardEl.classList.contains('pop')){
+      const levelKeyMap = { beginner: 'levelBeginner', intermediate: 'levelIntermediate', advanced: 'levelAdvanced' };
+      const levelLabel = t(levelKeyMap[currentLevel]);
+      topicCardEl.innerHTML = `🎯 ${t('topicLevelPicked').replace('{level}', levelLabel)}`;
+    }
+  }
   setText('lvlTxtBeginner', t('levelBeginner'));
   setText('lvlTxtIntermediate', t('levelIntermediate'));
   setText('lvlTxtAdvanced', t('levelAdvanced'));
