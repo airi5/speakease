@@ -150,18 +150,18 @@ html,body{height:100%;background:var(--bg);color:var(--ink);
 .p-cnt{font-size:12px;font-weight:700;color:var(--ink3)}
 
 /* ── 理解度共有ボタン（😊😐😕） ── */
-.understanding-row{display:flex;align-items:center;gap:6px;padding:8px 14px;
+.understanding-row{display:flex;align-items:center;gap:10px;padding:10px 16px;
   border-top:1px solid var(--border);background:var(--white);flex-shrink:0}
-.understanding-lbl{font-size:11px;color:var(--ink3);font-family:'Noto Sans JP',sans-serif;
+.understanding-lbl{font-size:16px;font-weight:700;color:var(--ink2);font-family:'Noto Sans JP',sans-serif;
   flex:1}
-.understanding-btn{width:34px;height:34px;border-radius:50%;border:2px solid var(--border2);
-  background:var(--white);font-size:17px;cursor:pointer;display:flex;align-items:center;
+.understanding-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--border2);
+  background:var(--white);font-size:22px;cursor:pointer;display:flex;align-items:center;
   justify-content:center;transition:all var(--t);line-height:1}
 .understanding-btn:hover{border-color:var(--purple);background:var(--purple-l);transform:scale(1.08)}
 .understanding-btn.active{border-color:var(--purple);background:var(--purple);
   transform:scale(1.1);box-shadow:0 2px 8px rgba(139,92,246,.35)}
-.understanding-hint{font-size:10.5px;color:var(--ink3);text-align:center;
-  padding:0 14px 6px;line-height:1.3;font-family:'Noto Sans JP',sans-serif}
+.understanding-hint{font-size:13px;color:var(--ink3);text-align:center;
+  padding:0 16px 8px;line-height:1.4;font-family:'Noto Sans JP',sans-serif}
 .lang-row{display:flex;align-items:center;gap:6px}
 .lang-row label{font-size:11px;color:var(--ink2);flex:1;
   font-family:'Noto Sans JP',sans-serif}
