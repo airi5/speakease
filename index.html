@@ -129,7 +129,8 @@
         <div class="side-lbl" id="participantsLabel">Participants</div>
         <div id="pList"></div>
       </div>
-      <div class="side-sec">
+      <!-- 入室後は母国語を変更できない仕様のため、選択UIは非表示（langSw自体はapp.js側の処理で使うのでDOMには残す） -->
+      <div class="side-sec" style="display:none">
         <div class="side-lbl" id="langLabel">Translation language</div>
         <div class="lang-row">
           <select id="langSw" onchange="myLang=this.value">
