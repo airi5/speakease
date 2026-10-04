@@ -859,7 +859,14 @@ function selectTopicLevel(level){
 
   const topicCard = document.getElementById('topicCard');
   topicCard.classList.remove('pop', 'spinning');
-  topicCard.innerHTML = `🎯 ${LEVEL_LABEL[level]}を選択！ ▶ Startを押してね`;
+  // 選択言語でメッセージを表示（以前は日本語固定だったバグを修正）
+  const levelKeyMap = { beginner: 'levelBeginner', intermediate: 'levelIntermediate', advanced: 'levelAdvanced' };
+  if(typeof t === 'function'){
+    const levelLabel = t(levelKeyMap[level]);
+    topicCard.innerHTML = `🎯 ${t('topicLevelPicked').replace('{level}', levelLabel)}`;
+  }else{
+    topicCard.innerHTML = `🎯 ${LEVEL_LABEL[level]}を選択！ ▶ Startを押してね`;
+  }
 
   const startBtn = document.getElementById('wbStartBtn');
   if(startBtn) startBtn.disabled = spinState.pool.length === 0;
