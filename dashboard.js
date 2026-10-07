@@ -18,22 +18,25 @@ function buildDash(){
   const topW=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(e=>e[0]);
   const wtcItems=t('wtc');
 
-  // log-onlyのときはツール体験を前提とした qa3〜qa8 を出さない
-  const qaList = IS_LOG_ONLY
-    ? [
-        {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
-        {id:'qa2',lo:'qa2lo',hi:'qa2hi',q:'qa2q'},
-      ]
-    : [
-        {id:'qa1',lo:'qa1lo',hi:'qa1hi',q:'qa1q'},
-        {id:'qa2',lo:'qa2lo',hi:'qa2hi',q:'qa2q'},
-        {id:'qa3',lo:'qa3lo',hi:'qa3hi',q:'qa3q'},
-        {id:'qa4',lo:'qa4lo',hi:'qa4hi',q:'qa4q'},
-        {id:'qa5',lo:'qa5lo',hi:'qa5hi',q:'qa5q'},
-        {id:'qa6',lo:'qa6lo',hi:'qa6hi',q:'qa6q'},
-        {id:'qa7',lo:'qa7lo',hi:'qa7hi',q:'qa7q'},
-        {id:'qa8',lo:'qa8lo',hi:'qa8hi',q:'qa8q'},
-      ];
+  // グループA（国際交流そのもの）は常に表示。グループB（システム評価）はlog-onlyでは出さない
+  const groupA = SURVEY_ITEMS_A;
+  const groupB = IS_LOG_ONLY ? [] : SURVEY_ITEMS_B;
+  const renderQ = item=>`
+          <div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:14px;color:var(--ink3)">${t(item.lo)}</span>
+              <div style="display:flex;gap:6px" id="${item.id}">
+                ${[1,2,3,4,5,6].map(n=>`
+                  <button onclick="selectQ('${item.id}',${n},this)"
+                    style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border2);
+                    background:var(--white);font-size:16px;font-weight:700;cursor:pointer;
+                    font-family:'Nunito',sans-serif;transition:all .15s">${n}</button>`).join('')}
+              </div>
+              <span style="font-size:14px;color:var(--ink3)">${t(item.hi)}</span>
+            </div>
+          </div>`;
+  const secStyle='font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)';
 
   document.getElementById('dashTitle').textContent=t('dashTitle');
   document.getElementById('dashClose').textContent=t('dashClose');
@@ -67,25 +70,12 @@ function buildDash(){
       </div>
       <div style="display:flex;flex-direction:column;gap:20px">
 
-        <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)">
-          ${t('surveySection1')}
-        </div>
+        <div style="${secStyle}">${t('surveySectionA')}</div>
+        ${groupA.map(renderQ).join('')}
 
-        ${qaList.map(item=>`
-          <div>
-            <div style="font-size:16px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <span style="font-size:14px;color:var(--ink3)">${t(item.lo)}</span>
-              <div style="display:flex;gap:6px" id="${item.id}">
-                ${[1,2,3,4,5,6].map(n=>`
-                  <button onclick="selectQ('${item.id}',${n},this)"
-                    style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border2);
-                    background:var(--white);font-size:16px;font-weight:700;cursor:pointer;
-                    font-family:'Nunito',sans-serif;transition:all .15s">${n}</button>`).join('')}
-              </div>
-              <span style="font-size:14px;color:var(--ink3)">${t(item.hi)}</span>
-            </div>
-          </div>`).join('')}
+        ${groupB.length?`
+        <div style="${secStyle};margin-top:8px">${t('surveySectionB')}</div>
+        ${groupB.map(renderQ).join('')}`:''}
 
         <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-top:8px">
           ${t('surveySection2')}
@@ -123,6 +113,22 @@ function buildDash(){
     </div>`;
 }
 
+// アンケート項目定義。id = Supabase surveys テーブルの列名
+const SURVEY_ITEMS_A=[
+  {id:'a_satisfaction',    q:'qa1q',      lo:'qa1lo',      hi:'qa1hi'},
+  {id:'a_active_speaking', q:'qa2q',      lo:'qa2lo',      hi:'qa2hi'},
+  {id:'a_interest_intl',   q:'qaIntlq',   lo:'qaIntllo',   hi:'qaIntlhi'},
+  {id:'a_interest_culture',q:'qaCultq',   lo:'qaCultlo',   hi:'qaCulthi'},
+];
+const SURVEY_ITEMS_B=[
+  {id:'b_usability', q:'qa3q',       lo:'qa3lo',       hi:'qa3hi'},
+  {id:'b_wb_topic',  q:'qaWbTopicq', lo:'qaWbTopiclo', hi:'qaWbTopichi'},
+  {id:'b_wb_word',   q:'qa4q',       lo:'qa4lo',       hi:'qa4hi'},
+  {id:'b_talkboard', q:'qa5q',       lo:'qa5lo',       hi:'qa5hi'},
+  {id:'b_helpbox',   q:'qa7q',       lo:'qa7lo',       hi:'qa7hi'},
+  {id:'b_gotit',     q:'qa8q',       lo:'qa8lo',       hi:'qa8hi'},
+  {id:'b_reuse',     q:'qa6q',       lo:'qa6lo',       hi:'qa6hi'},
+];
 const surveyAnswers={};
 function selectQ(qId,val,btn){
   surveyAnswers[qId]=val;
@@ -144,26 +150,28 @@ async function submitSurvey(){
     room_code:  roomCode,
     person_id:  myPersonId,
     name:       myName,
-    qa1:surveyAnswers['qa1']||null, qa2:surveyAnswers['qa2']||null,
-    qa3:surveyAnswers['qa3']||null, qa4:surveyAnswers['qa4']||null,
-    qa5:surveyAnswers['qa5']||null, qa6:surveyAnswers['qa6']||null,
-    qa7:surveyAnswers['qa7']||null, qa8:surveyAnswers['qa8']||null,
+    ...Object.fromEntries([...SURVEY_ITEMS_A,...SURVEY_ITEMS_B].map(i=>[i.id,surveyAnswers[i.id]||null])),
     wtc1:surveyAnswers['wtc1']||null, wtc2:surveyAnswers['wtc2']||null,
     wtc3:surveyAnswers['wtc3']||null, wtc4:surveyAnswers['wtc4']||null,
     wtc5:surveyAnswers['wtc5']||null, wtc6:surveyAnswers['wtc6']||null,
     wtc7:surveyAnswers['wtc7']||null,
     free_text: free,
-    trans_count: transClickCount,
-    wb_count:    wbOpenCount,
-    talk_sec:    sessionStart ? Math.round((Date.now()-sessionStart)/1000) : 0,
+    translate_click_count: transClickCount,
+    wb_open_count:  wbOpenCount,
+    wb_check_count: wordCheckCount,
+    session_sec: sessionStart ? Math.round((Date.now()-sessionStart)/1000) : 0,
     created_at: new Date().toISOString(),
   };
   try{
-    await fetch(`${SB_URL}/rest/v1/surveys`,{
+    const res=await fetch(`${SB_URL}/rest/v1/surveys`,{
       method:'POST',
       headers:{...SB_HEADERS,'Prefer':'return=minimal'},
       body:JSON.stringify(payload),
     });
+    if(!res.ok){
+      console.error('submitSurvey failed', res.status, await res.text());
+      throw new Error('survey insert failed: '+res.status);
+    }
     // 送信完了ページを表示
     document.getElementById('dashContent').innerHTML=`
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
