@@ -208,6 +208,15 @@
             </select>
           </div>
 
+          <!-- 単語検索（母国語 → 英単語。英語話者には非表示） -->
+          <div class="wb-search-row" id="wbSearchRow">
+            <input type="text" id="wbSearchIn" autocomplete="off"
+              placeholder="Type a word in your language"
+              onkeydown="if(event.key==='Enter' && !event.isComposing && event.keyCode!==229){runWordSearch();}">
+            <button type="button" id="wbSearchBtn" onclick="runWordSearch()" aria-label="Search">🔍</button>
+          </div>
+          <div class="wb-search-results" id="wbSearchResults" style="display:none"></div>
+
           <!-- 単語候補（タップで使用済みチェック） -->
           <div class="wb-lbl" id="wbLbl">Tap a word once you've used it</div>
           <div class="words-grid" id="wordsGrid">
