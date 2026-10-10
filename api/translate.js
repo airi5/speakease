@@ -63,4 +63,39 @@ module.exports = async function handler(req, res) {
   const REGION = process.env.AZURE_TRANSLATOR_REGION;
   if (!KEY || !REGION) {
     console.error('Missing AZURE_TRANSLATOR_KEY / AZURE_TRANSLATOR_REGION env vars');
-    res.status(500).json({ error: 'Server is
+    res.status(500).json({ error: 'Server is not configured for translation' });
+    return;
+  }
+
+  try {
+    if (mode === 'lookup') {
+      let list = await azureLookup(text, from, KEY, REGION);
+      let fallback = false;
+      if (!list.length) {
+        const one = await azureTranslate(text, from, 'en', KEY, REGION);
+        if (one) { list = [{ word: one, pos: '' }]; fallback = true; }
+      }
+      // 重複（大文字小文字違い）を除いて最大6件
+      const seen = new Set();
+      const candidates = [];
+      for (const c of list) {
+        const w = String(c.word || '').trim();
+        const k = w.toLowerCase();
+        if (!w || seen.has(k)) continue;
+        seen.add(k);
+        candidates.push({ word: w, pos: c.pos });
+        if (candidates.length >= 6) break;
+      }
+      if (!candidates.length) { res.status(502).json({ error: 'No result' }); return; }
+      res.status(200).json({ candidates, fallback });
+      return;
+    }
+
+    const translated = await azureTranslate(text, from || 'en', targetLang, KEY, REGION);
+    if (!translated) { res.status(502).json({ error: 'No translation returned' }); return; }
+    res.status(200).json({ translatedText: translated });
+  } catch (err) {
+    console.error('translate handler error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
