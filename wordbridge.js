@@ -726,24 +726,168 @@ let currentLevel = null; // 現在選ばれている話題レベル（再抽選�
 // 翻訳キャッシュ
 const transCache = {};
 
+// ── 翻訳（Azure優先、失敗したらMyMemoryに自動切替）────────────────
+// 失敗時は null を返す（英語で埋めない・キャッシュしない）
+async function translateViaAzure(word, targetLang){
+  const res = await fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: word, targetLang: AZURE_LANG[targetLang] || targetLang }),
+  });
+  if(!res.ok) throw new Error('azure ' + res.status);
+  const data = await res.json();
+  if(!data?.translatedText) throw new Error('azure empty');
+  return data.translatedText;
+}
+
+// MyMemory: 英語→母国語。langpair は "from|to"
+async function myMemoryTranslate(text, fromCode, toCode){
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(fromCode)}|${encodeURIComponent(toCode)}`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('mymemory ' + res.status);
+  const data = await res.json();
+  const txt = data?.responseData?.translatedText;
+  // 無料枠超過などは文面に警告が入り、responseStatusが200以外になる
+  if(!txt || Number(data.responseStatus) !== 200 || /MYMEMORY WARNING|INVALID/i.test(txt)) throw new Error('mymemory bad response');
+  return txt;
+}
+
 async function translateWord(word, targetLang){
   if(targetLang === 'en') return null;
   const key = `${targetLang}:${word}`;
   if(transCache[key]) return transCache[key];
+  let result = null;
   try{
-    const azureLang = AZURE_LANG[targetLang] || 'ja';
+    result = await translateViaAzure(word, targetLang);
+  }catch(e){
+    console.warn('Azure translate failed, falling back to MyMemory:', e.message);
+    try{
+      result = await myMemoryTranslate(word, 'en', MYMEMORY_LANG[targetLang] || targetLang);
+    }catch(e2){
+      console.error('translateWord failed:', e2.message);
+      return null;
+    }
+  }
+  transCache[key] = result;
+  return result;
+}
+
+// ── 発音（ブラウザ標準の読み上げ。無料・キー不要）──────────────────
+function speakEnglish(text){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(x => /^en[-_]US/i.test(x.lang)) || voices.find(x => /^en/i.test(x.lang));
+    if(v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }catch(e){ console.error('speakEnglish', e); }
+}
+
+// 🔊ボタンを作る（親要素のクリック・キー操作には伝えない）
+function makeSpeakBtn(text, extraClass){
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'spk-btn' + (extraClass ? ' ' + extraClass : '');
+  b.textContent = '🔊';
+  const label = (typeof t === 'function') ? t('wbSpeak') : 'Listen';
+  b.title = label;
+  b.setAttribute('aria-label', label);
+  b.addEventListener('click', e => { e.stopPropagation(); speakEnglish(text); });
+  b.addEventListener('keydown', e => { e.stopPropagation(); });
+  return b;
+}
+
+// ── 単語検索（母国語 → 英単語の候補）──────────────────────────────
+let wbSearchCount = 0;   // 研究用：検索ボタンを使った回数（CSVに出力）
+
+async function lookupEnglish(query){
+  // Azure辞書 → 失敗したらMyMemoryの1語翻訳
+  try{
     const res = await fetch('/api/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: word, targetLang: azureLang }),
+      body: JSON.stringify({ mode: 'lookup', text: query, from: AZURE_LANG[myLang] || myLang }),
     });
+    if(!res.ok) throw new Error('azure ' + res.status);
     const data = await res.json();
-    const result = data?.translatedText || word;
-    transCache[key] = result;
-    return result;
+    if(!data?.candidates?.length) throw new Error('azure empty');
+    return data.candidates;
   }catch(e){
-    return word;
+    console.warn('Azure lookup failed, falling back to MyMemory:', e.message);
+    try{
+      const one = await myMemoryTranslate(query, MYMEMORY_LANG[myLang] || myLang, 'en');
+      return [{ word: one, pos: '' }];
+    }catch(e2){
+      console.error('lookupEnglish failed:', e2.message);
+      return [];
+    }
   }
+}
+
+function clearWordSearch(){
+  const inp = document.getElementById('wbSearchIn');
+  const box = document.getElementById('wbSearchResults');
+  if(inp) inp.value = '';
+  if(box){ box.style.display = 'none'; box.innerHTML = ''; }
+}
+
+async function runWordSearch(){
+  if(myLang === 'en') return;
+  const inp = document.getElementById('wbSearchIn');
+  const box = document.getElementById('wbSearchResults');
+  if(!inp || !box) return;
+  const q = inp.value.trim();
+  if(!q){ clearWordSearch(); return; }
+
+  wbSearchCount++;
+  box.style.display = '';
+  box.innerHTML = '';
+  const msg = document.createElement('div');
+  msg.className = 'wb-search-msg';
+  msg.textContent = t('wbSearching');
+  box.appendChild(msg);
+
+  const list = await lookupEnglish(q);
+  if(inp.value.trim() !== q) return;   // 検索中に入力が変わっていたら古い結果は捨てる
+  box.innerHTML = '';
+
+  if(!list.length){
+    const none = document.createElement('div');
+    none.className = 'wb-search-msg';
+    none.textContent = t('wbSearchNone');
+    box.appendChild(none);
+    return;
+  }
+
+  list.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'word-chip search-hit';
+    const textWrap = document.createElement('div');
+    textWrap.className = 'chip-text';
+    const en = document.createElement('span');
+    en.className = 'en';
+    en.textContent = c.word;
+    textWrap.appendChild(en);
+    if(c.pos){
+      const pos = document.createElement('span');
+      pos.className = 'native';
+      pos.textContent = String(c.pos).toLowerCase();
+      textWrap.appendChild(pos);
+    }
+    div.appendChild(textWrap);
+    div.appendChild(makeSpeakBtn(c.word));
+    box.appendChild(div);
+  });
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'wb-search-close';
+  close.textContent = '✕';
+  close.onclick = clearWordSearch;
+  box.appendChild(close);
 }
 
 // トピックキー + 単語レベルから単語リストを取得
@@ -798,6 +942,8 @@ async function renderWordGrid(topicKey, wordLevel){
     }
     div.appendChild(textWrap);
 
+    div.appendChild(makeSpeakBtn(item.w));
+
     const check = document.createElement('div');
     check.className = 'chip-check';
     check.textContent = '✓';
@@ -824,7 +970,7 @@ async function renderWordGrid(topicKey, wordLevel){
       const chip = document.getElementById(chipId);
       if(chip){
         const native = chip.querySelector('.native');
-        if(native) native.textContent = translated;
+        if(native) native.textContent = translated || '';
       }
     });
   }

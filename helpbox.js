@@ -82,6 +82,7 @@ function renderPhraseList(containerId, phrases){
     en.className = 'en';
     en.textContent = p.en;
     div.appendChild(en);
+    if(typeof makeSpeakBtn === 'function') div.appendChild(makeSpeakBtn(p.en, 'abs'));
 
     if(myLang !== 'en'){
       const native = document.createElement('div');
@@ -91,7 +92,7 @@ function renderPhraseList(containerId, phrases){
 
       if(myLang !== 'ja' && typeof translateWord === 'function'){
         translateWord(p.en, myLang).then(translated => {
-          if(translated) native.textContent = translated;
+          native.textContent = translated || '';
         });
       }
     }

@@ -246,6 +246,7 @@ function dlCSV(){
     `翻訳回数,${transClickCount}\nWordBridge使用回数,${wbOpenCount}\n`+
     `WordBridge使用時間（秒）,${wbTotalSec}\n`+
     `単語のチェックを押した数,${wordCheckCount}\n`+
+    `単語検索回数,${typeof wbSearchCount !== 'undefined' ? wbSearchCount : 0}\n`+
     `HelpBox使用回数,${hbCount}\nHelpBox使用時間（秒）,${hbSec}\n`+
     `理解度共有ボタン使用回数,${uLogs.length}\n`+
     `沈黙回数,${silenceLogs.length}\n平均沈黙時間（秒）,${avgSil}\n会話時間（秒）,${dur}\n`;

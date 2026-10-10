@@ -191,6 +191,13 @@ function updateUILang(){
   setText('langLabel', t('langLabel'));
   setText('participantsLabel', t('participants'));
 
+  // 単語検索（英語話者には不要なので隠す）
+  const sRow = document.getElementById('wbSearchRow');
+  if(sRow) sRow.style.display = (myLang === 'en') ? 'none' : '';
+  const sIn = document.getElementById('wbSearchIn');
+  if(sIn) sIn.placeholder = t('wbSearchPH');
+  if(myLang === 'en' && typeof clearWordSearch === 'function') clearWordSearch();
+
   // WordBridge（選択言語）
   setText('wbEmpty', t('wbPickHint'));
   setText('wbLbl', t('wbTapHint'));

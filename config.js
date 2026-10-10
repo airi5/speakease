@@ -18,8 +18,8 @@ const MYMEMORY_LANG = {
   ru:'ru-RU', uk:'uk-UA', pl:'pl-PL', tr:'tr-TR', el:'el-GR', sv:'sv-SE',
 };
 
-// Microsoft Translator（Azure）用の言語コード。/api/translate 経由で使う。
-// MyMemory時代のMYMEMORY_LANGはもう使われていないが、参照用に残してある。
+// Azure Translator 用の言語コード（/api/translate 経由）。
+// Azureが使えないとき（未設定・障害・無料枠超過）は自動で MyMemory（上の MYMEMORY_LANG）に切り替わる。
 const AZURE_LANG = {
   en:'en',
   ja:'ja', ko:'ko', zh:'zh-Hant', ar:'ar', hi:'hi', th:'th',
@@ -107,6 +107,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Not helpful', qaWbTopichi:'Very helpful',
     surveySectionA: 'About this international exchange',
     surveySectionB: 'About SpeakEase',
+    wbSearchPH: 'Type a word in your language',
+    wbSearching: 'Searching…',
+    wbSearchNone: 'No result. Try another word.',
+    wbSpeak: 'Listen',
     wtc: [
       'I feel nervous about what others think when I speak English.',
       'I worry about making grammar mistakes when speaking English.',
@@ -195,6 +199,10 @@ const UI_TEXT = {
     qaWbTopiclo:'役立たない', qaWbTopichi:'役立った',
     surveySectionA: '今回の国際交流について',
     surveySectionB: 'SpeakEaseについて',
+    wbSearchPH: '日本語で単語を入力',
+    wbSearching: '検索中…',
+    wbSearchNone: '見つかりませんでした。別の言葉でどうぞ。',
+    wbSpeak: '発音を聞く',
     wtc: [
       '英語を話すとき、他人の評価が気になる',
       '英語を話すとき、文法が間違っているのではないかと不安になる',
@@ -283,6 +291,10 @@ const UI_TEXT = {
     qaWbTopiclo:'도움 안됨', qaWbTopichi:'매우 도움됨',
     surveySectionA: '이번 국제 교류에 대해',
     surveySectionB: 'SpeakEase에 대해',
+    wbSearchPH: '모국어로 단어 입력',
+    wbSearching: '검색 중…',
+    wbSearchNone: '결과가 없습니다. 다른 단어를 입력해 보세요.',
+    wbSpeak: '발음 듣기',
     wtc: [
       '영어를 말할 때 다른 사람의 평가가 신경 쓰인다',
       '영어를 말할 때 문법이 틀릴까봐 불안하다',
@@ -371,6 +383,10 @@ const UI_TEXT = {
     qaWbTopiclo:'没帮助', qaWbTopichi:'很有帮助',
     surveySectionA: '关于这次国际交流',
     surveySectionB: '关于SpeakEase',
+    wbSearchPH: '用母语输入单词',
+    wbSearching: '搜索中…',
+    wbSearchNone: '没有找到结果，请换一个词试试。',
+    wbSpeak: '听发音',
     wtc: [
       '说英语时，我在意别人的评价',
       '说英语时，我担心语法错误',
@@ -459,6 +475,10 @@ const UI_TEXT = {
     qaWbTopiclo:'ไม่มีประโยชน์', qaWbTopichi:'มีประโยชน์มาก',
     surveySectionA: 'เกี่ยวกับการแลกเปลี่ยนครั้งนี้',
     surveySectionB: 'เกี่ยวกับ SpeakEase',
+    wbSearchPH: 'พิมพ์คำในภาษาของคุณ',
+    wbSearching: 'กำลังค้นหา…',
+    wbSearchNone: 'ไม่พบผลลัพธ์ ลองคำอื่นดู',
+    wbSpeak: 'ฟังเสียง',
     wtc: [
       'ฉันรู้สึกกังวลว่าคนอื่นจะคิดอะไรเมื่อฉันพูดภาษาอังกฤษ',
       'ฉันกังวลว่าจะพูดผิดหลักไวยากรณ์เมื่อพูดภาษาอังกฤษ',
@@ -547,6 +567,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Tidak membantu', qaWbTopichi:'Sangat membantu',
     surveySectionA: 'Tentang pertukaran antarabangsa kali ini',
     surveySectionB: 'Tentang SpeakEase',
+    wbSearchPH: 'Taip perkataan dalam bahasa anda',
+    wbSearching: 'Mencari…',
+    wbSearchNone: 'Tiada hasil. Cuba perkataan lain.',
+    wbSpeak: 'Dengar sebutan',
     wtc: [
       'Saya bimbang tentang apa yang orang lain fikirkan apabila saya bercakap bahasa Inggeris',
       'Saya bimbang membuat kesilapan tatabahasa ketika bercakap bahasa Inggeris',
@@ -635,6 +659,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Tidak membantu', qaWbTopichi:'Sangat membantu',
     surveySectionA: 'Tentang pertukaran internasional kali ini',
     surveySectionB: 'Tentang SpeakEase',
+    wbSearchPH: 'Ketik kata dalam bahasa Anda',
+    wbSearching: 'Mencari…',
+    wbSearchNone: 'Tidak ada hasil. Coba kata lain.',
+    wbSpeak: 'Dengar pengucapan',
     wtc: [
       'Saya merasa gugup tentang apa yang orang lain pikirkan saat saya berbicara bahasa Inggris',
       'Saya khawatir membuat kesalahan tata bahasa saat berbicara bahasa Inggris',
@@ -723,6 +751,10 @@ const UI_TEXT = {
     qaWbTopiclo:'No útil', qaWbTopichi:'Muy útil',
     surveySectionA: 'Sobre este intercambio internacional',
     surveySectionB: 'Sobre SpeakEase',
+    wbSearchPH: 'Escribe una palabra en tu idioma',
+    wbSearching: 'Buscando…',
+    wbSearchNone: 'Sin resultados. Prueba otra palabra.',
+    wbSpeak: 'Escuchar',
     wtc: [
       'Me preocupa lo que otros piensan cuando hablo inglés',
       'Me preocupa cometer errores gramaticales cuando hablo inglés',
@@ -811,6 +843,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Pas utile', qaWbTopichi:'Très utile',
     surveySectionA: 'À propos de cet échange international',
     surveySectionB: 'À propos de SpeakEase',
+    wbSearchPH: 'Tapez un mot dans votre langue',
+    wbSearching: 'Recherche…',
+    wbSearchNone: 'Aucun résultat. Essayez un autre mot.',
+    wbSpeak: 'Écouter',
     wtc: [
       'Je me soucie de l\'opinion des autres quand je parle anglais',
       'J\'ai peur de faire des erreurs grammaticales en anglais',
@@ -899,6 +935,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Nicht hilfreich', qaWbTopichi:'Sehr hilfreich',
     surveySectionA: 'Über diesen internationalen Austausch',
     surveySectionB: 'Über SpeakEase',
+    wbSearchPH: 'Wort in Ihrer Sprache eingeben',
+    wbSearching: 'Suche…',
+    wbSearchNone: 'Keine Ergebnisse. Versuchen Sie ein anderes Wort.',
+    wbSpeak: 'Anhören',
     wtc: [
       'Ich mache mir Sorgen, was andere denken, wenn ich Englisch spreche',
       'Ich mache mir Sorgen, Grammatikfehler zu machen',
@@ -987,6 +1027,10 @@ const UI_TEXT = {
     qaWbTopiclo:'Não útil', qaWbTopichi:'Muito útil',
     surveySectionA: 'Sobre este intercâmbio internacional',
     surveySectionB: 'Sobre o SpeakEase',
+    wbSearchPH: 'Digite uma palavra no seu idioma',
+    wbSearching: 'Buscando…',
+    wbSearchNone: 'Sem resultados. Tente outra palavra.',
+    wbSpeak: 'Ouvir',
     wtc: [
       'Me preocupo com o que os outros pensam quando falo inglês',
       'Me preocupo em cometer erros gramaticais ao falar inglês',
