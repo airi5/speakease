@@ -150,11 +150,7 @@ async function toggleTrans(id, text, btn, el){
   btn.textContent=t('close');
 
   try{
-    const targetLang=MYMEMORY_LANG[myLang]||'en-US';
-    const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en-US|${targetLang}`;
-    const res=await fetch(url);
-    const data=await res.json();
-    const translated=data?.responseData?.translatedText||t('transFail');
+    const translated = (await translateWord(text, myLang)) || t('transFail');
     el.textContent=translated;
     el.dataset.done='1';
     el.classList.remove('loading');
