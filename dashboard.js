@@ -20,7 +20,8 @@ function buildDash(){
 
   // グループA（国際交流そのもの）は常に表示。グループB（システム評価）はlog-onlyでは出さない
   const groupA = SURVEY_ITEMS_A;
-  const groupB = IS_LOG_ONLY ? [] : SURVEY_ITEMS_B;
+  const usedSearch = (typeof wbSearchCount !== 'undefined') && wbSearchCount > 0;
+  const groupB = IS_LOG_ONLY ? [] : SURVEY_ITEMS_B.filter(i => !i.needsSearch || usedSearch);
   const renderQ = item=>`
           <div>
             <div style="font-size:16px;font-weight:700;margin-bottom:8px">${t(item.q)}</div>
@@ -124,6 +125,7 @@ const SURVEY_ITEMS_B=[
   {id:'b_usability', q:'qa3q',       lo:'qa3lo',       hi:'qa3hi'},
   {id:'b_wb_topic',  q:'qaWbTopicq', lo:'qaWbTopiclo', hi:'qaWbTopichi'},
   {id:'b_wb_word',   q:'qa4q',       lo:'qa4lo',       hi:'qa4hi'},
+  {id:'b_wb_search',q:'qaWbSearchq', lo:'qaWbSearchlo', hi:'qaWbSearchhi', needsSearch:true},
   {id:'b_talkboard', q:'qa5q',       lo:'qa5lo',       hi:'qa5hi'},
   {id:'b_helpbox',   q:'qa7q',       lo:'qa7lo',       hi:'qa7hi'},
   {id:'b_gotit',     q:'qa8q',       lo:'qa8lo',       hi:'qa8hi'},
@@ -159,6 +161,7 @@ async function submitSurvey(){
     translate_click_count: transClickCount,
     wb_open_count:  wbOpenCount,
     wb_check_count: wordCheckCount,
+    wb_search_count: (typeof wbSearchCount !== 'undefined') ? wbSearchCount : 0,
     session_sec: sessionStart ? Math.round((Date.now()-sessionStart)/1000) : 0,
     created_at: new Date().toISOString(),
   };
