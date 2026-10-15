@@ -147,6 +147,7 @@ function endSession(){
   const msg = myLang==='ja' ? '会話を終了して分析を見ますか？'
     : myLang==='ko' ? '대화를 종료하고 분석을 보시겠습니까？'
     : myLang==='zh' ? '结束对话并查看分析？'
+    : myLang==='zh-TW' ? '結束對話並查看分析？'
     : myLang==='es' ? '¿Terminar la conversación y ver el análisis？'
     : myLang==='fr' ? 'Terminer la conversation et voir l\'analyse？'
     : myLang==='de' ? 'Gespräch beenden und Analyse anzeigen？'
