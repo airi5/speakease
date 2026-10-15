@@ -208,17 +208,18 @@ function startMicTest(){
   MIC_TEST_MODE = true;
   const el = document.getElementById('micTest');
   if(el) el.style.display = 'flex';
+  // 選んだ言語で表示する（言語ごとの文は config.js の mt〜 キー）
+  document.getElementById('mtIcon').textContent  = '🎤';
+  document.getElementById('mtTitle').textContent = t('mtTitle');
+  document.getElementById('mtMsg').textContent   = t('mtMsg');
+  document.getElementById('mtSkip').textContent  = t('mtSkip');
   startMic();                       // 認識エンジンを起動
   // 15秒たっても声が来なければ警告
   micTestTimer = setTimeout(() => {
     if(!MIC_TEST_MODE) return;
     document.getElementById('mtIcon').textContent = '⚠️';
-    document.getElementById('mtTitle').textContent = 'Mic not detected';
-    document.getElementById('mtMsg').innerHTML =
-      'Your voice was not detected.<br>声が認識されませんでした。<br><br>'
-      + '・Use <b>Chrome</b> or <b>Edge</b>（Safari は不可）<br>'
-      + '・Allow microphone access<br>'
-      + '・Reload the page（ページを再読み込み）';
+    document.getElementById('mtTitle').textContent = t('mtNoTitle');
+    document.getElementById('mtMsg').innerHTML = t('mtNoMsg');
     document.getElementById('mtSkip').style.display = 'inline-block';
   }, 15000);
 }
@@ -231,8 +232,8 @@ function micTestPass(skipped){
   const el = document.getElementById('micTest');
   if(!skipped){
     document.getElementById('mtIcon').textContent = '✅';
-    document.getElementById('mtTitle').textContent = 'Mic OK!';
-    document.getElementById('mtMsg').textContent = 'Starting the session...';
+    document.getElementById('mtTitle').textContent = t('mtOkTitle');
+    document.getElementById('mtMsg').textContent = t('mtOkMsg');
     setTimeout(() => { if(el) el.style.display='none'; }, 1200);
   } else {
     if(el) el.style.display='none';
