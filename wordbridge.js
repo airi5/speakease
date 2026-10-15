@@ -773,6 +773,36 @@ async function translateWord(word, targetLang){
 }
 
 // ── 発音（ブラウザ標準の読み上げ。無料・キー不要）──────────────────
+// 声の選び方：リストの先頭の声を使うと、Macなどで「Albert」「Fred」のような
+// かすれた声や、「Bad News」「Whisper」のような変わり種の声に当たることがある。
+// そこで、(1)変わり種の声を除外し、(2)自然な声の名前を優先して選ぶ。
+const VOICE_BLOCKLIST = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Fred|Good News|Hysterical|Junior|Kathy|Organ|Pipe Organ|Princess|Ralph|Superstar|Trinoids|Whisper|Zarvox|Jester|Wobble)\b/i;
+const VOICE_PREFERRED = [
+  /Google US English/i,                                   // Chrome
+  /(Aria|Jenny|Ava|Emma|Guy|Andrew|Brian).*(Natural|Online)/i,  // Edge の自然な声
+  /Samantha/i, /Ava/i, /Allison/i, /Susan/i, /Victoria/i,  // Mac / iOS
+  /Siri/i,
+  /Microsoft (Zira|David|Mark)/i,                         // Windows
+  /Daniel|Karen|Moira|Tessa/i,
+];
+let _enVoice = null;
+function pickEnglishVoice(){
+  const voices = (window.speechSynthesis.getVoices() || []).filter(v => /^en[-_]/i.test(v.lang));
+  if(!voices.length) return null;
+  const ok = voices.filter(v => !VOICE_BLOCKLIST.test(v.name));
+  const pool = ok.length ? ok : voices;
+  for(const re of VOICE_PREFERRED){
+    const hit = pool.find(v => re.test(v.name) && /^en[-_]US/i.test(v.lang))
+             || pool.find(v => re.test(v.name));
+    if(hit) return hit;
+  }
+  return pool.find(v => /^en[-_]US/i.test(v.lang)) || pool[0];
+}
+// 声のリストは読み込みが遅れることがあるので、届いたら選び直す
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = () => { _enVoice = pickEnglishVoice(); };
+}
+
 function speakEnglish(text){
   if(!('speechSynthesis' in window)) return;
   try{
@@ -780,9 +810,9 @@ function speakEnglish(text){
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US';
     u.rate = 0.9;
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(x => /^en[-_]US/i.test(x.lang)) || voices.find(x => /^en/i.test(x.lang));
-    if(v) u.voice = v;
+    u.pitch = 1;
+    if(!_enVoice) _enVoice = pickEnglishVoice();
+    if(_enVoice){ u.voice = _enVoice; u.lang = _enVoice.lang; }
     window.speechSynthesis.speak(u);
   }catch(e){ console.error('speakEnglish', e); }
 }
