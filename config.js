@@ -1048,3 +1048,28 @@ function t(key){
   const texts = UI_TEXT[lang] || UI_TEXT['en'];
   return texts[key] || UI_TEXT['en'][key] || key;
 }
+
+
+// ── 単語検索（母語→英語）のアンケート項目 ──
+// 質問文のみ言語別。両端ラベルは「話題提案」の項目と同じものを流用する。
+(function(){
+  const q = {
+    en: 'Was the word search (finding English words using your own language) helpful?',
+    ja: '単語検索（日本語で英単語を探す機能）は役に立ちましたか？',
+    ko: '단어 검색(모국어로 영어 단어 찾기)이 도움이 되었나요?',
+    zh: '单词搜索（用母语查找英语单词）有帮助吗？',
+    th: 'การค้นหาคำศัพท์ (ค้นหาคำภาษาอังกฤษด้วยภาษาของตัวเอง) มีประโยชน์ไหม?',
+    ms: 'Adakah carian perkataan (mencari perkataan Inggeris dalam bahasa sendiri) membantu?',
+    id: 'Apakah pencarian kata (mencari kata bahasa Inggris dengan bahasa sendiri) membantu?',
+    es: '¿Fue útil la búsqueda de palabras (encontrar palabras en inglés usando tu idioma)?',
+    fr: 'La recherche de mots (trouver des mots anglais dans sa propre langue) était-elle utile ?',
+    de: 'War die Wortsuche (englische Wörter in der eigenen Sprache finden) hilfreich?',
+    pt: 'A busca de palavras (encontrar palavras em inglês usando o seu idioma) foi útil?',
+  };
+  Object.keys(q).forEach(l => {
+    if(!UI_TEXT[l]) return;
+    UI_TEXT[l].qaWbSearchq  = q[l];
+    UI_TEXT[l].qaWbSearchlo = UI_TEXT[l].qaWbTopiclo;
+    UI_TEXT[l].qaWbSearchhi = UI_TEXT[l].qaWbTopichi;
+  });
+})();
