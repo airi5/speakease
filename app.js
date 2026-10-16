@@ -44,8 +44,8 @@ async function join(){
   // UI言語を選択した言語に更新
   updateUILang();
 
-  // WordBridgeをデフォルトで開く
-  if (!IS_LOG_ONLY) toggleDrawer();
+  // WordBridgeは常時表示。利用回数・時間の計測だけここで開始する
+  if (!IS_LOG_ONLY && typeof initWordBridgeTracking === 'function') initWordBridgeTracking();
 }
 
 // ── タイマー ──────────────────────────────────
