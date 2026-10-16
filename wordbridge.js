@@ -726,18 +726,41 @@ let currentLevel = null; // 現在選ばれている話題レベル（再抽選�
 // 翻訳キャッシュ
 const transCache = {};
 
-// ── 翻訳（Azure優先、失敗したらMyMemoryに自動切替）────────────────
-// 失敗時は null を返す（英語で埋めない・キャッシュしない）
-async function translateViaAzure(word, targetLang){
-  const res = await fetch('/api/translate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: word, targetLang: AZURE_LANG[targetLang] || targetLang }),
+// 短い時間に来た翻訳依頼を1回のリクエストにまとめる（Azureの「送りすぎ(429)」を避けるため）
+let _azBatch = null;
+function translateViaAzure(word, targetLang){
+  return new Promise((resolve, reject) => {
+    const code = AZURE_LANG[targetLang] || targetLang;
+    if(!_azBatch || _azBatch.code !== code){
+      if(_azBatch) flushAzureBatch();
+      _azBatch = { code, items: [], timer: null };
+    }
+    _azBatch.items.push({ word, resolve, reject });
+    if(_azBatch.items.length >= 40){ flushAzureBatch(); return; }
+    if(!_azBatch.timer) _azBatch.timer = setTimeout(flushAzureBatch, 40);
   });
-  if(!res.ok) throw new Error('azure ' + res.status);
-  const data = await res.json();
-  if(!data?.translatedText) throw new Error('azure empty');
-  return data.translatedText;
+}
+async function flushAzureBatch(){
+  const batch = _azBatch;
+  _azBatch = null;
+  if(!batch) return;
+  if(batch.timer) clearTimeout(batch.timer);
+  // 同じ単語は1回だけ送る
+  const uniq = [...new Set(batch.items.map(i => i.word))];
+  try{
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: uniq, targetLang: batch.code }),
+    });
+    if(!res.ok) throw new Error('azure ' + res.status);
+    const data = await res.json();
+    const map = {};
+    uniq.forEach((w, i) => { map[w] = data?.translations?.[i] || null; });
+    batch.items.forEach(it => map[it.word] ? it.resolve(map[it.word]) : it.reject(new Error('azure empty')));
+  }catch(e){
+    batch.items.forEach(it => it.reject(e));
+  }
 }
 
 // MyMemory: 英語→母国語。langpair は "from|to"
