@@ -19,15 +19,32 @@ function azureHeaders(key, region){
   };
 }
 
-async function azureTranslate(text, from, to, key, region){
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Azure に翻訳を依頼する。texts は文字列の配列（1件でも配列で渡す）。
+// 429（短時間に送りすぎ）や 5xx は、少し待って最大3回までやり直す。
+async function azureTranslateBatch(texts, from, to, key, region){
   const url = `${AZURE_ENDPOINT}/translate?api-version=3.0&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-  const r = await fetch(url, { method:'POST', headers: azureHeaders(key, region), body: JSON.stringify([{ Text: text }]) });
-  if(!r.ok){
-    console.error('Azure translate error:', r.status, await r.text());
-    return null;
+  const body = JSON.stringify(texts.map(t => ({ Text: t })));
+  for(let attempt = 0; attempt < 4; attempt++){
+    const r = await fetch(url, { method:'POST', headers: azureHeaders(key, region), body });
+    if(r.ok){
+      const d = await r.json();
+      return texts.map((_, i) => d?.[i]?.translations?.[0]?.text || null);
+    }
+    const retriable = (r.status === 429 || r.status >= 500);
+    console.error('Azure translate error:', r.status, await r.text(), 'attempt', attempt + 1);
+    if(!retriable || attempt === 3) return null;
+    const ra = Number(r.headers.get('retry-after'));
+    const wait = (ra > 0 ? Math.min(ra * 1000, 1500) : 300 * (attempt + 1)) + Math.random() * 300;
+    await sleep(wait);
   }
-  const d = await r.json();
-  return d?.[0]?.translations?.[0]?.text || null;
+  return null;
+}
+
+async function azureTranslate(text, from, to, key, region){
+  const out = await azureTranslateBatch([text], from, to, key, region);
+  return out ? out[0] : null;
 }
 
 async function azureLookup(text, from, key, region){
@@ -49,7 +66,33 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const { text, targetLang, from, mode } = req.body || {};
+  const { text, texts, targetLang, from, mode } = req.body || {};
+
+  // まとめて翻訳（単語リストなど）: { texts:[...], targetLang, from? } → { translations:[...] }
+  if (Array.isArray(texts)) {
+    const list = texts.map(x => String(x || ''));
+    if (!targetLang || !list.length || list.length > 50 || list.join('').length > 3000) {
+      res.status(400).json({ error: 'bad batch' });
+      return;
+    }
+    const K = process.env.AZURE_TRANSLATOR_KEY;
+    const R = process.env.AZURE_TRANSLATOR_REGION;
+    if (!K || !R) {
+      console.error('Missing AZURE_TRANSLATOR_KEY / AZURE_TRANSLATOR_REGION env vars');
+      res.status(500).json({ error: 'Server is not configured for translation' });
+      return;
+    }
+    try {
+      const out = await azureTranslateBatch(list, from || 'en', targetLang, K, R);
+      if (!out) { res.status(502).json({ error: 'No translation returned' }); return; }
+      res.status(200).json({ translations: out });
+    } catch (err) {
+      console.error('translate batch error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+    return;
+  }
+
   if (!text || (mode !== 'lookup' && !targetLang) || (mode === 'lookup' && !from)) {
     res.status(400).json({ error: 'missing parameters' });
     return;
