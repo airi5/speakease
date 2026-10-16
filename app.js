@@ -112,8 +112,11 @@ function addMyEntry(text){
     time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
     timestamp:timestamp};
   sessionLog.push({...entry,speaker:'me'});
-  cntMe++;
+    cntMe++;
   renderEntry(entry,'me');
+  updateParticipantList();   // 参加者欄の「○回」を更新
+  // 会話サポートタブ（発言数で内容が変わる）が表示中なら、内容も更新
+  if(typeof activeHelpSubTab !== 'undefined' && activeHelpSubTab === 'dynamic' && typeof renderHelpDynamicTab === 'function') renderHelpDynamicTab();
 
   // Supabaseに保存してDBのIDで上書き
   publish(entry).then(dbId=>{
@@ -139,6 +142,7 @@ function addOtherEntry(entry) {
   sessionLog.push({ ...entry, speaker: 'other' });
   renderEntry(entry, 'other');
   updateParticipantList();
+  if(typeof activeHelpSubTab !== 'undefined' && activeHelpSubTab === 'dynamic' && typeof renderHelpDynamicTab === 'function') renderHelpDynamicTab();
   updateWordBridge(entry.text);
 }
 
