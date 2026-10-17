@@ -1230,3 +1230,120 @@ UI_TEXT['zh-TW'] = {
   z.qaWbSearchq='單字搜尋（用母語查找英語單字）有幫助嗎？';
   z.qaWbSearchlo=z.qaWbTopiclo; z.qaWbSearchhi=z.qaWbTopichi;
 })();
+
+
+
+// マイクチェックの音量バー説明と、マイクがうまく動かないときの原因別メッセージ
+(function(){
+  const M = {
+    en:{
+      mtMeterHint:'The bar moves when your mic hears you.',
+      mtErrDenied:'Microphone access is blocked. Click the 🔒 icon next to the address bar, allow the microphone, then reload the page.',
+      mtErrNoMic:'No microphone was found. Connect a microphone or headset, then reload the page.',
+      mtErrBusy:'The microphone is being used by another app (e.g. Zoom). Close it and try again.',
+      mtErrUnsupported:'This browser is not supported. Please use Chrome or Edge on a computer.',
+      mtErrNet:'Could not connect to the speech service. Check your internet connection (some school or office networks block it).',
+      mtErrSilent:'No sound is coming from your microphone. Check that it is not muted and that the correct microphone is selected.',
+    },
+    ja:{
+      mtMeterHint:'声に合わせてバーが動きます。',
+      mtErrDenied:'マイクの使用がブロックされています。アドレスバーの左の🔒をクリックして、マイクを「許可」にしてから、ページを再読み込みしてください。',
+      mtErrNoMic:'マイクが見つかりません。マイクかヘッドセットをつないでから、ページを再読み込みしてください。',
+      mtErrBusy:'マイクが他のアプリ（Zoomなど）で使われています。閉じてから、もう一度試してください。',
+      mtErrUnsupported:'このブラウザには対応していません。パソコンの Chrome か Edge を使ってください。',
+      mtErrNet:'音声認識サービスにつながりません。インターネット接続を確認してください（学校や会社のネットワークでは、遮断されることがあります）。',
+      mtErrSilent:'マイクから音が入っていません。ミュートになっていないか、正しいマイクが選ばれているか確認してください。',
+    },
+    ko:{
+      mtMeterHint:'목소리에 맞춰 막대가 움직여요.',
+      mtErrDenied:'마이크 사용이 차단되어 있어요. 주소창 왼쪽의 🔒를 눌러 마이크를 "허용"으로 바꾼 뒤 페이지를 새로고침해 주세요.',
+      mtErrNoMic:'마이크를 찾을 수 없어요. 마이크나 헤드셋을 연결한 뒤 페이지를 새로고침해 주세요.',
+      mtErrBusy:'마이크를 다른 앱(Zoom 등)이 사용 중이에요. 그 앱을 닫고 다시 시도해 주세요.',
+      mtErrUnsupported:'이 브라우저는 지원되지 않아요. 컴퓨터의 Chrome 또는 Edge를 사용해 주세요.',
+      mtErrNet:'음성 인식 서비스에 연결할 수 없어요. 인터넷 연결을 확인해 주세요 (학교나 회사 네트워크에서는 차단될 수 있어요).',
+      mtErrSilent:'마이크에서 소리가 들어오지 않아요. 음소거가 아닌지, 올바른 마이크가 선택되었는지 확인해 주세요.',
+    },
+    zh:{
+      mtMeterHint:'您说话时，进度条会跟着移动。',
+      mtErrDenied:'麦克风已被禁止使用。请点击地址栏左侧的🔒，将麦克风设为“允许”，然后刷新页面。',
+      mtErrNoMic:'找不到麦克风。请连接麦克风或耳机，然后刷新页面。',
+      mtErrBusy:'麦克风正被其他应用（如 Zoom）占用。请关闭后重试。',
+      mtErrUnsupported:'不支持此浏览器。请在电脑上使用 Chrome 或 Edge。',
+      mtErrNet:'无法连接到语音识别服务。请检查网络连接（学校或公司的网络可能会屏蔽）。',
+      mtErrSilent:'麦克风没有声音传入。请检查是否静音，以及是否选择了正确的麦克风。',
+    },
+    'zh-TW':{
+      mtMeterHint:'您說話時，進度條會跟著移動。',
+      mtErrDenied:'麥克風已被禁止使用。請點擊網址列左側的🔒，將麥克風設為「允許」，然後重新整理頁面。',
+      mtErrNoMic:'找不到麥克風。請連接麥克風或耳機，然後重新整理頁面。',
+      mtErrBusy:'麥克風正被其他應用程式（如 Zoom）占用。請關閉後重試。',
+      mtErrUnsupported:'不支援此瀏覽器。請在電腦上使用 Chrome 或 Edge。',
+      mtErrNet:'無法連線到語音辨識服務。請檢查網路連線（學校或公司的網路可能會封鎖）。',
+      mtErrSilent:'麥克風沒有聲音傳入。請檢查是否靜音，以及是否選擇了正確的麥克風。',
+    },
+    th:{
+      mtMeterHint:'แถบจะขยับเมื่อไมโครโฟนได้ยินเสียงของคุณ',
+      mtErrDenied:'ไมโครโฟนถูกบล็อก คลิกไอคอน 🔒 ข้างแถบที่อยู่ เลือก "อนุญาต" สำหรับไมโครโฟน แล้วโหลดหน้าเว็บใหม่',
+      mtErrNoMic:'ไม่พบไมโครโฟน กรุณาเชื่อมต่อไมโครโฟนหรือหูฟัง แล้วโหลดหน้าเว็บใหม่',
+      mtErrBusy:'ไมโครโฟนถูกใช้งานโดยแอปอื่น (เช่น Zoom) กรุณาปิดแอปนั้นแล้วลองอีกครั้ง',
+      mtErrUnsupported:'ไม่รองรับเบราว์เซอร์นี้ กรุณาใช้ Chrome หรือ Edge บนคอมพิวเตอร์',
+      mtErrNet:'เชื่อมต่อบริการรับรู้เสียงไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต (เครือข่ายของโรงเรียนหรือที่ทำงานอาจบล็อกไว้)',
+      mtErrSilent:'ไม่มีเสียงเข้ามาจากไมโครโฟน ตรวจสอบว่าไม่ได้ปิดเสียง และเลือกไมโครโฟนถูกตัว',
+    },
+    ms:{
+      mtMeterHint:'Bar akan bergerak apabila mikrofon mendengar suara anda.',
+      mtErrDenied:'Akses mikrofon disekat. Klik ikon 🔒 di sebelah bar alamat, benarkan mikrofon, kemudian muat semula halaman.',
+      mtErrNoMic:'Mikrofon tidak dijumpai. Sambungkan mikrofon atau fon kepala, kemudian muat semula halaman.',
+      mtErrBusy:'Mikrofon sedang digunakan oleh aplikasi lain (cth. Zoom). Tutup aplikasi itu dan cuba lagi.',
+      mtErrUnsupported:'Pelayar ini tidak disokong. Sila gunakan Chrome atau Edge pada komputer.',
+      mtErrNet:'Tidak dapat bersambung ke perkhidmatan pengecaman suara. Semak sambungan internet (rangkaian sekolah atau pejabat mungkin menyekatnya).',
+      mtErrSilent:'Tiada bunyi masuk dari mikrofon. Semak sama ada ia dibisukan dan mikrofon yang betul dipilih.',
+    },
+    id:{
+      mtMeterHint:'Bilah akan bergerak saat mikrofon mendengar suaramu.',
+      mtErrDenied:'Akses mikrofon diblokir. Klik ikon 🔒 di samping bilah alamat, izinkan mikrofon, lalu muat ulang halaman.',
+      mtErrNoMic:'Mikrofon tidak ditemukan. Sambungkan mikrofon atau headset, lalu muat ulang halaman.',
+      mtErrBusy:'Mikrofon sedang dipakai aplikasi lain (mis. Zoom). Tutup aplikasi itu dan coba lagi.',
+      mtErrUnsupported:'Browser ini tidak didukung. Gunakan Chrome atau Edge di komputer.',
+      mtErrNet:'Tidak dapat terhubung ke layanan pengenalan suara. Periksa koneksi internet (jaringan sekolah atau kantor mungkin memblokirnya).',
+      mtErrSilent:'Tidak ada suara masuk dari mikrofon. Periksa apakah mikrofon tidak dibisukan dan mikrofon yang benar sudah dipilih.',
+    },
+    es:{
+      mtMeterHint:'La barra se mueve cuando el micrófono te oye.',
+      mtErrDenied:'El acceso al micrófono está bloqueado. Haz clic en el icono 🔒 junto a la barra de direcciones, permite el micrófono y recarga la página.',
+      mtErrNoMic:'No se encontró ningún micrófono. Conecta un micrófono o unos auriculares y recarga la página.',
+      mtErrBusy:'Otra aplicación (p. ej. Zoom) está usando el micrófono. Ciérrala e inténtalo de nuevo.',
+      mtErrUnsupported:'Este navegador no es compatible. Usa Chrome o Edge en un ordenador.',
+      mtErrNet:'No se pudo conectar con el servicio de voz. Revisa tu conexión a internet (algunas redes de escuelas u oficinas lo bloquean).',
+      mtErrSilent:'No entra sonido por el micrófono. Comprueba que no esté silenciado y que esté seleccionado el micrófono correcto.',
+    },
+    fr:{
+      mtMeterHint:'La barre bouge quand le micro t\'entend.',
+      mtErrDenied:'L\'accès au micro est bloqué. Clique sur l\'icône 🔒 à côté de la barre d\'adresse, autorise le micro, puis recharge la page.',
+      mtErrNoMic:'Aucun micro détecté. Branche un micro ou un casque, puis recharge la page.',
+      mtErrBusy:'Le micro est utilisé par une autre application (par ex. Zoom). Ferme-la et réessaie.',
+      mtErrUnsupported:'Ce navigateur n\'est pas pris en charge. Utilise Chrome ou Edge sur un ordinateur.',
+      mtErrNet:'Impossible de se connecter au service de reconnaissance vocale. Vérifie ta connexion internet (certains réseaux d\'école ou de bureau le bloquent).',
+      mtErrSilent:'Aucun son n\'arrive du micro. Vérifie qu\'il n\'est pas coupé et que le bon micro est sélectionné.',
+    },
+    de:{
+      mtMeterHint:'Der Balken bewegt sich, wenn das Mikrofon dich hört.',
+      mtErrDenied:'Der Mikrofonzugriff ist blockiert. Klicke auf das 🔒-Symbol neben der Adressleiste, erlaube das Mikrofon und lade die Seite neu.',
+      mtErrNoMic:'Kein Mikrofon gefunden. Schließe ein Mikrofon oder Headset an und lade die Seite neu.',
+      mtErrBusy:'Das Mikrofon wird von einer anderen App (z. B. Zoom) verwendet. Schließe sie und versuche es erneut.',
+      mtErrUnsupported:'Dieser Browser wird nicht unterstützt. Verwende Chrome oder Edge auf einem Computer.',
+      mtErrNet:'Verbindung zum Spracherkennungsdienst nicht möglich. Prüfe deine Internetverbindung (manche Schul- oder Firmennetzwerke blockieren ihn).',
+      mtErrSilent:'Vom Mikrofon kommt kein Ton an. Prüfe, ob es stummgeschaltet ist und das richtige Mikrofon ausgewählt ist.',
+    },
+    pt:{
+      mtMeterHint:'A barra se move quando o microfone ouve você.',
+      mtErrDenied:'O acesso ao microfone está bloqueado. Clique no ícone 🔒 ao lado da barra de endereços, permita o microfone e recarregue a página.',
+      mtErrNoMic:'Nenhum microfone encontrado. Conecte um microfone ou fone de ouvido e recarregue a página.',
+      mtErrBusy:'O microfone está sendo usado por outro aplicativo (ex.: Zoom). Feche-o e tente novamente.',
+      mtErrUnsupported:'Este navegador não é compatível. Use o Chrome ou o Edge em um computador.',
+      mtErrNet:'Não foi possível conectar ao serviço de voz. Verifique sua conexão com a internet (algumas redes de escola ou trabalho o bloqueiam).',
+      mtErrSilent:'Nenhum som está chegando do microfone. Verifique se ele não está no mudo e se o microfone correto está selecionado.',
+    },
+  };
+  Object.keys(M).forEach(l => { if(UI_TEXT[l]) Object.assign(UI_TEXT[l], M[l]); });
+})();
