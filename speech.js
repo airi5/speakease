@@ -56,18 +56,80 @@ function createWebSpeechEngine(){
 function createDeepgramEngine(){
   let ws = null, recorder = null, micStream = null;
   let running = false, handlers = {};
+  let audioCtx = null, levelTimer = null;
+  let failCount = 0, micFatal = false;
+
+  function status(code){ if(handlers.onStatus) handlers.onStatus(code); }
 
   async function getToken(){
     const res = await fetch(`${SB_URL}/functions/v1/deepgram-token`, { method: 'POST' });
+    if(!res.ok) throw new Error('token http ' + res.status);
     const data = await res.json();
     return data.access_token;
   }
 
+  // 音の大きさ（0〜1）を一定間隔で通知する（マイクチェックのバー用）
+  function startLevel(stream){
+    if(!handlers.onLevel) return;
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      audioCtx = new AC();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      const an = audioCtx.createAnalyser(); an.fftSize = 512;
+      audioCtx.createMediaStreamSource(stream).connect(an);
+      const buf = new Uint8Array(an.fftSize);
+      levelTimer = setInterval(() => {
+        an.getByteTimeDomainData(buf);
+        let sum = 0;
+        for(let i=0;i<buf.length;i++){ const v=(buf[i]-128)/128; sum += v*v; }
+        if(handlers.onLevel) handlers.onLevel(Math.min(1, Math.sqrt(sum/buf.length)*4));
+      }, 80);
+    }catch(e){ console.error('level meter failed', e); }
+  }
+  function stopLevel(){
+    if(levelTimer){ clearInterval(levelTimer); levelTimer = null; }
+    try { if(audioCtx) audioCtx.close(); } catch(_){}
+    audioCtx = null;
+  }
+
+  // マイクを取る（生きていれば使い回す）。失敗したら原因を通知して null を返す
+  async function ensureMic(){
+    if(micStream && micStream.getAudioTracks().some(tr => tr.readyState === 'live')) return micStream;
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder){
+      micFatal = true; status('unsupported'); return null;
+    }
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      startLevel(micStream);
+      return micStream;
+    } catch(e){
+      console.error('mic error', e);
+      const n = e && e.name;
+      if(n === 'NotAllowedError' || n === 'SecurityError'){ micFatal = true; status('denied'); }
+      else if(n === 'NotReadableError' || n === 'AbortError'){ status('busy'); }
+      else { status('nomic'); }
+      return null;
+    }
+  }
+
   async function connect(){
     if(!running) return;
+    const stream = await ensureMic();
+    if(!running) return;
+    if(!stream){
+      if(micFatal) return;                 // 許可なし・非対応は再試行しても直らない
+      setTimeout(connect, 3000); return;   // 他アプリが使用中・未接続は、直ったら自動で復帰
+    }
+
     let token = null;
     try { token = await getToken(); } catch(e){ console.error('token fetch failed', e); }
-    if(!token){ console.error('Deepgram: no access_token, retrying...'); setTimeout(connect, 3000); return; }
+    if(!running) return;
+    if(!token){
+      console.error('Deepgram: no access_token, retrying...');
+      if(++failCount >= 2) status('net');
+      setTimeout(connect, 3000); return;
+    }
 
     const qs = new URLSearchParams({
       model: 'nova-3',
@@ -77,22 +139,25 @@ function createDeepgramEngine(){
       endpointing: '300',
       mip_opt_out: 'true',          // 参加者音声を学習に使わせない
     });
-    // ブラウザはヘッダを付けられないので ['token', token] で認証
-    ws = new WebSocket(`wss://api.deepgram.com/v1/listen?${qs}`, ['bearer', token]);
+    // ブラウザはヘッダを付けられないので ['bearer', token] で認証
+    const sock = new WebSocket(`wss://api.deepgram.com/v1/listen?${qs}`, ['bearer', token]);
+    ws = sock;
+    let opened = false;
 
-    ws.onopen = async () => {
-      try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-      catch(e){ console.error('mic error', e); setTimeout(connect, 3000); return; }
-      const mime = (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
-        ? 'audio/webm;codecs=opus' : 'audio/webm';
-      recorder = new MediaRecorder(micStream, { mimeType: mime });
+    sock.onopen = () => {
+      opened = true; failCount = 0; status('ok');
+      let mime = '';
+      if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mime = 'audio/webm;codecs=opus';
+      else if(MediaRecorder.isTypeSupported('audio/webm')) mime = 'audio/webm';
+      try { recorder = mime ? new MediaRecorder(micStream, { mimeType: mime }) : new MediaRecorder(micStream); }
+      catch(e){ console.error('recorder error', e); micFatal = true; status('unsupported'); try{ sock.close(); }catch(_){} return; }
       recorder.ondataavailable = (ev) => {
-        if(ev.data.size > 0 && ws && ws.readyState === WebSocket.OPEN) ws.send(ev.data);
+        if(ev.data.size > 0 && sock.readyState === WebSocket.OPEN) sock.send(ev.data);
       };
       recorder.start(250);          // 250msごとに音声を送る
     };
 
-    ws.onmessage = (msg) => {
+    sock.onmessage = (msg) => {
       let data; try { data = JSON.parse(msg.data); } catch(_){ return; }
       if(data.type !== 'Results') return;
       const alt = data.channel && data.channel.alternatives && data.channel.alternatives[0];
@@ -112,19 +177,29 @@ function createDeepgramEngine(){
       }
     };
 
-    ws.onerror = (e) => { console.error('Deepgram WS error', e); };
-    ws.onclose = () => { stopAudio(); if(running) setTimeout(connect, 500); }; // 切れたら再接続
+    sock.onerror = (e) => { console.error('Deepgram WS error', e); };
+    sock.onclose = () => {
+      if(ws !== sock) return;       // stop() 済み・作り直し済みの古い接続は無視
+      stopRecorder();
+      if(!running) return;
+      if(!opened && ++failCount >= 2) status('net');
+      setTimeout(connect, opened ? 500 : 2000);   // 切れたら再接続（マイクは使い回す）
+    };
   }
 
-  function stopAudio(){
+  function stopRecorder(){
     try { if(recorder && recorder.state !== 'inactive') recorder.stop(); } catch(_){}
-    try { if(micStream) micStream.getTracks().forEach(t => t.stop()); } catch(_){}
-    recorder = null; micStream = null;
+    recorder = null;
+  }
+  function releaseMic(){
+    try { if(micStream) micStream.getTracks().forEach(tr => tr.stop()); } catch(_){}
+    micStream = null; stopLevel();
   }
 
   return {
-    start(h){ handlers = h || {}; running = true; connect(); },
-    stop(){ running = false; stopAudio(); try { if(ws) ws.close(); } catch(_){} ws = null; },
+    start(h){ handlers = h || {}; running = true; failCount = 0; micFatal = false; connect(); },
+    stop(){ running = false; stopRecorder(); releaseMic(); const s = ws; ws = null; try { if(s) s.close(); } catch(_){} },
+    stopLevel,
   };
 }
 
@@ -151,12 +226,47 @@ function onEngineFinal(chunk, times){
   if(!IS_LOG_ONLY) addMyEntry(chunk);    // 表示＋ライブ集計：ツール回のみ
 }
 
+/* ---- マイクの状態（エラーの原因表示）と音量バー ---- */
+let micErrCode = null;      // denied / nomic / busy / unsupported / net
+let micMaxLevel = 0;        // マイクチェック中に観測した最大音量
+const MIC_ERR_KEY = { denied:'mtErrDenied', nomic:'mtErrNoMic', busy:'mtErrBusy',
+                      unsupported:'mtErrUnsupported', net:'mtErrNet' };
+
+function showMicTestMsg(msgKey){
+  const ic=document.getElementById('mtIcon'), ti=document.getElementById('mtTitle'),
+        ms=document.getElementById('mtMsg'), sk=document.getElementById('mtSkip');
+  if(ic) ic.textContent='⚠️';
+  if(ti) ti.textContent=t('mtNoTitle');
+  if(ms) ms.innerHTML=t(msgKey);
+  if(sk) sk.style.display='inline-block';
+}
+
+function onEngineStatus(code){
+  if(code === 'ok'){
+    micErrCode = null;
+    if(!MIC_TEST_MODE && isRec) setMicUI(true);   // 復帰したので表示を戻す
+    return;
+  }
+  micErrCode = code;
+  const key = MIC_ERR_KEY[code]; if(!key) return;
+  if(MIC_TEST_MODE){ showMicTestMsg(key); return; }
+  const hint = document.getElementById('ctrlHint');   // 会話中は操作ヒントの場所に出す
+  if(hint) hint.textContent = '⚠️ ' + t(key).replace(/<[^>]*>/g,'');
+}
+
+function onEngineLevel(l){
+  if(!MIC_TEST_MODE) return;
+  if(l > micMaxLevel) micMaxLevel = l;
+  const bar = document.getElementById('mtMeterBar');
+  if(bar) bar.style.width = Math.round(l*100) + '%';
+}
+
 /* ---- マイク制御（自動開始） ---- */
 function startMic(){
   if(!speechEngine) speechEngine = createEngine();
   if(!speechEngine) return;
   isRec = true;
-  speechEngine.start({ onPartial: onEnginePartial, onFinal: onEngineFinal });
+  speechEngine.start({ onPartial: onEnginePartial, onFinal: onEngineFinal, onStatus: onEngineStatus, onLevel: onEngineLevel });
   setMicUI(true); setRec(true);
 }
 function stopMic(){
@@ -206,6 +316,7 @@ let micTestTimer = null;
 
 function startMicTest(){
   MIC_TEST_MODE = true;
+  micErrCode = null; micMaxLevel = 0;
   const el = document.getElementById('micTest');
   if(el) el.style.display = 'flex';
   // 選んだ言語で表示する（言語ごとの文は config.js の mt〜 キー）
@@ -213,14 +324,15 @@ function startMicTest(){
   document.getElementById('mtTitle').textContent = t('mtTitle');
   document.getElementById('mtMsg').textContent   = t('mtMsg');
   document.getElementById('mtSkip').textContent  = t('mtSkip');
+  const mh = document.getElementById('mtMeterHint'); if(mh) mh.textContent = t('mtMeterHint');
+  const bar = document.getElementById('mtMeterBar'); if(bar) bar.style.width = '0%';
   startMic();                       // 認識エンジンを起動
-  // 15秒たっても声が来なければ警告
+  // 15秒たっても声が来なければ、原因に合わせて警告
   micTestTimer = setTimeout(() => {
     if(!MIC_TEST_MODE) return;
-    document.getElementById('mtIcon').textContent = '⚠️';
-    document.getElementById('mtTitle').textContent = t('mtNoTitle');
-    document.getElementById('mtMsg').innerHTML = t('mtNoMsg');
-    document.getElementById('mtSkip').style.display = 'inline-block';
+    if(micErrCode) return;                          // 原因は表示済み
+    if(micMaxLevel < 0.05) showMicTestMsg('mtErrSilent');   // マイクから音が来ていない
+    else showMicTestMsg('mtNoMsg');                         // 音は来ているのに認識されない
   }, 15000);
 }
 
@@ -229,6 +341,7 @@ function micTestPass(skipped){
   if(!MIC_TEST_MODE) return;
   MIC_TEST_MODE = false;
   if(micTestTimer){ clearTimeout(micTestTimer); micTestTimer = null; }
+  if(speechEngine && speechEngine.stopLevel) speechEngine.stopLevel();
   const el = document.getElementById('micTest');
   if(!skipped){
     document.getElementById('mtIcon').textContent = '✅';
