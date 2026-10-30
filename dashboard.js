@@ -182,11 +182,7 @@ async function submitSurvey(){
         <div style="font-size:60px">✅</div>
         <div style="font-size:24px;font-weight:900;color:var(--ink)">${t('surveyDone')}</div>
         <div style="font-size:14px;color:var(--ink3);max-width:320px;line-height:1.7">
-          ${myLang==='ja'?'ご協力ありがとうございました。ページを閉じてください。'
-            :myLang==='ko'?'참여해 주셔서 감사합니다. 페이지를 닫아주세요.'
-            :myLang==='zh'?'感谢您的参与。请关闭页面。'
-            :myLang==='zh-TW'?'感謝您的參與。請關閉頁面。'
-            :'Thank you for your participation. You may close this page.'}
+        ${t('thanksClose')}
         </div>
       </div>`;
     if(submitBtn) submitBtn.disabled=true;
