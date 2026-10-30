@@ -47,6 +47,9 @@
 　　　　　　　　<option value="zh-TW">中文（繁體）</option>
             <option value="ar">العربية</option>
             <option value="hi">हिन्दी</option>
+            <option value="gu">ગુજરાતી</option>
+　　　　　　　　<option value="ml">മലയാളം</option>
+　　　　　　　　<option value="my">မြန်မာ</option>
             <option value="th">ภาษาไทย</option>
             <option value="vi">Tiếng Việt</option>
             <option value="id">Bahasa Indonesia</option>
@@ -143,6 +146,9 @@
 　　　　　　　　　<option value="zh-TW">中文（繁體）</option>
               <option value="ar">العربية</option>
               <option value="hi">हिन्दी</option>
+              <option value="gu">ગુજરાતી</option>
+　　　　　　　　　<option value="ml">മലയാളം</option>
+　　　　　　　　　<option value="my">မြန်မာ</option>
               <option value="th">ภาษาไทย</option>
               <option value="vi">Tiếng Việt</option>
               <option value="id">Bahasa Indonesia</option>
@@ -268,23 +274,24 @@
   <div class="lo-card">
     <div class="lo-top">
       <div class="logo">Speak<span>Ease</span></div>
-      <div class="room-pill">Room <b id="loRoom">---</b></div>
+      <div class="room-pill"><span id="loRoomLbl">Room</span> <b id="loRoom">---</b></div>
     </div>
     <div class="lo-center">
       <div class="lo-dot"><span class="lo-ring"></span><span class="lo-core"></span></div>
-      <div class="lo-title">Recording in progress</div>
-      <p class="lo-sub">You can minimize this tab and talk on Zoom as usual. Your conversation is being recorded for the study.</p>
+      <div class="lo-title" id="loTitle">Recording in progress</div>
+      <p class="lo-sub" id="loSub">You can minimize this tab and talk on Zoom as usual. Your conversation is being recorded for the study.</p>
       <div class="lo-timer" id="loTimer">00:00</div>
-      <div class="lo-name">Signed in as <span id="loName">---</span></div>
+      <div class="lo-name"><span id="loSignedLbl">Signed in as</span> <span id="loName">---</span></div>
     </div>
-    <button class="lo-finish" onclick="endSession()">Finish session</button>
-    <p class="lo-hint">When your session ends, come back to this tab and tap Finish to answer a short questionnaire.</p>
+    <button class="lo-finish" id="loFinish" onclick="endSession()">Finish session</button>
+    <p class="lo-hint" id="loHint">When your session ends, come back to this tab and tap Finish to answer a short questionnaire.</p>
   </div>
 </div>
   
 </div>
 
 <script src="config.js"></script>
+<script src="lang_extra.js"></script>
 <script src="state.js"></script>
 <script src="db.js"></script>
 <script src="speech.js"></script>
