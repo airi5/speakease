@@ -16,6 +16,7 @@ const MYMEMORY_LANG = {
   vi:'vi-VN', id:'id-ID', ms:'ms-MY',
   es:'es-ES', pt:'pt-BR', fr:'fr-FR', de:'de-DE', it:'it-IT', nl:'nl-NL',
   ru:'ru-RU', uk:'uk-UA', pl:'pl-PL', tr:'tr-TR', el:'el-GR', sv:'sv-SE',
+  gu:'gu-IN', ml:'ml-IN', my:'my-MM',
 };
 
 // Azure Translator 用の言語コード（/api/translate 経由）。
@@ -26,6 +27,7 @@ const AZURE_LANG = {
   vi:'vi', id:'id', ms:'ms',
   es:'es', pt:'pt', fr:'fr', de:'de', it:'it', nl:'nl',
   ru:'ru', uk:'uk', pl:'pl', tr:'tr', el:'el', sv:'sv',
+  gu:'gu', ml:'ml', my:'my',
 };
 
 const UI_TEXT = {
