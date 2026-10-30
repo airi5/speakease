@@ -148,15 +148,7 @@ function addOtherEntry(entry) {
 
 // ── 会話終了 ──────────────────────────────────
 function endSession(){
-  const msg = myLang==='ja' ? '会話を終了して分析を見ますか？'
-    : myLang==='ko' ? '대화를 종료하고 분석을 보시겠습니까？'
-    : myLang==='zh' ? '结束对话并查看分析？'
-    : myLang==='zh-TW' ? '結束對話並查看分析？'
-    : myLang==='es' ? '¿Terminar la conversación y ver el análisis？'
-    : myLang==='fr' ? 'Terminer la conversation et voir l\'analyse？'
-    : myLang==='de' ? 'Gespräch beenden und Analyse anzeigen？'
-    : myLang==='pt' ? 'Encerrar a conversa e ver a análise？'
-    : 'End the conversation and view the analysis?';
+  const msg = t('endConfirm');
   if(!confirm(msg))return;
   clearInterval(timerInt);
   stopMic();
@@ -202,6 +194,14 @@ function updateUILang(){
   const sIn = document.getElementById('wbSearchIn');
   if(sIn) sIn.placeholder = t('wbSearchPH');
   if(myLang === 'en' && typeof clearWordSearch === 'function') clearWordSearch();
+
+    // ログのみ（log-only）画面（選択言語）
+  setText('loRoomLbl', t('loRoom'));
+  setText('loTitle', t('loTitle'));
+  setText('loSub', t('loSub'));
+  setText('loSignedLbl', t('loSigned'));
+  setText('loFinish', t('loFinish'));
+  setText('loHint', t('loHint'));
 
   // WordBridge（選択言語）
   setText('wbEmpty', t('wbPickHint'));
