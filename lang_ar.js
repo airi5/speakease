@@ -65,6 +65,11 @@
     endConfirm:"هل تريد إنهاء المحادثة وعرض التحليل؟",
     thanksClose:"شكرًا لمشاركتك. يمكنك إغلاق هذه الصفحة.",
   };
+  // 右から左表示時の崩れ対策：英文（吹き出し・認識途中の文）は左から右のまま表示し、句読点が文頭に飛ぶのを防ぐ
+  const st = document.createElement('style');
+  st.textContent = '[dir="rtl"] .b-en{direction:ltr;text-align:left;unicode-bidi:plaintext}'
+                 + '[dir="rtl"] #ctrlHint{unicode-bidi:plaintext}';
+  document.head.appendChild(st);
   // 右から左（RTL）切替：入室時に app.js から呼ぶ
   window.applyLangDir = function(lang){
     const rtl = (lang === 'ar');
