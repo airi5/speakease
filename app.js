@@ -26,6 +26,7 @@ async function join(){
   myName=name;
   myPersonId=personId;
   myLang=lang;
+  if(typeof applyLangDir==='function') applyLangDir(lang);   // アラビア語は右から左表示
   roomCode=validRoom;            // ★整形済み（大文字）のコードを使う
   sessionStart=Date.now();
   document.getElementById('roomDisp').textContent=roomCode;
