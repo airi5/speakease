@@ -70,7 +70,9 @@
   st.textContent = '[dir="rtl"] .b-en{direction:ltr;text-align:left;unicode-bidi:plaintext}'
                  + '[dir="rtl"] #ctrlHint{unicode-bidi:plaintext}'
                  + '[dir="rtl"] .understanding-lbl,[dir="rtl"] #topicCard,[dir="rtl"] .wb-spin-btn{direction:ltr}'
-                 + '[dir="rtl"] #mtHeard{unicode-bidi:plaintext}';
+                 + '[dir="rtl"] #mtHeard{unicode-bidi:plaintext}'
+                 + '[dir="rtl"] .help-phrase-item .en{unicode-bidi:plaintext;text-align:right}'
+                 + '[dir="rtl"] .room-pill{direction:ltr}';
   document.head.appendChild(st);
   // 右から左（RTL）切替：入室時に app.js から呼ぶ
   window.applyLangDir = function(lang){
